@@ -1,0 +1,51 @@
+.categories-menu-grid-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #2f2f2f;
+}
+
+.header-div {
+    z-index: 1;
+    min-height: 110px;
+}
+
+
+.tit {
+    display: flex;
+    color: #d9d9d9;
+    min-height: 20px;
+    /* Defina uma altura mínima para o header */
+}
+
+.Categories_Container {
+    overflow: scroll;
+    flex: 1;
+    display: grid;
+    width: 90%;
+    grid-template-rows: repeat(auto-fill, 100px);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 1rem;
+    background-color: green;
+}
+
+
+.categorie-button {
+    background-color: #d9d9d9;
+    color: #af2314;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+}
+
+.categorie-link {
+    text-decoration: none;
+}
+
+.categorie-link-list {
+    list-style-type: none;
+}

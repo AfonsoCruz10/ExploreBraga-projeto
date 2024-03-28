@@ -1,0 +1,107 @@
+/* card events */
+.card {
+  border: 1px solid hsl(0, 0%, 80%);
+  background-color: azure;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
+  padding: 0;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 0px;
+  margin-right: 0px;
+  width: auto;
+  height: auto;
+  display: grid; /* Ativa o modelo de layout de grade */
+  grid-template-columns: 1fr 1fr 1fr; /* Define duas colunas de tamanho igual */
+  place-items: center;/* Centraliza horizontalmente */
+}
+  
+/*.card .card-img {
+  max-width: 100%;
+  height: auto; 
+  border-radius: 5%;
+} */
+  
+.card:hover{
+  transform: translateY(5px);
+  transition: 0.5s;
+  border: 1px solid red;
+  box-shadow: 1px 1px 20px red;
+}
+  
+.card:active{
+  background-color: rgb(255, 132, 132);
+  transition: 0.1s;
+}
+
+.card .card1 {
+  grid-column: 1; /* Ocupa a primeira coluna */
+  padding: 20px; /* Adiciona espaçamento interno */
+  overflow: hidden;
+  text-align: center;
+}
+
+.card .card2 {
+  grid-column: 2; /* Ocupa a primeira coluna */
+  padding: 20px; /* Adiciona espaçamento interno */
+  overflow: hidden;
+  text-align: center;
+
+}
+
+.card .card3 {
+  grid-column: 3; /* Ocupa a primeira coluna */
+  padding: 20px; /* Adiciona espaçamento interno */
+  overflow: hidden;
+  text-align: center;
+
+}
+
+.carddata {
+  font-family: Arial, sans-serif; /* Define a fonte */
+  font-size: 40px; /* Define o tamanho da fonte */
+  color: #333; /* Define a cor do texto */
+  margin-top: 5px; /* Adiciona margem superior */
+  margin-bottom: 5px; /* Adiciona margem inferior */
+}
+
+.cardtitle {
+  font-family: Arial, sans-serif; /* Define a fonte */
+  font-size: 30px; /* Define o tamanho da fonte */
+  color: #333; /* Define a cor do texto */
+  margin-top: 5px; /* Adiciona margem superior */
+  margin-bottom: 5px; /* Adiciona margem inferior */
+}
+
+.cardcategoria {
+  font-family: Arial, sans-serif; /* Define a fonte */
+  font-size: 25px; /* Define o tamanho da fonte */
+  color: #f30606; /* Define a cor do texto */
+  margin-top: 5px; /* Adiciona margem superior */
+  margin-bottom: 5px; /* Adiciona margem inferior */
+}
+
+.cardtext {
+  font-family: Arial, sans-serif; /* Define a fonte */
+  font-size: 20px; /* Define o tamanho da fonte */
+  color: #817a7a; /* Define a cor do texto */
+  margin-top: 5px; /* Adiciona margem superior */
+  margin-bottom: 5px; /* Adiciona margem inferior */
+}
+
+
+/* caixa de texto*/
+
+.caixatexto {
+  width: 100%; /* largura da caixa de texto */
+  padding: 10px; /* espaçamento interno */
+  margin-bottom: 20px;
+  border: 1px solid #ccc; /* borda */
+  border-radius: 5px; /* borda arredondada */
+  font-size: 16px; /* tamanho da fonte */
+}
+
+  
+
+  

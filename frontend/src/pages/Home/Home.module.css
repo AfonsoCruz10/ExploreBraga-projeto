@@ -1,0 +1,131 @@
+/* section1 */
+.section1 {
+    filter: brightness(55%);
+    background-position: center;
+    animation: imageAnimation 40s infinite;
+    background-size: cover;
+    background-position: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    border: none;
+    box-shadow: 1px 1px 50px #121212;
+    height: 100vh;
+    z-index: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @keyframes imageAnimation {
+    0% {
+      background-image: url('../../assets/Centro0.JPG');
+      opacity: 1;
+    }
+  
+    16.6% {
+      background-image: url('../../assets/Centro1.JPG');
+      opacity: 1;
+    }
+  
+    33.2% {
+      background-image: url('../../assets/Topo0.JPG');
+      opacity: 1;
+    }
+  
+    50% {
+      background-image: url('../../assets/Topo1.JPG');
+      opacity: 1;
+    }
+  
+    66.6% {
+      background-image: url('../../assets/Festa0.JPG');
+      opacity: 1;
+    }
+  
+    83.2% {
+      background-image: url('../../assets/Jardim0.JPG');
+      opacity: 1;
+    }
+  
+    100% {
+      background-image: url('../../assets/Centro0.JPG');
+      opacity: 1;
+    }
+  }
+  
+  /* Menu Titulo */
+  
+  .titulo {
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 90px;
+    letter-spacing: 20px;
+    text-shadow: 25px 25px 50px #121212;
+    color: #ffffff;
+    margin-top: -200px;
+    margin-bottom: 0;
+    margin-left: 70px;
+    z-index: 1;
+  }
+
+  /* section2 */
+
+  .section2{  
+    border: none;
+    position: relative;
+    height: 100vh;
+    background-color: red;
+  }
+  .menu-section2{
+    position: absolute;
+    margin-top: 5%;
+    height: auto;
+    text-align: center;
+    z-index: 1;
+  }
+
+  /* section3 */
+
+  .section3{
+    position: relative;
+    height: 100vh;
+    background-color: black;
+  }
+  
+  /*Arrow*/
+  
+  .Arrow {
+    position: absolute;
+    background-color: transparent;
+    color: #ffffff;
+    cursor: pointer;
+    border: 0;
+    font-size: 50px;
+    left: 50%;
+    top: 80%;
+    text-shadow: 25px 25px 50px #121212;
+  }
+  
+  .Arrow:hover {
+    color: #af2431;
+    transition: 0.5s;
+  }
+
+  @media only screen and (max-width: 700px) {
+
+    .menu-titulo {
+      margin-top: 20%;
+      width: auto;
+      height: auto;
+      letter-spacing: 10px;
+    }
+  
+    .titulo {
+      width: auto;
+      font-size: 40px;
+    }
+  
+    
+  }

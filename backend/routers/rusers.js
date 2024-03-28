@@ -7,19 +7,18 @@ const router = express.Router();
 // Rota para login de usuários
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
-
-        if (password === "" || email === "") {
+        const { emailreq, passreq } = req.body;
+        
+        if (passreq === "" || emailreq === "") { 
             return res.status(401).json({ message: "Credenciais em falta" });
         } 
         // Verifica se o usuário existe com o e-mail fornecido
-        const user = await Users.findOne({ email });
+        const user = await Users.findOne({ email: emailreq });
 
         if (!user) {
             return res.status(404).json({ message: "Usuário não encontrado" });
         }
-
-        if (user.password === password) {
+        if (user.passHash === passreq) {
             return res.status(200).json({ message: "Login bem-sucedido" });
         } else {
             return res.status(401).json({ message: "Credenciais inválidas" });

@@ -90,18 +90,12 @@
   margin-bottom: 5px; /* Adiciona margem inferior */
 }
 
-
-/* caixa de texto*/
-
-.caixatexto {
-  width: 100%; /* largura da caixa de texto */
-  padding: 10px; /* espaçamento interno */
-  margin-bottom: 20px;
-  border: 1px solid #ccc; /* borda */
-  border-radius: 5px; /* borda arredondada */
-  font-size: 16px; /* tamanho da fonte */
+.gratis {
+  font-family: Arial, sans-serif; /* Define a fonte */
+  font-size: 20px; /* Define o tamanho da fonte */
+  color: #ff0000; /* Define a cor do texto */
+  margin-top: 5px; /* Adiciona margem superior */
+  margin-bottom: 5px; /* Adiciona margem inferior */
 }
-
-  
 
   

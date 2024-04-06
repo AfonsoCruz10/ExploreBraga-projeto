@@ -1,39 +1,11 @@
-import style from "./Events.module.css"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "../../components/Header/Header.jsx";
 import Eventscard from "../../components/Eventscard/Eventscard.jsx";
 import Modal from "react-modal";
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-
-const categoriaslista = [
-  <Eventscard evento="Maratona" categoria="Desporto" />,
-  <Eventscard data={new Date("2024-02-05")} evento="Xau" categoria="Educacao" />,
-  <Eventscard
-    data={new Date("2024-01-06")} 
-    categoria="Cultura" 
-    evento="Igrejas" 
-    horainit={new Date("2024-02-20T08:00:00")} 
-    horafinal={new Date("2024-02-20T10:00:00")} 
-    morada="Rua das Corridas, 123" 
-    preco={10} 
-    organizador="Associação de Corridas de Braga" 
-  />,
-  <Eventscard evento="Passaros" categoria="Fotografia" />,
-  <Eventscard evento="Brocas" categoria="Lazer" />,
-  <Eventscard evento="Bom Jesus" categoria="Turismo" />,
-  <Eventscard
-    data={new Date("2024-04-06")} 
-    categoria="Desporto" 
-    evento="Corrida de 5km" 
-    horainit={new Date("2024-02-20T08:00:00")} 
-    horafinal={new Date("2024-02-20T10:00:00")} 
-    morada="Rua das Corridas, 123" 
-    preco={10} 
-    organizador="Associação de Corridas de Braga" 
-  />,
-  <Eventscard evento="Tempo" categoria="Cultura" />
-];
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import styles from "./Events.module.css";
 
 Modal.setAppElement("#root");
 
@@ -41,13 +13,40 @@ function Events() {
   const [searchCat, setSearchCat] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [events, setEvents] = useState([]); 
+
+  useEffect(() => {
+    // Função assíncrona para buscar eventos do backend
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get("http://localhost:5555/events/SelectEvents");
+        setEvents(response.data.data);
+      } catch (error) {
+        console.error("Error fetching events:", error.message);
+      }
+    };
+    fetchEvents();
+  }, []); // Array vazio como segundo argumento para garantir que a função seja executada apenas uma vez
 
   const handleChangeCat = (event) => {
     setSearchCat(event.target.value);
   };
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    if (selectedDate !== null){
+      // Extrair o dia da data selecionada e da data atual
+      const selectedDay = selectedDate.getDate();
+      const newDay = date.getDate();
+      
+      // Verificar se os dias são iguais
+      if (selectedDay === newDay) {
+        setSelectedDate(null); 
+      } else {
+        setSelectedDate(date);
+      }
+    } else {
+      setSelectedDate(date); 
+    }
   };
 
   const openModal = () => {
@@ -58,44 +57,41 @@ function Events() {
     setModalOpen(false);
   };
 
-  const filteredEvents = categoriaslista.filter(evento => {
+  // Filtra os eventos com base nas opções selecionadas de categoria e data
+  const filteredEvents = events.filter((evento) => {
     // Verifica se a categoria está vazia ou se corresponde à categoria selecionada
-    const categoriaMatch = searchCat === "" || evento.props.categoria === searchCat; 
+    const categoriaMatch = searchCat === "" || evento.Type === searchCat;
     // Verifica se a data corresponde à data selecionada, ou se não há data selecionada
-    const dataMatch = !selectedDate || evento.props.data.getFullYear() === selectedDate.getFullYear() && evento.props.data.getMonth() === selectedDate.getMonth() && evento.props.data.getDate() === selectedDate.getDate();
-    // Filtrar apenas datas futuras
-    const futureDate = evento.props.data >= new Date(new Date().setHours(0,0,0,0));
+    const dataMatch = !selectedDate || new Date(evento.BegDate).toDateString() === selectedDate.toDateString();
     // Retorna true se não houver filtro de categoria selecionado OU
-    // se a categoria do evento corresponder à categoria selecionada E a data do evento corresponder à data selecionada, ou não houver data selecionada
-    return categoriaMatch && dataMatch && futureDate;
+    // se a categoria do evento corresponder à categoria selecionada e a data do evento corresponder à data selecionada, ou não houver data selecionada
+    return categoriaMatch && dataMatch;
   });
-  
-  // Ordenar eventos por data
-  filteredEvents.sort((a, b) => new Date(a.props.data) - new Date(b.props.data));
 
-  const categoriasFiltradasJSX = filteredEvents.map((evento, index) => (
-    <div key={index}>{evento}</div>
-  ));
+  // Ordena os eventos por data
+  filteredEvents.sort(
+    (a, b) => new Date(a.BegDate) - new Date(b.BegDate)
+  );
 
   return (
     <div className="body">
       <Header />
-      <div className={style.events}>
+      <div className={styles.events}>
         <h1 style={{ fontFamily: 'Arial, sans-serif', fontSize: '60px', padding: '35px', marginBottom: '5px' }}>Events</h1>
 
-        <p className={style["button-text"]} onClick={openModal}> Abrir Filtros </p>
+        <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
 
           <Modal
               isOpen={modalOpen}
               onRequestClose={closeModal}
-              overlayClassName={style["ReactModal__Overlay"]} 
-              className={style["ReactModal__Content"]} 
+              overlayClassName={styles["ReactModal__Overlay"]} 
+              className={styles["ReactModal__Content"]} 
             >
               
-            <span className={style["close-button"]} onClick={closeModal}>&times;</span>
+            <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
             
-            <div className={style["search-container"]}>
-              <select value={searchCat} onChange={handleChangeCat} className={style.caixaevents}>
+            <div className={styles["search-container"]}>
+              <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
                 <option value="">Escolha uma categoria</option>
                 <option value="Cultura">Cultura</option>
                 <option value="Desporto">Desporto</option>
@@ -112,12 +108,25 @@ function Events() {
                   const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
                   return weekdays[date.getDay()];
                 }}
-                className={style["calendarioE"]}
+                className={styles["calendarioE"]}
               />
             </div>
           </Modal>
         
-        <div>{categoriasFiltradasJSX}</div>
+        <div>
+          {filteredEvents.map((event, index) => (
+            <Eventscard
+              key={index}
+              evento={event.Name} 
+              categoria={event.Type} 
+              horainit={new Date(event.BegDate)} 
+              horafinal={new Date(event.EndDate)} 
+              morada={event.Address} 
+              preco={event.Price} 
+              organizador={event.Creator} 
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

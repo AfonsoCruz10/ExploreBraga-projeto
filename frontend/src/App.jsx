@@ -4,6 +4,7 @@ import About from './pages/About/About.jsx'
 import Log_In from './pages/Log/Log_In.jsx'
 import Events from './pages/Events/Events.jsx'
 import Locations from './pages/Locations/Locations.jsx'
+import SignUpForm from './pages/SignUp/SignUpForm.jsx'
 
 /*
 O componente principal que configura as rotas da aplicação utilizando React Router.
@@ -23,7 +24,9 @@ function App() {
                     {/* Rota para a página "About Us" */}
                     <Route path="/about" element={<About />} />
                     {/* Rota para a página de login */}
-                    <Route path="/log-in" element={<Log_In />} />
+                    <Route path="/login" element={<Log_In />} />
+                    {/* Rota para a página de signup */}
+                    <Route path="/signup" element={<SignUpForm />} />
                     {/* Rota para a página de eventos */}
                     <Route path="/events" element={<Events />} />
                     {/* Rota para a página de locais */}

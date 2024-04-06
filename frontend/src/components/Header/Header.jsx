@@ -23,7 +23,7 @@ function Header() {
                 </div>
                 <div className={styles["menu-links"]}>
                     <a href="/about"> ABOUT US </a>
-                    <a href="/log-in"> <FaRegUser/> </a>
+                    <a href="/login"> <FaRegUser/> </a>
                 </div>
                 <button className={styles["menu-drop"]} onClick={toggleAberto}>
                     <FiMenu />
@@ -33,7 +33,7 @@ function Header() {
                     <a href="/events"><div className={styles["menu-tabela-button"]}>EVENTS</div></a>
                     <a href="/locations"><div className={styles["menu-tabela-button"]}>LOCATIONS</div></a>
                     <a href="/about"><div className={styles["menu-tabela-button"]}>ABOUT US</div></a>
-                    <a href="/log-in"><div className={styles["menu-tabela-button"]}>LOGIN</div></a>
+                    <a href="/login"><div className={styles["menu-tabela-button"]}>LOGIN</div></a>
                 </div>
             </div>
             <hr className={styles["upper-line"]} />

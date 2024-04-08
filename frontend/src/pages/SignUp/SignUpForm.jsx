@@ -42,45 +42,47 @@ function SignUpForm() {
   return (
     <>
       <Header />
-      <div className={style.SignUp}>
-        <h1>Sign Up</h1>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <input
-              type="text"
-              placeholder="Username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-          <div style={{ position: 'relative' }}>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-            <FontAwesomeIcon
-              icon={showPassword ? faEyeSlash : faEye}
-              onClick={handleTogglePassword}
-              style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
-            />
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-        {error && <p className={style.error}>{error}</p>}
-        <Link to="/login">Already have an account? Login here</Link>
+      <div className="body">
+        <div className={style.SignUp} style={{ textDecoration: 'none' }}>
+          <h1>Sign Up</h1>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <input
+                type="text"
+                placeholder="Username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <input
+                type="email"
+                placeholder="Email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                onClick={handleTogglePassword}
+                style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+              />
+            </div>
+            <button type="submit">Submit</button>
+          </form>
+          {error && <p className={style.error}>{error}</p>}
+          <Link to="/login">Already have an account? Login here</Link>
+        </div>
       </div>
     </>
   );

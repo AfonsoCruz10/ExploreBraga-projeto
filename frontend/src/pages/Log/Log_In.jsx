@@ -30,32 +30,34 @@ function Log_In() {
     return (
         <>
             <Header />
-            <div className={style.LogIn}>
-                <h1>Login</h1>
-                <div>
-                    <input 
-                        type="text"
-                        placeholder="Email"
-                        value={email} 
-                        onChange={(e) => setEmail(e.target.value)} 
-                    />
+            <div className="body">
+                <div className={style.LogIn}>
+                    <h1>Login</h1>
+                    <div>
+                        <input 
+                            type="text"
+                            placeholder="Email"
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)} 
+                        />
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <input 
+                            type={showPassword ? 'text' : 'password'} 
+                            placeholder="Password" 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <FontAwesomeIcon
+                            icon={showPassword ? faEyeSlash : faEye}
+                            onClick={handleTogglePassword}
+                            style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                        />
+                    </div>
+                    <button onClick={handleLogin}>Login</button>
+                    {error && <p className={style.error}>{error}</p>}
+                    <Link to="/signup" style={{ textDecoration: 'none' }}>Create User</Link>
                 </div>
-                <div style={{ position: 'relative' }}>
-                    <input 
-                        type={showPassword ? 'text' : 'password'} 
-                        placeholder="Password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <FontAwesomeIcon
-                        icon={showPassword ? faEyeSlash : faEye}
-                        onClick={handleTogglePassword}
-                        style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
-                    />
-                </div>
-                <button onClick={handleLogin}>Login</button>
-                {error && <p className={style.error}>{error}</p>}
-                <Link to="/signup">Create User</Link>
             </div>
         </>
     );

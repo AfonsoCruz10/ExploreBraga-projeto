@@ -1,9 +1,10 @@
 import styles from "./Eventscard.module.css";
 import PropTypes from "prop-types";
+import { useNavigate } from 'react-router-dom';
 
-function Eventscard({ categoria, evento, horainit, horafinal, morada, preco, organizador }) {
+function Eventscard({ id, categoria, evento, horainit, horafinal, morada, preco, organizador, onClick }) {
   const precoFormatado = preco.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
-
+  const navigate = useNavigate();
   // Função para formatar hora
   function mostrarHora({ horainit, horafinal }) {
     const horainitFormatada = horainit.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -16,10 +17,18 @@ function Eventscard({ categoria, evento, horainit, horafinal, morada, preco, org
     }
   }
 
+  // Função para formatar data
+  function formatarData(data) {
+    const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const diaSemana = diasDaSemana[data.getDay()];
+    return `${diaSemana}`;
+  }
+
   return (
     <>
-      <div className={styles.card}>
+      <div className={styles.card} onClick={() => navigate(`/events/${id}`)}>
         <div className={styles.card1}>
+          <p className={styles.carddata}>{formatarData(horainit)}</p>
           <p className={styles.carddata}>{horainit.toLocaleDateString()}</p>
         </div>
 
@@ -40,6 +49,7 @@ function Eventscard({ categoria, evento, horainit, horafinal, morada, preco, org
 }
 
 Eventscard.propTypes = {
+  id: PropTypes.string.isRequired,
   categoria: PropTypes.string.isRequired,
   evento: PropTypes.string.isRequired,
   horainit: PropTypes.instanceOf(Date).isRequired,

@@ -1,11 +1,7 @@
 
 .events {
     position: relative;
-    margin-top: 110px;
-    margin-bottom: 0;
-    margin-left: 200px;
-    margin-right: 200px;
-    color: aliceblue;
+    margin: auto 250px;
     text-align: center;
   }
   

@@ -1,4 +1,5 @@
 .body {
+  margin-top: 110px;
   position: fixed;
   top: 0;
   left: 0;
@@ -6,6 +7,7 @@
   height: 100vh;
   width: 100%;
   z-index: 0;
+  color:aliceblue;
   background-color: #2f2f2f;
   font-family: "Roboto", sans-serif;
   overflow: scroll;

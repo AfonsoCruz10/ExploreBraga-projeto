@@ -16,6 +16,18 @@ const validatePassword = (password) => {
     return password.length >= 8 && /[A-Z]/.test(password);
 };
 
+// Middleware para verificar se o usuário está autenticado
+export const isAuthenticated = (req, res, next) => {
+    // Verifica se a sessão contém informações do usuário (ou seja, se o usuário está autenticado)
+    if (req.session.user) {
+        // Se o usuário estiver autenticado, avança para a próxima middleware
+        next();
+    } else {
+        // Se o usuário não estiver autenticado, retorna um erro de não autorizado
+        res.status(401).json({ message: 'Unauthorized ' });
+    }
+};
+
 //Rota para visualizar todos os utilizadores
 router.get('/displayAllUsers', async (request, response) => {
     try {
@@ -138,6 +150,25 @@ router.post('/logout', (req, res) => {
             res.status(200).json({ message: 'Logout successful' });
         }
     });
+});
+
+
+// Exemplo de rota protegida que requer autenticação
+router.get('/protectedRoute', isAuthenticated, async (req, res) => {
+    try {
+        // Se o usuário estiver autenticado, você pode acessar os detalhes do usuário na sessão
+        const user = req.session.user; // Acessa as informações do usuário na sessão
+        if (!user) {
+            // Se não estiver autenticado, retorna um erro ou redireciona para a página de login
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const userDetails = await Users.findById(user._id);
+        // Você pode retornar os detalhes do usuário para o cliente
+        res.status(200).json({ message: 'Authenticated', user: userDetails });
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 export default router;

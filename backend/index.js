@@ -12,9 +12,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true })) 
 app.use(cors());
 
- //Configuração do middleware de sessão
+//Configuração do middleware de sessão
 app.use(session({
-  secret: 'mySecretKey', // Chave secreta para assinar a sessão
+  secret: 'b0b4f19e3a5c6f9e8d27b1e4c98d7a2f', // Chave secreta para assinar a sessão
   resave: false, // Evita regravar a sessão no armazenamento se nada mudou
   saveUninitialized: false // Evita salvar sessões não inicializadas no armazenamento
 }));

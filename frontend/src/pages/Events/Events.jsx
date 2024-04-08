@@ -13,10 +13,10 @@ function Events() {
   const [searchCat, setSearchCat] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [events, setEvents] = useState([]); 
+  const [events, setEvents] = useState([]);
+  const [eventsToShow, setEventsToShow] = useState(5);
 
   useEffect(() => {
-    // Função assíncrona para buscar eventos do backend
     const fetchEvents = async () => {
       try {
         const response = await axios.get("http://localhost:5555/events/SelectEvents");
@@ -26,26 +26,23 @@ function Events() {
       }
     };
     fetchEvents();
-  }, []); // Array vazio como segundo argumento para garantir que a função seja executada apenas uma vez
+  }, []);
 
   const handleChangeCat = (event) => {
     setSearchCat(event.target.value);
   };
 
   const handleDateChange = (date) => {
-    if (selectedDate !== null){
-      // Extrair o dia da data selecionada e da data atual
+    if (selectedDate !== null) {
       const selectedDay = selectedDate.getDate();
       const newDay = date.getDate();
-      
-      // Verificar se os dias são iguais
       if (selectedDay === newDay) {
-        setSelectedDate(null); 
+        setSelectedDate(null);
       } else {
         setSelectedDate(date);
       }
     } else {
-      setSelectedDate(date); 
+      setSelectedDate(date);
     }
   };
 
@@ -57,66 +54,63 @@ function Events() {
     setModalOpen(false);
   };
 
-  // Filtra os eventos com base nas opções selecionadas de categoria e data
+  const handleLoadMore = () => {
+    setEventsToShow(eventsToShow + 5);
+  };
+  
   const filteredEvents = events.filter((evento) => {
-    // Verifica se a categoria está vazia ou se corresponde à categoria selecionada
     const categoriaMatch = searchCat === "" || evento.Type === searchCat;
-    // Verifica se a data corresponde à data selecionada, ou se não há data selecionada
     const dataMatch = !selectedDate || new Date(evento.BegDate).toDateString() === selectedDate.toDateString();
-    // Retorna true se não houver filtro de categoria selecionado OU
-    // se a categoria do evento corresponder à categoria selecionada e a data do evento corresponder à data selecionada, ou não houver data selecionada
     return categoriaMatch && dataMatch;
-  });
-
-  // Ordena os eventos por data
-  filteredEvents.sort(
-    (a, b) => new Date(a.BegDate) - new Date(b.BegDate)
-  );
+  }).slice(0, eventsToShow);
 
   return (
+    <>
+    <Header />
     <div className="body">
-      <Header />
+      
       <div className={styles.events}>
         <h1 style={{ fontFamily: 'Arial, sans-serif', fontSize: '60px', padding: '35px', marginBottom: '5px' }}>Events</h1>
 
         <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
 
-          <Modal
-              isOpen={modalOpen}
-              onRequestClose={closeModal}
-              overlayClassName={styles["ReactModal__Overlay"]} 
-              className={styles["ReactModal__Content"]} 
-            >
-              
-            <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
-            
-            <div className={styles["search-container"]}>
-              <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
-                <option value="">Escolha uma categoria</option>
-                <option value="Cultura">Cultura</option>
-                <option value="Desporto">Desporto</option>
-                <option value="Educacao">Educação</option>
-                <option value="Fotografia">Fotografia</option>
-                <option value="Lazer">Lazer</option>
-                <option value="Turismo">Turismo</option>
-              </select>
-              <Calendar
-                onChange={handleDateChange}
-                value={selectedDate}
-                minDate={new Date()}
-                formatShortWeekday={(locale, date) => {
-                  const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-                  return weekdays[date.getDay()];
-                }}
-                className={styles["calendarioE"]}
-              />
-            </div>
-          </Modal>
-        
+        <Modal
+          isOpen={modalOpen}
+          onRequestClose={closeModal}
+          overlayClassName={styles["ReactModal__Overlay"]}
+          className={styles["ReactModal__Content"]}
+        >
+
+          <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
+
+          <div className={styles["search-container"]}>
+            <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
+              <option value="">Escolha uma categoria</option>
+              <option value="Cultura">Cultura</option>
+              <option value="Desporto">Desporto</option>
+              <option value="Educacao">Educação</option>
+              <option value="Fotografia">Fotografia</option>
+              <option value="Lazer">Lazer</option>
+              <option value="Turismo">Turismo</option>
+            </select>
+            <Calendar
+              onChange={handleDateChange}
+              value={selectedDate}
+              minDate={new Date()}
+              formatShortWeekday={(locale, date) => {
+                const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+                return weekdays[date.getDay()];
+              }}
+              className={styles["calendarioE"]}
+            />
+          </div>
+        </Modal>
+
         <div>
           {filteredEvents.map((event, index) => (
             <Eventscard
               key={index}
+              id={event._id}
               evento={event.Name} 
               categoria={event.Type} 
               horainit={new Date(event.BegDate)} 
@@ -127,8 +121,13 @@ function Events() {
             />
           ))}
         </div>
+
+        {eventsToShow < events.length && (
+          <button onClick={handleLoadMore}>Carregar mais</button>
+        )}
       </div>
     </div>
+    </>
   );
 }
 

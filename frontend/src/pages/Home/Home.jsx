@@ -17,20 +17,20 @@ function Home() {
     const scrollToSection = (sectionNumber) => {
         setCurrentSection(sectionNumber); // Update the current section number
         switch (sectionNumber) {
-          case 1:
-            section1.current.scrollIntoView({ behavior: 'smooth' });
-            break;
-          case 2:
-            section2.current.scrollIntoView({ behavior: 'smooth' });
-            break;
-          case 3:
-            section3.current.scrollIntoView({ behavior: 'smooth' });
-            break;
-          default:
-            break;
+            case 1:
+                section1.current.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 2:
+                section2.current.scrollIntoView({ behavior: 'smooth' });
+                break;
+            case 3:
+                section3.current.scrollIntoView({ behavior: 'smooth' });
+                break;
+            default:
+                break;
         }
-      };
-    
+    };
+
 
     const [Arrow, setArrow] = useState(false);
 
@@ -42,27 +42,27 @@ function Home() {
         <>
             <div className="body">
                 <Header />
-                <section ref= {section1}>
+                <section ref={section1}>
                     <div className={style.section1}>
                         <h1 className={style.titulo}>START <br /> EXPLORING</h1>
                         <button className={style.Arrow} onClick={toggleArrow}>
-                                <SlArrowDown onClick={() => scrollToSection(2)}/>
+                            <SlArrowDown onClick={() => scrollToSection(2)} />
                         </button>
                     </div>
                 </section>
-                <section ref= {section2}>
+                <section ref={section2}>
                     <div className={style.section2}>
                         <div className={style["menu-section2"]}>
                         </div>
                         <button className={style.Arrow} onClick={toggleArrow}>
-                                    <SlArrowDown onClick={() => scrollToSection(3)}/>
+                            <SlArrowDown onClick={() => scrollToSection(3)} />
                         </button>
                     </div>
                 </section>
-                <section ref= {section3}>
+                <section ref={section3}>
                     <div className={style.section3}>
                         <button className={style.Arrow} onClick={toggleArrow}>
-                                <SlArrowUp onClick={() => scrollToSection(1)}/>
+                            <SlArrowUp onClick={() => scrollToSection(1)} />
                         </button>
                     </div>
                 </section>

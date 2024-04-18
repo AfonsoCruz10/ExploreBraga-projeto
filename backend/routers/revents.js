@@ -1,7 +1,7 @@
 // rvents.js
 import express from 'express';
 import { Events, Users } from "../mongo/esquemas.js";
-import { isAuthenticated } from './rusers.js';
+import { authPage } from "../middleware/middleware.js";
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get('/displayAllEvents', async (request, response) => {
     });
   } catch (error) {
     console.log("Error fetching events:", error.message);
-    response.status(500).json({  message: 'Internal server error! displyallevents' });
+    response.status(500).json({ message: 'Internal server error! displyallevents' });
   }
 });
 
@@ -27,10 +27,13 @@ router.get('/SelectEvents', async (request, response) => {
   try {
     const currentDate = new Date();
 
-    // Consulta eventos onde a data de início é maior ou igual à data atual
-    const events = await Events.find({ BegDate: { $gte: currentDate } })
-                                .select('BegDate Name Type EndDate Address Price Creator')
-                                .sort({ BegDate: 1 });
+    // Consulta eventos onde a data de início é maior ou igual à data atual e o status é "Active"
+    const events = await Events.find({ 
+      BegDate: { $gte: currentDate }, 
+      Status: 'Active' 
+      })
+      .select('BegDate Name Type EndDate Address Price Creator')
+      .sort({ BegDate: 1 });
 
     return response.status(200).json({
       count: events.length,
@@ -38,25 +41,103 @@ router.get('/SelectEvents', async (request, response) => {
     });
   } catch (error) {
     console.log("Error fetching events:", error.message);
-    response.status(500).json({  message: 'Internal server error! SelectEvents' });
+    response.status(500).json({ message: 'Internal server error! SelectEvents' });
   }
 });
 
 
-// Rota para criar um novo evento
-router.post('/create', async (req, res) => {
+// Rota para buscar detalhes de um certo evento evento 
+router.get('/:id', authPage, async (req, res) => {
   try {
+    const eventId = req.params.id;
+    let check = false;
+
+    if (req.authenticated) {
+      const userId = req.userid;
+
+      // Buscar o evento pelo ID
+      const event = await Events.findById(eventId);
+       
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+      if (event.InterestedUsers && event.InterestedUsers.includes(userId)) {
+        check = true;
+      }
+      
+      res.status(200).json({ event, check });
+    } else {
+      // Buscar o evento pelo ID
+      const event = await Events.findById(eventId);
+       
+      if (!event) {
+        return res.status(404).json({ message: 'Event not found' });
+      }
+    
+      res.status(200).json({ event, check });
+    }
+  } catch (error) {
+    console.error('Error fetching event:', error);
+    res.status(500).json({ message: 'Internal server error! getid' });
+  }
+});
+
+// Rota para criar um novo evento
+router.post('/create', authPage, async (req, res) => {
+  try {
+    
+    // Verifique se a autenticação foi bem-sucedida
+    if (!req.authenticated) {
+      // Trate o caso em que a autenticação falhou
+      return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+    }
+
     // Extrair os dados do corpo da requisição
     const { eventType, eventName, eventBegDate,
-      eventEndDate, eventDescription, eventAge, username,
-      eventInterestedUsers, eventPrice, eventImage, eventAdress } = req.body;
+      eventEndDate, eventDescription, eventAge,
+      eventPrice, eventImage, eventAdress } = req.body;
 
-    // Verificar se o usuário existe
-    let existingUser = await Users.findOne({ username });
-    
-    if (!existingUser) {
-      return res.status(400).json({ message: 'This username does not exist!' });
+    // Verifica se todos os campos estão preenchidos
+    if (!eventType ) {
+      return res.status(404).json({ message: 'Fill all categoria' })
     }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventName ) {
+      return res.status(404).json({ message: 'Fill all name' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventBegDate ) {
+      return res.status(404).json({ message: 'Fill all data inicio' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventEndDate) {
+      return res.status(404).json({ message: 'Fill all data final' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventDescription ) {
+      return res.status(404).json({ message: 'Fill all descrição' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventAge ) {
+      return res.status(404).json({ message: 'Fill all idade' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventPrice ) {
+      return res.status(404).json({ message: 'Fill all preço' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventImage ) {
+      return res.status(404).json({ message: 'Fill all imagem' })
+    }
+    // Verifica se todos os campos estão preenchidos
+    if (!eventAdress) {
+      return res.status(404).json({ message: 'Fill all endereço' })
+    }
+    
+    // Obter as informações do usuário autenticado
+    const userid = req.userid;
+    // Aqui você pode buscar mais informações do usuário no banco de dados usando o _id
+    const user = await Users.findById(userid).select("username");
 
     // Criar um novo evento
     const newEvent = new Events({
@@ -66,18 +147,19 @@ router.post('/create', async (req, res) => {
       EndDate: eventEndDate,
       Description: eventDescription,
       AgeRecomendation: eventAge,
-      Creator: username,
-      InterestedUsers: eventInterestedUsers,
+      Creator: user.username,
+      InterestedUsers: [],
       Image: eventImage,
       Address: eventAdress,
-      Price: eventPrice
+      Price: eventPrice,
+      Status: "Pending"
     })
 
     // Salvar o evento no banco de dados
     await newEvent.save();
 
     // Adicionar o ID do evento ao campo EventCreator do usuário
-    existingUser = await Users.findByIdAndUpdate(existingUser._id, { $push: { EventCreator: newEvent._id } }, { new: true });
+    await Users.findByIdAndUpdate(user._id, { $push: { EventCreator: newEvent._id } }, { new: true });
 
     // Responder com sucesso
     res.status(201).json({ message: 'Event created successfully', event: newEvent });
@@ -87,55 +169,44 @@ router.post('/create', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+// Rota para o usuário dar follow em um evento
+router.put('/:eventId/interested', authPage, async (req, res) => {
   try {
-    const eventId = req.params.id;
+      // Verifique se a autenticação foi bem-sucedida
+      if (!req.authenticated) {
+        // Trate o caso em que a autenticação falhou
+        return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+      }
 
-    // Buscar o evento pelo ID
-    const event = await Events.findById(eventId);
+      const eventId = req.params.eventId;
+      const userId = req.userid;
+      let check;
 
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
+      // Encontre o evento pelo ID e selecione apenas o array de InterestedUsers
+      const event = await Events.findById(eventId).select("InterestedUsers");
 
-    // Retornar as informações do evento
-    res.status(200).json({ event });
-  } catch (error) {
-    console.error('Error fetching event:', error);
-    res.status(500).json({ message: 'Internal server error! getid' });
-  }
-});
+      // Verifique se o evento existe e se o userId já está na lista de InterestedUsers
+      if (event && event.InterestedUsers.indexOf(userId) !== -1) {
+        // Remova o ID do usuário da lista de usuários interessados no evento
+        await Events.findByIdAndUpdate(eventId, { $pull: { InterestedUsers: userId } });
+        check = false;
+      } else {
+        // Adicione o ID do usuário à lista de usuários interessados no evento
+        await Events.findByIdAndUpdate(eventId, { $addToSet: { InterestedUsers: userId } });
+        check = true;
+      }
 
-// Rota para o usuário dar "like" em um evento
-router.put('/:eventId/like', isAuthenticated, async (req, res) => {
-  try {
-      const eventId  = req.params;
+      // Recupere a lista atualizada de interessados após a modificação
+      const updatedEvent = await Events.findById(eventId).select("InterestedUsers");
+      const updatedCount = updatedEvent ? updatedEvent.InterestedUsers.length : 0;
 
-      // Adicione o ID do usuário à lista de usuários interessados no evento
-      await Event.findByIdAndUpdate(eventId, { $addToSet: { InterestedUsers: userId } });
 
-      res.status(200).json({ message: 'Liked event successfully' });
+      res.status(200).json({ message: 'Liked event successfully', count: updatedCount, check});
   } catch (error) {
       console.error('Error liking event:', error);
       res.status(500).json({ message: 'Internal server error' });
   }
 });
-
-// Rota para o usuário remover o "like" de um evento
-router.put('/:eventId/unlike', isAuthenticated, async (req, res) => {
-  try {
-      const eventId = req.params;
-
-      // Remova o ID do usuário da lista de usuários interessados no evento
-      await Event.findByIdAndUpdate(eventId, { $pull: { InterestedUsers: userId } });
-
-      res.status(200).json({ message: 'Unliked event successfully' });
-  } catch (error) {
-      console.error('Error unliking event:', error);
-      res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
 
 
 export default router;

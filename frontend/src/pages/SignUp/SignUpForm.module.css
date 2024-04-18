@@ -39,6 +39,7 @@
   }
   
   .SignUp .error {
+    font-size: small;
     color: red;
   }
   

@@ -24,11 +24,11 @@ function Data() {
     const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     // Array de dias da semana para mapear o número do dia para o nome do dia
-    const dias_da_semana = ["Sunday", "Mon", "Tue", "Wed", "Thu", "Sexta Feira", "Sábado"];
+    const dias_da_semana = ["Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado"];
 
     // Extrai as partes da data e hora atual
     const currentDate = new Date();
-    const hora = currentDate.getHours();
+    const hora = currentDate.getHours() < 10 ? '0' + currentDate.getHours() : currentDate.getHours();;
     const min = currentDate.getMinutes() < 10 ? '0' + currentDate.getMinutes() : currentDate.getMinutes();
     const dia_da_semana = currentDate.getDay();
     const dia_do_mes = currentDate.getUTCDate();
@@ -41,3 +41,4 @@ function Data() {
 }
 
 export default Data;
+ 

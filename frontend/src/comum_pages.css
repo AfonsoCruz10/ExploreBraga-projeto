@@ -1,19 +1,43 @@
 .body {
-  margin-top: 110px;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-size: 50%;
-  height: 100vh;
-  width: 100%;
+  position: relative;
+  top: 110px;
   z-index: 0;
-  color:aliceblue;
+  min-height: 100vh;
+  color: aliceblue;
   background-color: #2f2f2f;
   font-family: "Roboto", sans-serif;
   overflow: scroll;
 }
 
-/* PopUp */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.titulo {
+  font-family: Arial, sans-serif;
+  font-size: 60px;
+  padding: 35px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  border: 8px solid transparent;
+  border-top: 8px solid #ff0000;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  margin: 8px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 .modal {
   width: 500px;

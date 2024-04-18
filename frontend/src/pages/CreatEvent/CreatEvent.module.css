@@ -1,0 +1,94 @@
+.container {
+  position: relative;
+  width: 700px;
+  height: auto;
+  color: #000000;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+  padding: 50px 35px;
+  margin: 110px auto;
+}
+
+.form input,
+.form textarea {
+  display: block;
+  height: 50px;
+  width: 97%;
+  background-color: rgba(255, 255, 255, 0.07);
+  border-radius: 3px;
+  padding-left: 10px;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.form button {
+  margin-top: 50px;
+  width: 100%;
+  background-color: #ffffff;
+  color: #080710;
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* UserAccount.module.css */
+
+.select {
+  width: 100%;
+  height: 40px;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.select:focus {
+  border-color: #6e6e6e; /* Cor de destaque quando o select está em foco */
+}
+
+.error {
+  font-size: small;
+  color: red;
+}
+
+/* Adicione estilos para o container do campo de upload */
+.file-input-container {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+/* Estilize o rótulo do campo de upload */
+.file-input-label {
+  display: inline-block;
+  background-color: #ff0000; /* Cor de fundo do rótulo */
+  color: #fff; /* Cor do texto do rótulo */
+  padding: 10px 20px; /* Espaçamento interno do rótulo */
+  cursor: pointer; /* Transforma o cursor em uma mão ao passar por cima */
+  border-radius: 5px; /* Borda arredondada */
+}
+
+/* Estilize o campo de input de arquivo */
+.file-input-label input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Adicione um efeito de hover ao rótulo */
+.file-input-label:hover {
+  background-color: #0056b3; /* Mudança de cor de fundo ao passar o mouse */
+}

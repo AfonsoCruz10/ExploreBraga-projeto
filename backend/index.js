@@ -1,6 +1,5 @@
 //index.js
 import express from "express";
-import session from "express-session";
 import { db } from "./mongo/dbconfig.js";
 import cors from 'cors';
 import eventsRouter from "./routers/revents.js";
@@ -9,15 +8,8 @@ import userRouter from "./routers/rusers.js";
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })) 
+app.use(express.urlencoded({ extended: true }))
 app.use(cors());
-
-//Configuração do middleware de sessão
-app.use(session({
-  secret: 'b0b4f19e3a5c6f9e8d27b1e4c98d7a2f', // Chave secreta para assinar a sessão
-  resave: false, // Evita regravar a sessão no armazenamento se nada mudou
-  saveUninitialized: false // Evita salvar sessões não inicializadas no armazenamento
-}));
 
 // Middleware para lidar com solicitações para /favicon.ico
 app.get('/favicon.ico', (req, res) => {

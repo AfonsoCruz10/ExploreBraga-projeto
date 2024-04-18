@@ -1,47 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
 import Header from '../../components/Header/Header.jsx';
 import styles from './EventDetails.module.css';
-import { FaArrowLeft, FaThumbsUp } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight ,FaHeart } from 'react-icons/fa';
+import { useEventDetails } from '../../hooks/useEventDetails.jsx';
+
 
 function EventDetails() {
-    const [event, setEvent] = useState(null);
-    const [likes, setLikes] = useState(0);
+    const [imageIndex, setImageIndex] = useState(0);
+    const {buscarEventDetails, interested, event, counter, check, isLoading, errorBuscar, errorInterested} = useEventDetails();
     const { eventId } = useParams();
 
     useEffect(() => {
-        const fetchEventDetails = async () => {
-            try {
-                const response = await axios.get(`http://localhost:5555/events/${eventId}`);
-                setEvent(response.data.event);
-                // Atualiza o contador de likes com base na quantidade de usuários interessados
-                setLikes(response.data.event.InterestedUsers.length);
-            } catch (error) {
-                console.error('Error fetching event details:', error.message);
-            }
-        };
-
-        fetchEventDetails();
+        buscarEventDetails(eventId)
+            .catch(error => console.error('Error fetching event details:', error));
     }, [eventId]);
+    
 
-    const handleLike = async () => {
-        try {
-            // Verifica se o usuário já deu like no evento
-            if (event.InterestedUsers.includes(userId)) {
-                // Se já deu like, remove o ID do usuário da lista
-                await axios.put(`http://localhost:5555/users/${userId}/events/${eventId}/unlike`);
-                setLikes(likes - 1); // Decrementa o contador de likes
-            } else {
-                // Se não deu like, adiciona o ID do usuário à lista
-                await axios.put(`http://localhost:5555/users/${userId}/events/${eventId}/like`);
-                setLikes(likes + 1); // Incrementa o contador de likes
-            }
-        } catch (error) {
-            console.error('Error liking event:', error.message);
-        }
+    const handleInt = async () => {
+        await interested(eventId);
     };
     
+    const handleNextImage = () => {
+        setImageIndex((prevIndex) => (prevIndex + 1) % event.Image.length);
+    };
+
+    const handlePreviousImage = () => {
+        setImageIndex((prevIndex) => (prevIndex - 1 + event.Image.length) % event.Image.length);
+    };
+
     return (
         <>
             <Header />
@@ -50,13 +37,31 @@ function EventDetails() {
                     <FaArrowLeft className={styles.backIcon} />
                     Back to Events
                 </Link>
-                <div className={styles.likeContainer}>
-                    <FaThumbsUp className={styles.likeIcon} onClick={handleLike} />
-                    <span className={styles.likeCount}>{likes}</span>
+                <div>
+                    {check ? (
+                        <FaHeart onClick={handleInt} className={styles.redHeart} />
+                    ) : (
+                        <FaHeart onClick={handleInt} className={styles.borderHeart} />
+                    )}
+                    {counter}
                 </div>
+
                 <div className={styles.eventDetails}>
-                    {event ? (
-                        <>
+                    {isLoading ? (
+                        <div className='spinner'></div>
+                        ) : event ? (
+                            <>
+                            <div className={styles.imageContainer}>
+                                {event.Image.length > 1 && (
+                                    <FaArrowLeft className={`${styles.arrowIcon} ${styles.left}`} onClick={handlePreviousImage} />
+                                )}
+                                <img src={event.Image[imageIndex]} alt="Event image not found!" className={styles.eventImage} />
+                                {event.Image.length > 1 && (
+                                    <FaArrowRight className={`${styles.arrowIcon} ${styles.right}`} onClick={handleNextImage} />
+                                )}
+
+                            </div>
+                            
                             <h1 className={styles.title}>{event.Name}</h1>
                             <p className={styles.category}>Category: {event.Type}</p>
                             <p className={styles.description}>{event.Description}</p>
@@ -65,12 +70,11 @@ function EventDetails() {
                             <p className={styles.address}>Address: {event.Address}</p>
                             <p className={styles.price}>Price: {event.Price}</p>
                             <p className={styles.creator}>Organizer: {event.Creator}</p>
-                            
-                            <img src={event.Image} alt="Event image not found!" className={styles.eventImage} />
-                        </>
-                    ) : (
-                        <p>Loading event details...</p>
+                            </>
+                        ) : (
+                            <p>Loading event details...</p>
                     )}
+                    
                 </div>
             </div>
         </>

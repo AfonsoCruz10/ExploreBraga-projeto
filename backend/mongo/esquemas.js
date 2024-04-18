@@ -33,11 +33,11 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  InterestedUsers: {
-    type: [String],
-    default: []
-  },
-  Image: String,
+  InterestedUsers: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Users' // Referência ao modelo de evento, remova se não for necessário
+  }],
+  Image: [String],  
   Address: {
     type: String,
     required: true
@@ -45,6 +45,10 @@ const eventSchema = new mongoose.Schema({
   Price: {
     type: Number,
     required: true
+  },
+  Status: {
+    type: String,
+    enum: ['Pending', 'Active', 'Canceled'] // As 3 opções válidas para o atributo "status"
   }
 });
 
@@ -74,7 +78,7 @@ const locationSchema = new mongoose.Schema({
   }],
   Status: {
     type: String,
-    required: true
+    enum: ['Pending', 'Active'] // As 2 opções válidas para o atributo "status"
   },
   Image: String,
   Address: String

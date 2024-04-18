@@ -1,0 +1,60 @@
+/* UserAccount.module.css */
+
+.userAccount {
+  
+  max-width: 600px;
+  margin: 110px auto;
+  padding: 20px;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.userInfo {
+  margin-top: 20px;
+}
+
+.userInfo p {
+  margin: 10px 0;
+}
+
+.userInfo p strong {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.logoutButton {
+  margin-top: 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.logoutButton:hover {
+  background-color: #d32f2f;
+}
+
+.createEventButton {
+  margin-top: 20px;
+  width: 100%;
+  background-color: #ffffff; /* Verde */
+  color: rgb(0, 0, 0);
+  padding: 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.createEventButton:hover {
+  background-color: #615d5d; /* Verde escuro ao passar o mouse */
+}

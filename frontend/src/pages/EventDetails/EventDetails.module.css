@@ -1,43 +1,5 @@
 /* EventDetails.module.css */
-
-.body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.backLink {
-  display: flex;
-  align-items: center;
-  margin: 20px;
-  color: #ff0000;
-  text-decoration: none;
-}
-
-.backIcon {
-  margin-right: 5px;
-}
-
-.likeContainer {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.likeIcon {
-  font-size: 24px;
-  color: #ff0000;
-  cursor: pointer;
-  margin: 20px;
-}
-
-.likeCount {
-  font-size: 18px;
-}
-
 .eventDetails {
-  max-width: 800px;
-  margin: 0 auto;
   padding: 20px;
 }
 
@@ -56,28 +18,92 @@
   margin-bottom: 10px;
 }
 
-.date {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.address {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.price {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
+.date,
+.address,
+.price,
 .creator {
+  margin-bottom: 10px;
   font-size: 16px;
-  margin-bottom: 5px;
+}
+
+/* EventDetails.module.css */
+.redHeart {
+  color: red;
+  font-size: 24px; /* Tamanho do ícone */
+  cursor: pointer; /* Cursor ao passar o mouse */
+  margin: 20px; /* Margem ao redor do ícone */
+}
+
+.redHeart:hover {
+  color: #ff5555; /* Cor ao passar o mouse */
+}
+
+/* EventDetails.module.css */
+.redHeart {
+  font-size: 24px; /* Tamanho do ícone */
+  cursor: pointer; /* Cursor ao passar o mouse */
+  margin: 20px; /* Margem ao redor do ícone */
+  color: red; /* Cor do ícone */
+}
+
+.redHeart:hover {
+  color: #ff5555; /* Cor ao passar o mouse */
+}
+
+.borderHeart {
+  font-size: 24px; /* Tamanho do ícone */
+  cursor: pointer; /* Cursor ao passar o mouse */
+  margin: 20px; /* Margem ao redor do ícone */
+}
+
+.borderHeart:hover {
+  color: #ff5555; /* Cor do ícone ao passar o mouse */
+}
+
+
+.backLink {
+  color: #ff0000;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 20px;
+}
+
+.backIcon {
+  font-size: 18px;
+  margin-right: 5px;
+}
+
+.imageContainer {
+  position: relative;
+  margin-bottom: 20px; 
 }
 
 .eventImage {
-  max-width: 100%;
+  width: 100%;
   height: auto;
-  margin-top: 20px;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.arrowIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 36px;
+  color: #ff0000;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.arrowIcon:hover {
+  color: #ff5555;
+}
+
+.arrowIcon.right {
+  right: 10px; 
+}
+
+.arrowIcon.left {
+  left: 10px;
 }

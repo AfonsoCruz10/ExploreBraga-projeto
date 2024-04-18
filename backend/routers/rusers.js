@@ -1,8 +1,12 @@
 // rusers.js
 import express from 'express';
-import { Users } from "../mongo/esquemas.js";
+import { Users, Events, Locations } from "../mongo/esquemas.js";
 import bcrypt from 'bcrypt';
+import { authPage } from "../middleware/middleware.js";
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 
+dotenv.config();
 const router = express.Router();
 
 const validateEmail = (email) => {
@@ -16,28 +20,13 @@ const validatePassword = (password) => {
     return password.length >= 8 && /[A-Z]/.test(password);
 };
 
-// Middleware para verificar se o usuário está autenticado
-export const isAuthenticated = (req, res, next) => {
-    // Verifica se a sessão contém informações do usuário (ou seja, se o usuário está autenticado)
-    if (req.session.user) {
-        // Se o usuário estiver autenticado, avança para a próxima middleware
-        next();
-    } else {
-        // Se o usuário não estiver autenticado, retorna um erro de não autorizado
-        res.status(401).json({ message: 'Unauthorized ' });
-    }
-};
-
 //Rota para visualizar todos os utilizadores
 router.get('/displayAllUsers', async (request, response) => {
     try {
-        
+
         const users = await Users.find({}, '-HashedPassword');
 
-        return response.status(200).json({
-            count: users.length,
-            data: users,
-        });
+        return response.status(200).json({ data: users });
     } catch (error) {
         console.log("Error fetching users:", error.message);
         response.status(500).json({ message: 'Internal server error! displayuser' });
@@ -68,7 +57,7 @@ router.post('/createNewUser', async (req, res) => {
 
         //verificar se o username ou email ja existem
         const existingUser = await Users.findOne({ $or: [{ username }, { email }] });
-
+        
         if (existingUser) {
             if (existingUser.username === username) {
                 return res.status(400).json({ message: 'The username was already used! Please choose another one!' });
@@ -77,7 +66,7 @@ router.post('/createNewUser', async (req, res) => {
                 return res.status(400).json({ message: 'The email was already used! Please choose another one!' });
             }
         }
-
+        
         //Utilizar a encriptacao
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -87,7 +76,7 @@ router.post('/createNewUser', async (req, res) => {
             username,
             email,
             HashedPassword: hashedPassword,
-            AdminPermission: false, 
+            AdminPermission: false,
             EventCreator: [],
             EventHasInterest: [],
             LocalCreator: [],
@@ -97,10 +86,10 @@ router.post('/createNewUser', async (req, res) => {
 
         //Salvar o utilizador na base de dados
         await newUser.save();
-
+        
         //Enviar mensagem de sucesso
         res.status(201).json({ message: 'User created successfully' });
-
+        
     } catch (error) {
         console.error('Error creating user: ', error);
         res.status(500).json({ message: 'Internal server error! creatuser' });
@@ -110,64 +99,109 @@ router.post('/createNewUser', async (req, res) => {
 // Rota para login de usuários
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, remember } = req.body; // Adicione 'remember' ao corpo da solicitação
 
         if (password === "" || email === "") {
             return res.status(401).json({ message: "You need to fill the credential info!" });
         }
         // Verifica se o usuário existe com o e-mail fornecido
         const user = await Users.findOne({ email });
-
+        
         if (!user) {
             return res.status(404).json({ message: "This email is not registered yet!" });
         }
-
         //Compara a senha fornecida com a senha hasheada armazenada no banco de dados
         const isPasswordMatch = await bcrypt.compare(password, user.HashedPassword);
 
+        let token;
+        
+        const tokenPayload = {
+            _id: user._id,
+            username: user.username,
+            email: user.email
+        };
+
         if (isPasswordMatch) {
-            // Autenticação bem-sucedida
-            req.session.user = user; // Armazena o usuário na sessão
-            return res.status(200).json({ message: "Login sucessfull!" });
+            // Gere um token JWT
+            if (remember){
+                token = jwt.sign( tokenPayload, process.env.MySecret, { expiresIn: '30d' });
+            } else{
+                token = jwt.sign( tokenPayload, process.env.MySecret)
+            }
+            console.log("Login com sucesso ", email, token);
+
+            return res.status(200).json({ token});
         } else {
             return res.status(401).json({ message: "Wrong email or password!" });
         }
     } catch (error) {
-        console.error("Erro ao fazer login:", error);
+        console.error("Error logging in:", error);
         res.status(500).json({ message: "Server internal error! Login" });
     }
 });
 
-// Rota para logout de usuário
-//falta acabar ver express session
-router.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error logging out:', err);
-            res.status(500).json({ message: 'Failed to log out' });
-        } else {
-            res.clearCookie('connect.sid'); // Limpa o cookie de sessão
-            res.status(200).json({ message: 'Logout successful' });
+router.get('/myaccount', authPage, async (req, res) => {
+
+    try {
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            // Trate o caso em que a autenticação falhou
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
         }
-    });
+        
+        // Obter as informações do usuário autenticado
+        const userid = req.userid;
+        // Aqui você pode buscar mais informações do usuário no banco de dados usando o _id
+        const user = await Users.findById( userid,'-HashedPassword');
+
+        return res.status(200).json({data: user});
+    } catch (error) {
+        console.log("Error fetching events:", error.message);
+        response.status(500).json({ message: 'Internal server error! SelectEvents' });
+    }
 });
 
 
-// Exemplo de rota protegida que requer autenticação
-router.get('/protectedRoute', isAuthenticated, async (req, res) => {
+router.get('/showEventsUser', authPage, async (req, res) => {
     try {
-        // Se o usuário estiver autenticado, você pode acessar os detalhes do usuário na sessão
-        const user = req.session.user; // Acessa as informações do usuário na sessão
-        if (!user) {
-            // Se não estiver autenticado, retorna um erro ou redireciona para a página de login
-            return res.status(401).json({ message: 'Unauthorized' });
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            // Trate o caso em que a autenticação falhou
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
         }
-        const userDetails = await Users.findById(user._id);
-        // Você pode retornar os detalhes do usuário para o cliente
-        res.status(200).json({ message: 'Authenticated', user: userDetails });
+        
+        // Obter as informações do usuário autenticado
+        const userid = req.userid;
+
+        // Busque os IDs de eventos associados ao usuário
+        const userIDEvent = await Users.findById(userid).select("EventCreator");
+
+        // Verifique se o usuário não possui eventos associados
+        if (userIDEvent.EventCreator.length === 0) {
+            return res.status(200).json({ 
+                count: 0,
+                data: [],
+            }); 
+        }
+
+        // Crie uma matriz para armazenar os detalhes de todos os eventos
+        const eventsDetails = [];
+
+        // Iterar sobre cada ID de evento e buscar os detalhes do evento no banco de dados
+        for (const eventID of userIDEvent.EventCreator) {
+            const event = await Events.findById(eventID);
+            if (event) {
+                eventsDetails.push(event);
+            }
+        }
+
+        return res.status(200).json({
+            count: eventsDetails.length,
+            data: eventsDetails,
+        });
     } catch (error) {
-        console.error('Error fetching user details:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.log("Error fetching events:", error.message);
+        return res.status(500).json({ message: 'Internal server error! SelectEvents' });
     }
 });
 

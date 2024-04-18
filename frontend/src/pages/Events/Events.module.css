@@ -1,7 +1,6 @@
 
 .events {
-    position: relative;
-    margin: auto 250px;
+    margin: auto 200px;
     text-align: center;
   }
   
@@ -10,7 +9,6 @@
     font-size: 20px;
     cursor: pointer;
     display: inline-block;
-    position: relative;
     padding-right: 10px;
     /* Espaço à direita do texto */
     text-align: right;

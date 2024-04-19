@@ -102,7 +102,7 @@ function Events() {
         {isLoading ? (
             <div className='spinner'></div>
           ) : error ? (
-            {error}
+            <p className="error">{error}</p>
           ) : (
             <>
               <div>

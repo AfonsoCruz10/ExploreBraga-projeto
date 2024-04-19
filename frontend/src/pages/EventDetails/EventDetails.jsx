@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header.jsx';
 import styles from './EventDetails.module.css';
 import { FaArrowLeft, FaArrowRight ,FaHeart } from 'react-icons/fa';
@@ -12,8 +12,15 @@ function EventDetails() {
     const { eventId } = useParams();
 
     useEffect(() => {
-        buscarEventDetails(eventId)
-            .catch(error => console.error('Error fetching event details:', error));
+        const fetchData = async () => {
+            try {
+                await  buscarEventDetails(eventId);
+            } catch (error) {
+                console.error('Error fetching event details:', error);
+            }
+        };
+
+        fetchData();
     }, [eventId]);
     
 
@@ -33,22 +40,25 @@ function EventDetails() {
         <>
             <Header />
             <div className="body">
-                <Link to="/events" className={styles.backLink}>
-                    <FaArrowLeft className={styles.backIcon} />
-                    Back to Events
-                </Link>
-                <div>
-                    {check ? (
-                        <FaHeart onClick={handleInt} className={styles.redHeart} />
-                    ) : (
-                        <FaHeart onClick={handleInt} className={styles.borderHeart} />
-                    )}
-                    {counter}
-                </div>
+                {errorInterested ? (
+                    <p className="error">{errorInterested}</p>
+                ) : (
+                    <div className={styles.container}>
+                        {check ? (
+                            <FaHeart onClick={handleInt} className={styles.redHeart} />
+                        ) : (
+                            <FaHeart onClick={handleInt} className={styles.borderHeart} />
+                        )}
+                        <span className={styles.counter}>{counter}</span>
+                    </div>
+
+                )}
 
                 <div className={styles.eventDetails}>
                     {isLoading ? (
                         <div className='spinner'></div>
+                        ) : errorBuscar ? (
+                            <p className="error">{errorBuscar}</p>
                         ) : event ? (
                             <>
                             <div className={styles.imageContainer}>

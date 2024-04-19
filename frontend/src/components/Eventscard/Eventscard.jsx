@@ -29,7 +29,7 @@ function Eventscard({ id, categoria, evento, horainit, horafinal, morada, preco,
       <div className={styles.card} onClick={() => navigate(`/events/${id}`)}>
         <div className={styles.card1}>
           <p className={styles.carddata}>{formatarData(horainit)}</p>
-          <p className={styles.carddata}>{horainit.toLocaleDateString()}</p>
+          <p className={styles.carddata}>{ new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }) }</p>
         </div>
 
         <div className={styles.card2}>

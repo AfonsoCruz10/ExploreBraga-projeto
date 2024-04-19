@@ -24,14 +24,16 @@ export const useEventDetails = () => {
                         'Authorization': `Bearer ${token}` 
                     }
                 });
-            setEvent(response.data.event);
-            // Atualiza o contador de likes com base na quantidade de usuários interessados
-            setcounter(response.data.event.InterestedUsers.length);
-            setCheck(response.data.check)
-            setErrorBuscar(null);
+            if (response.status === 200) {
+                setEvent(response.data.event);
+                // Atualiza o contador de likes com base na quantidade de usuários interessados
+                setcounter(response.data.event.InterestedUsers.length);
+                setCheck(response.data.check)
+            }
         } catch (error) {
             setErrorBuscar(error.response.data.message);
         } finally {
+            setErrorBuscar(null);
             setIsLoading(false);
         }
     };
@@ -56,13 +58,13 @@ export const useEventDetails = () => {
                 );
                 setcounter(resp.data.count);
                 setCheck(resp.data.check);
-                setErrorInterested(null);
             } else{
                 setErrorInterested("Login first!")
             }
         } catch (error) {
             setErrorInterested(error.response.data.message);
         } finally {
+            setErrorInterested(null);
             setIsLoading(false);
         }
     };

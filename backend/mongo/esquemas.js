@@ -100,6 +100,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  birthDate: {
+    type: Date, 
+    required: true
+  },
   AdminPermission: {
     type: Boolean,
     default: false

@@ -19,10 +19,10 @@ export const useSelectEvents = () => {
               }
             }); 
             setEvents(response.data.data);
-            setError(null);
         } catch (error) {
             setError(error);
         } finally {
+            setError(null);
             setIsLoading(false);
         }
     };

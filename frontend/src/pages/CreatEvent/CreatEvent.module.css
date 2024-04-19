@@ -55,11 +55,6 @@
   border-color: #6e6e6e; /* Cor de destaque quando o select está em foco */
 }
 
-.error {
-  font-size: small;
-  color: red;
-}
-
 /* Adicione estilos para o container do campo de upload */
 .file-input-container {
   position: relative;

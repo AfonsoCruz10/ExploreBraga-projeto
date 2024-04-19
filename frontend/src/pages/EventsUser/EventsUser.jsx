@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from "../../components/Header/Header.jsx";
-import { Link } from 'react-router-dom';
 import { useUserEvents } from '../../hooks/useEventsUser.jsx';
-import { FaArrowLeft} from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from "./EventsUser.module.css";
 
 function UserEvents() {
-    const { userEventsConnect, userEvents, isLoading, error } = useUserEvents();
+    const { userEventsConnect, eventDelete, userEvents, isLoading, error, errorDelete } = useUserEvents();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -20,37 +20,76 @@ function UserEvents() {
         fetchData();
     }, []);
 
+    const handleEdit = (eventId) => {
+        
+    };
+
+    const handleDelete = async (eventId) => {
+        try {
+            await eventDelete(eventId);
+        } catch (error) {
+            console.error('Error delete Events:', error);
+        }
+        try {
+            await userEventsConnect();
+        } catch (error) {
+            console.error('Error fetching user events:', error);
+        }
+    };
+
+ 
+    const sortedEvents = userEvents.slice().sort((a, b) => new Date(a.BegDate) - new Date(b.BegDate));
+
     return (
         <>
             <Header />
             <div className="body">
-                <Link to="/userAccount" >
-                    <FaArrowLeft  />
-                </Link>
-                <h2 className="titulo" >Meus Eventos</h2>
-                <div className={styles.main}>
-                    <div className={styles.userEventsContainer}>
-                        {isLoading ? (
-                            <div className='spinner'></div>
-                        ) : error ? (
-                            {error}
-                        ) : (
-                            <div className={styles.eventList}>
-                                {userEvents.map(event => (
-                                    <div key={event._id} className={styles.eventItem}>
-                                        <p><strong>Nome do Evento:</strong> {event.Name}</p>
-                                        <p><strong>Tipo:</strong> {event.Type}</p>
-                                        <p><strong>Data de Início:</strong> {new Date(event.BegDate).toLocaleDateString()}</p>
-                                        <p><strong>Data de Fim:</strong> {new Date(event.EndDate).toLocaleDateString()}</p>
-                                        <p><strong>Endereço:</strong> {event.Address}</p>
-                                        <p><strong>Preço:</strong> {event.Price}</p>
-                                        <p><strong>Estado:</strong> {event.Status}</p>
-                                        <hr />
-                                    </div>
+                <h2 className="titulo">Meus Eventos</h2>
+                <div className={styles.userEventsContainer}>
+                    {isLoading ? (
+                        <div className='spinner'></div>
+                    ) : error ? (
+                        <p className="error">{error}</p>
+                    ) : userEvents.length !== 0 ? (
+                        <table className={styles.eventTable}>
+                            <thead>
+                                <tr>
+                                    <th>Nome do Evento</th>
+                                    <th>Tipo</th>
+                                    <th>Data de Início</th>
+                                    <th>Data de Fim</th>
+                                    <th>Endereço</th>
+                                    <th>Preço</th>
+                                    <th>Estado</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {sortedEvents.map(event => (
+                                    <tr key={event._id}>
+                                        <td>{event.Name}</td>
+                                        <td>{event.Type}</td>
+                                        <td>{new Date(event.BegDate).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                                        <td>{new Date(event.EndDate).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                                        <td>{event.Address}</td>
+                                        <td>{event.Price}</td>
+                                        <td>{event.Status}</td>
+                                        <td>
+                                            <button onClick={() => handleEdit(event._id)} className={styles.buttonEdit}>
+                                                <FontAwesomeIcon icon={faEdit} /> Editar
+                                            </button>
+                                            <button onClick={() => handleDelete(event._id)} className={styles.buttonDelete}>
+                                                <FontAwesomeIcon icon={faTrash} /> Eliminar
+                                            </button>
+                                        </td>
+
+                                    </tr>
                                 ))}
-                            </div>
-                        )}
-                    </div>
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>Nenhum evento encontrado!</p>
+                    )}
                 </div>
             </div>
         </>

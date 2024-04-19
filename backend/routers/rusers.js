@@ -37,7 +37,7 @@ router.get('/displayAllUsers', async (request, response) => {
 //Rota para criar uma nova conta
 router.post('/createNewUser', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password ,birthDate} = req.body;
 
         if (username === "") {
             return res.status(400).json({ message: "Username needed!" });
@@ -55,9 +55,13 @@ router.post('/createNewUser', async (req, res) => {
             return res.status(400).json({ message: "Password must be at least 8 characters long and contain at least one uppercase letter!" });
         }
 
+        if (!birthDate) {
+            return res.status(400).json({ message: "BirthDate needed!" });
+        }
+
         //verificar se o username ou email ja existem
         const existingUser = await Users.findOne({ $or: [{ username }, { email }] });
-        
+
         if (existingUser) {
             if (existingUser.username === username) {
                 return res.status(400).json({ message: 'The username was already used! Please choose another one!' });
@@ -66,7 +70,7 @@ router.post('/createNewUser', async (req, res) => {
                 return res.status(400).json({ message: 'The email was already used! Please choose another one!' });
             }
         }
-        
+
         //Utilizar a encriptacao
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -76,20 +80,21 @@ router.post('/createNewUser', async (req, res) => {
             username,
             email,
             HashedPassword: hashedPassword,
+            birthDate,
             AdminPermission: false,
             EventCreator: [],
             EventHasInterest: [],
             LocalCreator: [],
             LocalReviews: [],
-            LocalFavorites: [],
+            LocalFavorites: []
         });
 
         //Salvar o utilizador na base de dados
         await newUser.save();
-        
+
         //Enviar mensagem de sucesso
         res.status(201).json({ message: 'User created successfully' });
-        
+
     } catch (error) {
         console.error('Error creating user: ', error);
         res.status(500).json({ message: 'Internal server error! creatuser' });
@@ -106,7 +111,7 @@ router.post('/login', async (req, res) => {
         }
         // Verifica se o usuário existe com o e-mail fornecido
         const user = await Users.findOne({ email });
-        
+
         if (!user) {
             return res.status(404).json({ message: "This email is not registered yet!" });
         }
@@ -114,7 +119,7 @@ router.post('/login', async (req, res) => {
         const isPasswordMatch = await bcrypt.compare(password, user.HashedPassword);
 
         let token;
-        
+
         const tokenPayload = {
             _id: user._id,
             username: user.username,
@@ -123,14 +128,13 @@ router.post('/login', async (req, res) => {
 
         if (isPasswordMatch) {
             // Gere um token JWT
-            if (remember){
-                token = jwt.sign( tokenPayload, process.env.MySecret, { expiresIn: '30d' });
-            } else{
-                token = jwt.sign( tokenPayload, process.env.MySecret)
+            if (remember) {
+                token = jwt.sign(tokenPayload, process.env.MySecret, { expiresIn: '30d' });
+            } else {
+                token = jwt.sign(tokenPayload, process.env.MySecret)
             }
-            console.log("Login com sucesso ", email, token);
 
-            return res.status(200).json({ token});
+            return res.status(200).json({ token });
         } else {
             return res.status(401).json({ message: "Wrong email or password!" });
         }
@@ -148,13 +152,13 @@ router.get('/myaccount', authPage, async (req, res) => {
             // Trate o caso em que a autenticação falhou
             return res.status(401).json({ message: 'Unauthorized: authentication failed' });
         }
-        
+
         // Obter as informações do usuário autenticado
         const userid = req.userid;
         // Aqui você pode buscar mais informações do usuário no banco de dados usando o _id
-        const user = await Users.findById( userid,'-HashedPassword');
+        const user = await Users.findById(userid, '-HashedPassword');
 
-        return res.status(200).json({data: user});
+        return res.status(200).json({ data: user });
     } catch (error) {
         console.log("Error fetching events:", error.message);
         response.status(500).json({ message: 'Internal server error! SelectEvents' });
@@ -169,7 +173,7 @@ router.get('/showEventsUser', authPage, async (req, res) => {
             // Trate o caso em que a autenticação falhou
             return res.status(401).json({ message: 'Unauthorized: authentication failed' });
         }
-        
+
         // Obter as informações do usuário autenticado
         const userid = req.userid;
 
@@ -178,10 +182,10 @@ router.get('/showEventsUser', authPage, async (req, res) => {
 
         // Verifique se o usuário não possui eventos associados
         if (userIDEvent.EventCreator.length === 0) {
-            return res.status(200).json({ 
+            return res.status(200).json({
                 count: 0,
                 data: [],
-            }); 
+            });
         }
 
         // Crie uma matriz para armazenar os detalhes de todos os eventos
@@ -204,5 +208,68 @@ router.get('/showEventsUser', authPage, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error! SelectEvents' });
     }
 });
+
+router.put("/updateAccount", authPage, async (req, res) => {
+    try {
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            // Trate o caso em que a autenticação falhou
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+
+        // Obter as informações do usuário autenticado
+        const userid = req.userid;
+
+        // Busque os IDs de eventos associados ao usuário
+        const user = await Users.findById(userid, '-HashedPassword');
+
+        // Atualize as informações do usuário com os novos dados recebidos
+        if (req.body.newUsername) {
+            // Verifique se já existe algum usuário com o novo nome de usuário
+            const existingUsernameUser = await Users.findOne({ username: req.body.newUsername });
+            
+            // Se encontrou um usuário com o mesmo nome de usuário, retorne um erro
+            if (existingUsernameUser && existingUsernameUser._id.toString() !== userid) {
+                return res.status(400).json({ message: 'The username was already used! Please choose another one!' });
+            }
+        
+            // Se não encontrou nenhum usuário com o mesmo nome de usuário, atualize o nome de usuário
+            user.username = req.body.newUsername;
+        }
+
+        if (req.body.newEmail) {
+            // Verifique se já existe algum usuário com o novo email
+            const existingEmailUser = await Users.findOne({ email: req.body.newEmail });
+        
+            // Se encontrou um usuário com o mesmo email, retorne um erro
+            if (existingEmailUser && existingEmailUser._id.toString() !== userid) {
+                return res.status(400).json({ message: 'The email was already used! Please choose another one!' });
+            }
+        
+            // Se não encontrou nenhum usuário com o mesmo email, atualize o email
+            user.email = req.body.newEmail;
+        } 
+
+        // Salve as alterações no banco de dados
+        await user.save();
+
+        // Gere um novo token com base nas informações atualizadas do usuário
+        const tokenPayload = {
+            _id: user._id,
+            username: user.username,
+            email: user.email
+        };
+
+        const token = jwt.sign(tokenPayload, process.env.MySecret);
+
+        // Envie uma resposta de sucesso
+        res.status(200).json({ message: 'User information updated successfully', user , token });
+
+    } catch (error) {
+        console.error('Error updating user information:', error);
+        res.status(500).json({ message: 'Internal server error! updateAccount' });
+    }
+});
+
 
 export default router;

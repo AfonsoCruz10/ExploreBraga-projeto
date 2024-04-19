@@ -7,19 +7,25 @@ export const useSignUp = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const signupConnection = async ( username, email, password) => {
+    const signupConnection = async ( username, email, password, confirmPassword, birthDate) => {
         try {
             setIsLoading(true);
-            const response = await axios.post('http://localhost:5555/users/createNewUser', {username, email, password});
-            if (response.status === 201) {
-                console.log("Usuário criado com sucesso", response.data);
+
+            if (password === confirmPassword){
+                const response = await axios.post('http://localhost:5555/users/createNewUser', {username, email, password, birthDate});
+                if (response.status === 201) {
+                    console.log("Usuário criado com sucesso", response.data);
+                }
+            } else {
+                setError("Diferent passwords");
+                setIsLoading(false);
             }
-            setError(null);
-            navigate('/login');
         } catch (error) {
             setError(error.response.data.message);
         } finally {
+            setError(null);
             setIsLoading(false);
+            navigate('/login');
         }
     };
 

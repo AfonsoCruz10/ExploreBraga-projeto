@@ -1,7 +1,7 @@
 /* UserAccount.module.css */
 
 .userAccount {
-  
+
   max-width: 600px;
   margin: 110px auto;
   padding: 20px;
@@ -12,17 +12,31 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.userInfo {
-  margin-top: 20px;
+.inputField {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
 }
 
-.userInfo p {
-  margin: 10px 0;
+.submitButton {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
-.userInfo p strong {
-  font-weight: bold;
-  margin-right: 5px;
+.submitButton:hover {
+  background-color: #ff0000;
+}
+
+
+.botoesPequenosWrapper {
+  display: flex;
+  justify-content: space-between;
+
 }
 
 .logoutButton {
@@ -44,7 +58,7 @@
 .createEventButton {
   margin-top: 20px;
   width: 100%;
-  background-color: #ffffff; /* Verde */
+  background-color: #ffffff;
   color: rgb(0, 0, 0);
   padding: 15px 0;
   font-size: 18px;
@@ -56,5 +70,6 @@
 }
 
 .createEventButton:hover {
-  background-color: #615d5d; /* Verde escuro ao passar o mouse */
+  background-color: #615d5d;
 }
+

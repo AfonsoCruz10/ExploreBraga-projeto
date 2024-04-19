@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const useCreatEvent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const createEvent = async (eventType, eventName, eventBegDate, eventEndDate, eventDescription, eventAge, eventPrice, eventImage, eventAdress) => {
         try {
@@ -28,15 +30,12 @@ export const useCreatEvent = () => {
                     'Authorization': `Bearer ${token}` 
                 }
             });
-            
-            if (res.status === 200) {
-                console.log("Evento criado com sucesso");
-            }
-            setError(null);
         } catch (error) {
             setError(error.response.data.message);
         } finally {
+            setError(null);
             setIsLoading(false);
+            navigate('/useraccount');
         }
     };
 

@@ -53,3 +53,8 @@ html, body {
   cursor: pointer;
   opacity: 1;
 }
+
+.error {
+  font-size: small;
+  color: red;
+}

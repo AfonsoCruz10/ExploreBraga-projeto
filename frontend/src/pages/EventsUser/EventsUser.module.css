@@ -1,11 +1,7 @@
-.main {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    text-align: center;
-}
 
 .userEventsContainer {
+    margin: 50px 100px;
+    text-align: center;
     border: 1px solid #ccc;
     color: black;
     border-radius: 8px;
@@ -14,8 +10,19 @@
     padding: 20px;
 }
 
-.eventList {
-    margin-top: 20px;
+.eventTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.eventTable th,
+.eventTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.eventTable th {
+    background-color: #f2f2f2;
 }
 
 .eventItem {
@@ -29,4 +36,32 @@
 .eventItem p strong {
     font-weight: bold;
     margin-right: 5px;
+}
+
+.buttonEdit {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonEdit:hover {
+    background-color: #45a049;
+}
+
+.buttonDelete {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonDelete:hover {
+    background-color: #d32f2f;
 }

@@ -77,7 +77,7 @@ function Log_In() {
                             </div>
                             <button type="submit" disabled={isLoading}>Log in</button>
                         </form>
-                        {error && <p className={style.error}>{error}</p>}
+                        {error && <p className="error">{error}</p>}
                         <Link to="/signup">Create User</Link>
                         </>
                     )}

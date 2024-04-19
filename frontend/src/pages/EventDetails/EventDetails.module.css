@@ -26,51 +26,34 @@
   font-size: 16px;
 }
 
-/* EventDetails.module.css */
+.container {
+  display: flex;
+  align-items: center; 
+}
+
+.counter {
+  margin-left: 5px; 
+}
+
 .redHeart {
   color: red;
-  font-size: 24px; /* Tamanho do ícone */
-  cursor: pointer; /* Cursor ao passar o mouse */
-  margin: 20px; /* Margem ao redor do ícone */
+  font-size: 24px; 
+  cursor: pointer; 
+  margin: 20px; 
 }
 
 .redHeart:hover {
-  color: #ff5555; /* Cor ao passar o mouse */
-}
-
-/* EventDetails.module.css */
-.redHeart {
-  font-size: 24px; /* Tamanho do ícone */
-  cursor: pointer; /* Cursor ao passar o mouse */
-  margin: 20px; /* Margem ao redor do ícone */
-  color: red; /* Cor do ícone */
-}
-
-.redHeart:hover {
-  color: #ff5555; /* Cor ao passar o mouse */
+  color: #ff5555; 
 }
 
 .borderHeart {
-  font-size: 24px; /* Tamanho do ícone */
-  cursor: pointer; /* Cursor ao passar o mouse */
-  margin: 20px; /* Margem ao redor do ícone */
+  font-size: 24px; 
+  cursor: pointer; 
+  margin: 20px; 
 }
 
 .borderHeart:hover {
-  color: #ff5555; /* Cor do ícone ao passar o mouse */
-}
-
-
-.backLink {
-  color: #ff0000;
-  text-decoration: none;
-  font-size: 16px;
-  margin: 20px;
-}
-
-.backIcon {
-  font-size: 18px;
-  margin-right: 5px;
+  color: #ff5555; 
 }
 
 .imageContainer {

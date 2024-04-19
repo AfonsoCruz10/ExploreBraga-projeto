@@ -37,7 +37,6 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.5); 
-    /* fundo escuro semi-transparente */
     display: flex;
     justify-content: center; 
     /* centraliza horizontalmente */
@@ -46,6 +45,7 @@
   }
 
   .ReactModal__Content {
+    outline: none;
     position: relative;
     background-color: #ffffff;
     /* cor de fundo */

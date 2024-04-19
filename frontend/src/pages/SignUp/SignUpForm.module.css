@@ -38,8 +38,15 @@
     cursor: pointer;
   }
   
-  .SignUp .error {
-    font-size: small;
-    color: red;
+  .SignUp input[type="date"] {
+    display: block;
+    height: 50px;
+    width: 97%;
+    background-color: rgba(255, 255, 255, 0.07);
+    border-radius: 3px;
+    padding-left: 10px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 300;
+    border: 1px solid #ccc;
   }
-  

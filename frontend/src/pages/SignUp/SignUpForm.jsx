@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from "../../components/Header/Header.jsx";
 import style from "./SignUpForm.module.css";
@@ -10,10 +10,12 @@ function SignUpForm() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: '',
+    birthDate: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const {signupConnection, isLoading, error} = useSignUp();
+  const { signupConnection, isLoading, error } = useSignUp();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +27,7 @@ function SignUpForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signupConnection(formData.username, formData.email, formData.password);
+    await signupConnection(formData.username, formData.email, formData.password, formData.confirmPassword, formData.birthDate);
   };
 
   const handleTogglePassword = () => {
@@ -39,47 +41,70 @@ function SignUpForm() {
 
         <div className={style.SignUp}>
           {isLoading ? (
-              <div className='spinner'></div>
+            <div className='spinner'></div>
           ) : (
             <>
-            <h1><b>Sign Up</b></h1>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <input
-                  type="text"
-                  placeholder="Username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </div>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-                <FontAwesomeIcon
-                  icon={showPassword ? faEyeSlash : faEye}
-                  onClick={handleTogglePassword}
-                  style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
-                />
-              </div>
-              <button type="submit" disabled = {isLoading}> Submit </button>
-            </form>
-            {error && <p className={style.error}>{error}</p>}
-            <Link to="/login" >Already have an account? Login here</Link>
+              <h1><b>Sign Up</b></h1>
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                  />
+                  <FontAwesomeIcon
+                    icon={showPassword ? faEyeSlash : faEye}
+                    onClick={handleTogglePassword}
+                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                  />
+                </div>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Confirm Password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                  />
+                  <FontAwesomeIcon
+                    icon={showPassword ? faEyeSlash : faEye}
+                    onClick={handleTogglePassword}
+                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="date"
+                    placeholder="Date of Birth"
+                    name="birthDate"
+                    value={formData.birthDate}
+                    onChange={handleChange}
+                  />
+                </div>
+                <button type="submit" disabled={isLoading}> Submit </button>
+              </form>
+              {error && <p className="error">{error}</p>}
+              <Link to="/login">Already have an account? Login here</Link>
             </>
           )}
         </div>

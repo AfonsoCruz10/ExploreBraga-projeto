@@ -5,10 +5,12 @@ export const useUserEvents = () => {
     const [userEvents, setUserEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [errorDelete, setErrorDelete] = useState(null);
 
     const userEventsConnect = async () => {
-        setIsLoading(true);
         try {
+            setIsLoading(true);
+            
             // Obtenha o token JWT do localStorage
             const userLocalStorage = JSON.parse(localStorage.getItem('user'));
             const token = userLocalStorage.token;   
@@ -19,13 +21,37 @@ export const useUserEvents = () => {
               }
             }); 
             setUserEvents(response.data.data);
-            setError(null);
+            
         } catch (error) {
-            setError(error);
+            setError(error.response.data.message);
         } finally {
+            setError(null);
             setIsLoading(false);
         }
     };
 
-    return { userEventsConnect, userEvents, isLoading, error };
+ 
+    const eventDelete = async (eventId) => {
+        try {
+            setIsLoading(true);
+
+            // Obtenha o token JWT do localStorage
+            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+            const token = userLocalStorage.token;
+
+            // Faça a solicitação DELETE para excluir o evento com o ID fornecido
+            await axios.delete(`http://localhost:5555/events/eventDelet`, {
+                data: { eventId },
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+        } catch (error) {
+            setErrorDelete(error.response.data.message);
+        } finally{
+            setErrorDelete(null);
+        }
+    };
+
+    return { userEventsConnect, eventDelete, userEvents, isLoading, error, errorDelete };
 };

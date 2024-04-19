@@ -3,6 +3,20 @@ import Header from "../../components/Header/Header.jsx";
 import styles from "./CreatEvent.module.css";
 import { useCreatEvent } from "../../hooks/useCreatEvent.jsx";
 
+// Função para converter o arquivo de imagem em base64
+function convertToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(file);
+        fileReader.onload = () => {
+            resolve(fileReader.result);
+        };
+        fileReader.onerror = (error) => {
+            reject(error);
+        };
+    });
+}
+
 function CreateEvent() {
     const { createEvent, isLoading, error } = useCreatEvent();
     const [eventData, setEventData] = useState({
@@ -13,7 +27,7 @@ function CreateEvent() {
         eventDescription: '',
         eventAge: '',
         eventPrice: '',
-        eventImage: [], 
+        eventImage: [],
         eventAddress: ''
     });
 
@@ -29,7 +43,7 @@ function CreateEvent() {
         const files = e.target.files;
         const imagePromises = [];
         const images = [];
-        
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const imagePromise = new Promise((resolve, reject) => {
@@ -45,12 +59,12 @@ function CreateEvent() {
             });
             imagePromises.push(imagePromise);
         }
-    
+
         try {
             const resolvedImages = await Promise.all(imagePromises);
             console.log("Resolved images:", resolvedImages);
             console.log("Images:", images);
-    
+
             setEventData({
                 ...eventData,
                 eventImage: images
@@ -63,12 +77,12 @@ function CreateEvent() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log("EventData image:", eventData.eventImage);
             await createEvent(eventData.eventType, eventData.eventName, eventData.eventBegDate, eventData.eventEndDate, eventData.eventDescription, eventData.eventAge, eventData.eventPrice, eventData.eventImage, eventData.eventAddress);
         } catch (error) {
             console.error('Error creating event:', error);
         }
     };
+    
 
     return (
         <>
@@ -76,9 +90,9 @@ function CreateEvent() {
             <div className="body">
                 <div className={styles.container}>
                     {isLoading ? (
-                            <div className='spinner'></div>
-                        ) : (
-                            <>
+                        <div className='spinner'></div>
+                    ) : (
+                        <>
 
                             <h2>Create Event</h2>
                             <form className={styles.form} onSubmit={handleSubmit}>
@@ -109,17 +123,16 @@ function CreateEvent() {
                                         accept="image/*"
                                         onChange={handleImageChange}
                                         className={styles.fileInput}
-                                        multiple  
-                                        required
+                                        multiple
                                     />
                                 </div>
-                                
+
                                 <button type="submit">Create Event</button>
                             </form>
-                            {error && <p className={styles.error}>{error}</p>}
+                            {error && <p className="error">{error}</p>}
 
-                            </>
-                        )}
+                        </>
+                    )}
                 </div>
             </div>
         </>
@@ -128,16 +141,4 @@ function CreateEvent() {
 
 export default CreateEvent;
 
-// Função para converter o arquivo de imagem em base64
-function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-            resolve(fileReader.result);
-        };
-        fileReader.onerror = (error) => {
-            reject(error);
-        };
-    });
-}
+

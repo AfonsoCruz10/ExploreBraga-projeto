@@ -28,9 +28,9 @@ function App() {
                     {/* Rota para a página "About Us" */}
                     <Route path="/about" element={<About />} />
                     {/* Rota para a página de login */}
-                    <Route path="/login" element={ !user ? <Log_In /> : <Navigate to="/useraccount" />} />
+                    <Route path="/login" element={!user ? <Log_In /> : <Navigate to="/useraccount" />} />
                     {/* Rota para a página de signup */}
-                    <Route path="/signup" element={ !user ? <SignUpForm />  : <Navigate to="/login" /> } />
+                    <Route path="/signup" element={!user ? <SignUpForm /> : <Navigate to="/login" />} />
                     {/* Rota para a página de eventos */}
                     <Route path="/events" element={<Events />} />
                     {/* Rota para a página de locais */}
@@ -38,11 +38,11 @@ function App() {
                     {/* Rota para a página eventos detalhados */}
                     <Route path="/events/:eventId" element={<EventDetails />} />
                     {/* Rota para a página de conta do usuário */}
-                    <Route path="/useraccount" element= { user ? <UserAccount /> : <Navigate to="/login" /> } />
+                    <Route path="/useraccount" element={user ? <UserAccount /> : <Navigate to="/login" />} />
                     {/* Rota para a página de criar eventos */}
-                    <Route path="/userCreatEvent" element= { user ? <CreateEvent /> : <Navigate to="/login" /> } />
-
-                    <Route path="/userEvents" element= { user ? <EventsUser /> : <Navigate to="/login" /> } />
+                    <Route path="/userCreatEvent" element={user ? <CreateEvent /> : <Navigate to="/login" />} />
+                    {/* Rota para a página para ver os eventos criados e eliminar ou edita-los */}
+                    <Route path="/userEvents" element={user ? <EventsUser /> : <Navigate to="/login" />} />
 
                 </Routes>
             </BrowserRouter>

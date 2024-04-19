@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from "../../components/Header/Header.jsx";
 import styles from "./UserAccount.module.css";
+import Header from "../../components/Header/Header.jsx";
+import { useNavigate } from 'react-router-dom';
 import { useLogOut } from '../../hooks/useLogOut.jsx';
 import { useInfoAccount } from '../../hooks/useInfoAccount.jsx';
+import { FaEdit } from 'react-icons/fa'; 
 
 function UserAccount() {
     const { logOutConnection } = useLogOut();
-    const { useraccountConnect, info, isLoading, error } = useInfoAccount();
+    const { useraccountConnect, updateUserInfo, info, isLoading, error, errorNewEmail, errorNewUsername } = useInfoAccount();
     const navigate = useNavigate();
+    const [editingField, setEditingField] = useState(null); 
+    const [newUsername, setNewUsername] = useState(""); 
+    const [newEmail, setNewEmail] = useState(""); 
+    let accountType = "User";
 
     const handleLogout = () => {
         logOutConnection();
@@ -22,7 +27,7 @@ function UserAccount() {
                 console.error('Error fetching useraccount:', error);
             }
         };
-    
+
         fetchData();
     }, []);
 
@@ -33,8 +38,27 @@ function UserAccount() {
     const handleShowUserEventsClick = () => {
         navigate('/userEvents');
     };
-    
 
+    const handleEditUsername = () => {
+        setEditingField(editingField === 'username' ? null : 'username'); 
+    }
+
+    const handleEditEmail = () => {
+        setEditingField(editingField === 'email' ? null : 'email');
+    };
+
+    const handleSaveChanges = async () => {
+        try {
+            await updateUserInfo(newUsername, newEmail);
+        } catch (error) {
+            console.error('Error UpdateAccount:', error);
+        }
+        setEditingField(null);
+    };
+
+    if (info.AdminPermission == true) {
+        accountType = "Admin";
+    }
 
     return (
         <>
@@ -44,19 +68,50 @@ function UserAccount() {
                     {isLoading ? (
                         <div className='spinner'></div>
                     ) : error ? (
-                        {error}
+                        <p className="error">{error}</p>
                     ) : (
                         <>
-                        <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
-                        <h2>User Account</h2>
+                            <div className={styles.botoesPequenosWrapper}>
+                                <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+                                {info.AdminPermission && <button className={styles.logoutButton}>Gestão Admin</button>}
+                            </div>
+                            <h2>{info.AdminPermission ? 'Admin' : 'User'} Account</h2>
 
-                        <div className={styles.userInfo}>
-                            <p><strong>Username:</strong> {info.username}</p>
-                            <p><strong>Email:</strong> {info.email}</p>
-                        </div>
+                            <div className={styles.userInfo}>
+                                <div>
+                                    <p>
+                                        <strong>Username:</strong> 
+                                        {editingField === 'username' ? (
+                                            <>
+                                                <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} className={styles.inputField} /> 
+                                                <button type="submit" disabled={isLoading} onClick={handleSaveChanges} className={styles.submitButton} > <strong>Salvar</strong> </button>
+                                            </>
+                                        ) : <span style={{ marginLeft: '10px' }}>{info.username}</span>}
+                                        <FaEdit onClick={handleEditUsername}  style={{ marginLeft: '10px' }} />
+                                        <br/>
+                                        {errorNewUsername && <span className="error">{errorNewUsername}</span>}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p>
+                                        <strong>Email:</strong> 
+                                        {editingField === 'email' ? (
+                                            <>
+                                                <input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} className={styles.inputField} /> 
+                                                <button type="submit" disabled={isLoading} onClick={handleSaveChanges} className={styles.submitButton} > <strong>Salvar</strong> </button>
+                                            </>
+                                        ) : <span style={{ marginLeft: '10px' }}>{info.email}</span>}
+                                        <FaEdit onClick={handleEditEmail} style={{ marginLeft: '10px' }} />
+                                        <br/>
+                                        {errorNewEmail && <span className="error">{errorNewEmail}</span>}
+                                    </p>
+                                </div>
 
-                        <button className={styles.createEventButton} onClick={handleCreateEventClick}> Criar Eventos </button>
-                        <button className={styles.createEventButton} onClick={handleShowUserEventsClick}> Ver Eventos </button>
+                                <p><strong>Data de Nascimento:</strong> { new Date(info.birthDate).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }) }</p>
+                            </div>
+
+                            <button className={styles.createEventButton} onClick={handleCreateEventClick}> Criar Eventos </button>
+                            <button className={styles.createEventButton} onClick={handleShowUserEventsClick}> Ver Eventos </button>
                         </>
                     )}
                 </div>

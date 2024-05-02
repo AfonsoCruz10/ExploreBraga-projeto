@@ -19,13 +19,14 @@ export const useUserEvents = () => {
               headers: {
                   'Authorization': `Bearer ${token}` 
               }
-            }); 
-            setUserEvents(response.data.data);
-            
+            });
+            if(response.status === 200){
+                setError(null);
+                setUserEvents(response.data.data);
+            }
         } catch (error) {
             setError(error.response.data.message);
         } finally {
-            setError(null);
             setIsLoading(false);
         }
     };
@@ -46,12 +47,13 @@ export const useUserEvents = () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            setErrorDelete(null);
         } catch (error) {
             setErrorDelete(error.response.data.message);
         } finally{
-            setErrorDelete(null);
+            setIsLoading(false);
         }
     };
 
-    return { userEventsConnect, eventDelete, userEvents, isLoading, error, errorDelete };
+    return { userEventsConnect, eventDelete, userEvents,  isLoading, error, errorDelete };
 };

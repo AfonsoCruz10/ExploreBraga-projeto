@@ -2,20 +2,9 @@ import React, { useState } from 'react';
 import Header from "../../components/Header/Header.jsx";
 import styles from "./CreatEvent.module.css";
 import { useCreatEvent } from "../../hooks/useCreatEvent.jsx";
-
-// Função para converter o arquivo de imagem em base64
-function convertToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-            resolve(fileReader.result);
-        };
-        fileReader.onerror = (error) => {
-            reject(error);
-        };
-    });
-}
+import { FileUploader } from "react-drag-drop-files";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes,faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function CreateEvent() {
     const { createEvent, isLoading, error } = useCreatEvent();
@@ -39,32 +28,30 @@ function CreateEvent() {
         });
     };
 
-    const handleImageChange = async (e) => {
-        const files = e.target.files;
+    const handleImageChange = async (files) => {
         const imagePromises = [];
-        const images = [];
+        const images = [...eventData.eventImage];
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const imagePromise = new Promise((resolve, reject) => {
-                convertToBase64(file)
-                    .then(base64 => {
-                        images.push(base64);
-                        resolve(base64);
-                    })
-                    .catch(error => {
-                        console.error('Error converting image to base64:', error);
-                        reject(error);
-                    });
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(file);
+                fileReader.onload = () => {
+                    const base64 = fileReader.result;
+                    images.push(base64);
+                    resolve(base64);
+                };
+                fileReader.onerror = (error) => {
+                    console.error('Error converting image to base64:', error);
+                    reject(error);
+                };
             });
             imagePromises.push(imagePromise);
         }
 
         try {
-            const resolvedImages = await Promise.all(imagePromises);
-            console.log("Resolved images:", resolvedImages);
-            console.log("Images:", images);
-
+            await Promise.all(imagePromises);
             setEventData({
                 ...eventData,
                 eventImage: images
@@ -74,15 +61,33 @@ function CreateEvent() {
         }
     };
 
+    const removeImage = (index) => {
+        const updatedImages = [...eventData.eventImage];
+        updatedImages.splice(index, 1);
+        setEventData({
+            ...eventData,
+            eventImage: updatedImages
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createEvent(eventData.eventType, eventData.eventName, eventData.eventBegDate, eventData.eventEndDate, eventData.eventDescription, eventData.eventAge, eventData.eventPrice, eventData.eventImage, eventData.eventAddress);
+            await createEvent(
+                eventData.eventType,
+                eventData.eventName,
+                eventData.eventBegDate,
+                eventData.eventEndDate,
+                eventData.eventDescription,
+                eventData.eventAge,
+                eventData.eventPrice,
+                eventData.eventImage,
+                eventData.eventAddress
+            );
         } catch (error) {
             console.error('Error creating event:', error);
         }
     };
-    
 
     return (
         <>
@@ -93,7 +98,6 @@ function CreateEvent() {
                         <div className='spinner'></div>
                     ) : (
                         <>
-
                             <h2>Create Event</h2>
                             <form className={styles.form} onSubmit={handleSubmit}>
                                 <select value={eventData.eventType} onChange={handleInputChange} name="eventType" className={styles.select} required>
@@ -105,32 +109,37 @@ function CreateEvent() {
                                     <option value="Lazer">Lazer</option>
                                     <option value="Turismo">Turismo</option>
                                 </select>
-
-                                <input type="text" placeholder="Event Name" name="eventName" value={eventData.eventName} onChange={handleInputChange} required />
-                                <input type="datetime-local" placeholder="Event Begin Date" name="eventBegDate" value={eventData.eventBegDate} onChange={handleInputChange} required />
-                                <input type="datetime-local" placeholder="Event End Date" name="eventEndDate" value={eventData.eventEndDate} onChange={handleInputChange} required />
-                                <textarea placeholder="Event Description" name="eventDescription" value={eventData.eventDescription} onChange={handleInputChange} required />
-                                <input type="text" placeholder="Event Age Recommendation" name="eventAge" value={eventData.eventAge} onChange={handleInputChange} required />
-                                <input type="text" placeholder="Event Price" name="eventPrice" value={eventData.eventPrice} onChange={handleInputChange} required />
-                                <input type="text" placeholder="Event Address" name="eventAddress" value={eventData.eventAddress} onChange={handleInputChange} required />
-
-                                <div className="file-input-container">
-                                    <label htmlFor="file" className="file-input-label">
-                                        Upload Image(s)
+                                <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} />
+                                <input type="datetime-local" placeholder="Data inicial" name="eventBegDate" value={eventData.eventBegDate} onChange={handleInputChange} />
+                                <input type="datetime-local" placeholder="Data final" name="eventEndDate" value={eventData.eventEndDate} onChange={handleInputChange} />
+                                <textarea placeholder="Descrição" name="eventDescription" value={eventData.eventDescription} onChange={handleInputChange} />
+                                <input type="text" placeholder="Idade recomendada" name="eventAge" value={eventData.eventAge} onChange={handleInputChange} />
+                                <input type="text" placeholder="Preço" name="eventPrice" value={eventData.eventPrice} onChange={handleInputChange} />
+                                <input type="text" placeholder="Endereço" name="eventAddress" value={eventData.eventAddress} onChange={handleInputChange} />
+                                <div>
+                                    <input type="file" className="input-field" onChange={(e) => handleImageChange(e.target.files)} style={{ display: 'none' }} id="file" multiple/>
+                                    <label htmlFor="file" className={styles.fileInput}>
+                                        <FontAwesomeIcon icon={faPlus}/>
+                                        <span>Adicionar fotos</span>
                                     </label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className={styles.fileInput}
-                                        multiple
-                                    />
+                                    {eventData.eventImage.length !== 0 && (
+                                        <>
+                                            <h3>Fotos do Evento</h3>
+                                            
+                                            {eventData.eventImage.map((image, index) => (
+                                                <div key={index} className={styles.imageWrapper}>
+                                                    <img src={image} alt={`Imagem ${index}`} className={styles.image} />
+                                                    <FontAwesomeIcon icon={faTimes} onClick={() => removeImage(index)} className={styles.removeButton}/>
+                                                </div>
+                                            ))}
+                                            
+                                        </>
+                                    )}
                                 </div>
 
-                                <button type="submit">Create Event</button>
+                                <button type="submit"  className={styles.buttonSubmite}>Create Event</button>
                             </form>
                             {error && <p className="error">{error}</p>}
-
                         </>
                     )}
                 </div>
@@ -140,5 +149,3 @@ function CreateEvent() {
 }
 
 export default CreateEvent;
-
-

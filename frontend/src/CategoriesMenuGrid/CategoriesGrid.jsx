@@ -1,66 +1,78 @@
 import "./CategoriesGrid.css"
-import Header from "../components/Header/Header.jsx";
+import { useNavigate } from 'react-router-dom';
 
 export const Categories_List = [
     {
-        title: "Comida",
-        url: "/#",
+        title: "Food",
         cName: "categorie-button"
     },
     {
-        title: "Educação",
-        url: "/#",
+        title: "Education",
         cName: "categorie-button"
     },
     {
-        title: "Compras",
-        url: "/#",
+        title: "Shopping",
         cName: "categorie-button"
     },
     {
-        title: "Beleza",
-        url: "/#",
+        title: "Beauty",
         cName: "categorie-button"
     },
     {
-        title: "Entertenimento",
-        url: "/#",
+        title: "Enterntainment",
         cName: "categorie-button"
     },
     {
-        title: "Outro",
-        url: "/#",
+        title: "Religion",
         cName: "categorie-button"
     },
-]
+    {
+        title: "Historical monuments",
+        cName: "categorie-button"
+    },
+    {
+        title: "Arts",
+        cName: "categorie-button"
+    },
+    {
+        title: "Others",
+        cName: "categorie-button"
+    },
+    {
+        title: "Schools",
+        cName: "categorie-button"
+    },
+    {
+        title: "All Places",
+        cName: "categorie-button"
+    }
+];
 
+const url = "/locations/seebycategories";
 
-function CategoriesMenuGrid() {
+function CategoriesMenuGrid({ userLocationChoice, setUserLocationChoice }) {
+
+    const navigate = useNavigate();
+
+    const handleCategoryClick = (title) => {
+        setUserLocationChoice(title);
+        navigate('/locations/seebycategories');
+    };
+
 
     return (
         <>
             <div className="categories-menu-grid-div">
-                <div className="header-div"><Header></Header></div>
-                <div className="tit"><h1> WHAT ARE YOU LOOKING FOR?</h1></div>
-                <div className="Categories_Container">
-                    {/* 
-                    {Categories_List.map((item, index) => {
-                        return (
-                            <li key={index} className="categorie-link-list"><a href={item.url} className="categorie-link"><div className={item.cName}>{item.title}</div></a></li>
-                        )
-                    })}
-                    */}
-                    <a href="#" className="categorie-link"><div className="categorie-button">FOOD</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">ENTERTAINMENT</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">BEAUTY</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">NATURE</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">EDUCATION</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">RELIGIOUS</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">ARTS</div></a>
-                    <a href="#" className="categorie-link"><div className="categorie-button">OTHERS</div></a>
-                </div >
+                <div className="categorias">
+                    <div className="Categories_Container">
+                        {Categories_List.map((item, index) => {
+                            return (
+                                <li key={index} className="categorie-link-list"><a className="categorie-link" onClick={() => handleCategoryClick(item.title)}><div className={item.cName}>{item.title}</div></a></li>
+                            )
+                        })}
+                    </div>
+                </div>
             </div>
-
         </>
     );
 }

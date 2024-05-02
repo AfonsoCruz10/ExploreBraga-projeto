@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Projeto com backend e frontend",
     "scripts": {
-        "installprefix": "npm install --prefix frontend && npm install --prefix backend",
+        "clean-install": "rm -rf frontend/node_modules backend/node_modules && npm install --prefix frontend && npm install --prefix backend",
         "start": "concurrently \"npm run backend\" \"npm run frontend\"",
         "backend": "cd backend && npm run dev",
         "frontend": "cd frontend && npm run dev"
@@ -17,6 +17,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.2",
         "@fortawesome/react-fontawesome": "^0.2.0",
         "bcrypt": "^5.1.1",
+        "i": "^0.3.7",
         "rollup": "^4.14.0"
     }
 }

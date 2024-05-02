@@ -9,20 +9,14 @@ export const useSelectEvents = () => {
     const selectEventsonnect = async () => {
         setIsLoading(true);
         try {
-            // Obtenha o token JWT do localStorage
-            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-            const token = userLocalStorage.token;   
-
-            const response = await axios.get('http://localhost:5555/events/SelectEvents', {
-              headers: {
-                  'Authorization': `Bearer ${token}` 
-              }
-            }); 
-            setEvents(response.data.data);
+            const response = await axios.get('http://localhost:5555/events/SelectEvents'); 
+            if (response.status === 200) {
+                setError(null);
+                setEvents(response.data.data);
+            }
         } catch (error) {
-            setError(error);
+            setError(error.response.data.message);
         } finally {
-            setError(null);
             setIsLoading(false);
         }
     };

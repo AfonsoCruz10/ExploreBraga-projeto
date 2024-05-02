@@ -14,7 +14,7 @@ export const useSignUp = () => {
             if (password === confirmPassword){
                 const response = await axios.post('http://localhost:5555/users/createNewUser', {username, email, password, birthDate});
                 if (response.status === 201) {
-                    console.log("Usuário criado com sucesso", response.data);
+                    setError(null);
                 }
             } else {
                 setError("Diferent passwords");
@@ -23,7 +23,6 @@ export const useSignUp = () => {
         } catch (error) {
             setError(error.response.data.message);
         } finally {
-            setError(null);
             setIsLoading(false);
             navigate('/login');
         }

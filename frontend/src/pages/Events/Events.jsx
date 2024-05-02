@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Header from "../../components/Header/Header.jsx";
 import Eventscard from "../../components/Eventscard/Eventscard.jsx";
 import Modal from "react-modal";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styles from "./Events.module.css";
+import { FaArrowDown } from 'react-icons/fa';
 import { useSelectEvents } from '../../hooks/useSelectEvents.jsx';
 
 Modal.setAppElement("#root");
@@ -18,7 +18,14 @@ function Events() {
   const { selectEventsonnect, events, isLoading, error } = useSelectEvents();
 
   useEffect(() => {
-    selectEventsonnect();
+    const showEvents = async () => {
+      try {
+        await selectEventsonnect();
+      } catch (error) {
+        console.error('Error show events', error);
+      }
+    };
+    showEvents();
   }, []);
 
   const handleChangeCat = (event) => {
@@ -50,7 +57,7 @@ function Events() {
   const handleLoadMore = () => {
     setEventsToShow(eventsToShow + 5);
   };
-  
+
   const filteredEvents = events.filter((evento) => {
     const categoriaMatch = searchCat === "" || evento.Type === searchCat;
     const dataMatch = !selectedDate || new Date(evento.BegDate).toDateString() === selectedDate.toDateString();
@@ -59,47 +66,47 @@ function Events() {
 
   return (
     <>
-    <Header />
-    <div className="body">
-      
-      <div className={styles.events}>
-        <h1 className="titulo">Eventos</h1>
+      <Header />
+      <div className="body">
 
-        <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
+        <div className={styles.events}>
+          <h1 className="titulo">Eventos</h1>
 
-        <Modal
-          isOpen={modalOpen}
-          onRequestClose={closeModal}
-          overlayClassName={styles["ReactModal__Overlay"]}
-          className={styles["ReactModal__Content"]}
-        >
+          <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
 
-          <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
+          <Modal
+            isOpen={modalOpen}
+            onRequestClose={closeModal}
+            overlayClassName={styles["ReactModal__Overlay"]}
+            className={styles["ReactModal__Content"]}
+          >
 
-          <div className={styles["search-container"]}>
-            <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
-              <option value="">Escolha uma categoria</option>
-              <option value="Cultura">Cultura</option>
-              <option value="Desporto">Desporto</option>
-              <option value ="Educacao">Educação</option>
-              <option value="Fotografia">Fotografia</option>
-              <option value="Lazer">Lazer</option>
-              <option value="Turismo">Turismo</option>
-            </select>
-            <Calendar
-              onChange={handleDateChange}
-              value={selectedDate}
-              minDate={new Date()}
-              formatShortWeekday={(locale, date) => {
-                const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
-                return weekdays[date.getDay()];
-              }}
-              className={styles["calendarioE"]}
-            />
-          </div>
-        </Modal>
+            <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
 
-        {isLoading ? (
+            <div className={styles["search-container"]}>
+              <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
+                <option value="">Escolha uma categoria</option>
+                <option value="Cultura">Cultura</option>
+                <option value="Desporto">Desporto</option>
+                <option value="Educacao">Educação</option>
+                <option value="Fotografia">Fotografia</option>
+                <option value="Lazer">Lazer</option>
+                <option value="Turismo">Turismo</option>
+              </select>
+              <Calendar
+                onChange={handleDateChange}
+                value={selectedDate}
+                minDate={new Date()}
+                formatShortWeekday={(locale, date) => {
+                  const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+                  return weekdays[date.getDay()];
+                }}
+                className={styles["calendarioE"]}
+              />
+            </div>
+          </Modal>
+
+          {isLoading ? (
             <div className='spinner'></div>
           ) : error ? (
             <p className="error">{error}</p>
@@ -111,13 +118,13 @@ function Events() {
                     <Eventscard
                       key={index}
                       id={event._id}
-                      evento={event.Name} 
-                      categoria={event.Type} 
-                      horainit={new Date(event.BegDate)} 
-                      horafinal={new Date(event.EndDate)} 
-                      morada={event.Address} 
-                      preco={event.Price} 
-                      organizador={event.Creator} 
+                      evento={event.Name}
+                      categoria={event.Type}
+                      horainit={new Date(event.BegDate)}
+                      horafinal={new Date(event.EndDate)}
+                      morada={event.Address}
+                      preco={event.Price}
+                      organizador={event.username}
                     />
                   ))
                 ) : (
@@ -126,12 +133,14 @@ function Events() {
               </div>
 
               {eventsToShow < events.length && (
-                <button onClick={handleLoadMore}>Carregar mais</button>
+                <div className={styles["load-more"]} onClick={handleLoadMore}>
+                  <FaArrowDown />
+                </div>
               )}
             </>
           )}
+        </div>
       </div>
-    </div>
     </>
   );
 }

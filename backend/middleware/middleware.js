@@ -10,7 +10,7 @@ export const authPage = async (req, res, next) => {
         // Obtenha o token JWT do cabeçalho da solicitação
         let token = req.headers.authorization;
         
-        console.log("authPage req.headers: - - - - - - ", req.headers)
+        //console.log("authPage req.headers: - - - - - - ", req.headers)
 
         console.log("authPage token: - - - - - - ", token)
 
@@ -35,15 +35,17 @@ export const authPage = async (req, res, next) => {
         if (user.username !== username || user.email !== email) {
             return res.status(404).json({ message: 'User not found' });
         }
-
+        
         // Retorne as informações do usuário para o cliente
-        // Retorne as informações do usuário para o cliente
+        if(user.AdminPermission){
+            req.admin = true;
+        }else{
+            req.admin = false;
+        }
         req.authenticated = true;
         req.userid = user._id;
         next();
     } catch (error) {
-        //console.error('No logging user', error);
-        // Se ocorrer um erro, defina a propriedade authenticated como false
         req.authenticated = false;
         next();
     }

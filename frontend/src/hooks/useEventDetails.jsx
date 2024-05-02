@@ -1,47 +1,54 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useAuthContext } from './useAuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 
 export const useEventDetails = () => {
     const [event, setEvent] = useState(null);
-    const [counter, setcounter] = useState();
-    const [check, setCheck] = useState(false);
+    const [counter, setcounter] = useState();// numero de pessoas interessadas
+    const [check, setCheck] = useState(false); // verifica se o user está interessado
     const [isLoading, setIsLoading] = useState(null);
     const [errorBuscar, setErrorBuscar] = useState(null);
     const [errorInterested, setErrorInterested] = useState(null);
+    const navigate = useNavigate();
     const { user } = useAuthContext();
 
     const buscarEventDetails = async (eventId) => {
         try {
             setIsLoading(true); 
-            // Obtenha o token JWT do localStorage
-            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-            const token = userLocalStorage.token; 
+            let response;
 
-            const response = await axios.get(`http://localhost:5555/events/${eventId}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}` 
-                    }
-                });
+            if(user){
+                // Obtenha o token JWT do localStorage
+                const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+                const token = userLocalStorage.token; 
+
+                response = await axios.get(`http://localhost:5555/events/${eventId}`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}` 
+                        }
+                    });
+            } else{
+                response = await axios.get(`http://localhost:5555/events/${eventId}`);
+               
+            }
+
             if (response.status === 200) {
+                setErrorBuscar(null);
                 setEvent(response.data.event);
-                // Atualiza o contador de likes com base na quantidade de usuários interessados
                 setcounter(response.data.event.InterestedUsers.length);
                 setCheck(response.data.check)
             }
         } catch (error) {
             setErrorBuscar(error.response.data.message);
         } finally {
-            setErrorBuscar(null);
             setIsLoading(false);
         }
     };
 
     const interested = async (eventId) => {
         try {
-            setIsLoading(true);
-            
             if(user){
                 // Obtenha o token JWT do localStorage
                 const userLocalStorage = JSON.parse(localStorage.getItem('user'));
@@ -56,18 +63,18 @@ export const useEventDetails = () => {
                         }
                     }
                 );
-                setcounter(resp.data.count);
-                setCheck(resp.data.check);
+                if (resp.status === 200) {
+                    setErrorInterested(null);
+                    setcounter(resp.data.count);
+                    setCheck(resp.data.check)
+                }
             } else{
-                setErrorInterested("Login first!")
+                navigate("/login");
             }
         } catch (error) {
             setErrorInterested(error.response.data.message);
-        } finally {
-            setErrorInterested(null);
-            setIsLoading(false);
-        }
+        } 
     };
 
-    return {buscarEventDetails, interested, event, counter, check, isLoading, errorBuscar, errorInterested}
+    return {buscarEventDetails, interested, event, counter, check, isLoading,  errorBuscar, errorInterested}
 }

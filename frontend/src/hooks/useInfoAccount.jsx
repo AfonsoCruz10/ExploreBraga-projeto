@@ -25,12 +25,12 @@ export const useInfoAccount = () => {
             });
 
             if (response.status === 200) {
+                setError(null);
                 setInfo(response.data.data);
             }
         } catch (error) {
             setError(error.response.data.message);
         } finally {
-            setError(null);
             setIsLoading(false);
         }
     };
@@ -50,6 +50,9 @@ export const useInfoAccount = () => {
                 }
             );
             if (response.status === 200) {
+                setErrorNewEmail(null);
+                setErrorNewUsername(null);
+                
                 // Armazene o novo token no armazenamento local
                 const newToken = response.data.token;
 
@@ -60,8 +63,6 @@ export const useInfoAccount = () => {
 
                 // Atualize o estado do usuário com os novos dados
                 setInfo(response.data.user);
-                setErrorNewEmail(null);
-                setErrorNewUsername(null);
             }
         } catch (error) {
             if (newUsername === ""){

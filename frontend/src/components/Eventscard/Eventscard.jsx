@@ -2,23 +2,43 @@ import styles from "./Eventscard.module.css";
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router-dom';
 
-function Eventscard({ id, categoria, evento, horainit, horafinal, morada, preco, organizador, onClick }) {
+function Eventscard({ id, categoria, evento, horainit, horafinal, morada, preco, organizador}) {
   const precoFormatado = preco.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
   const navigate = useNavigate();
+  
   // Função para formatar hora
   function mostrarHora({ horainit, horafinal }) {
-    const horainitFormatada = horainit.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const horafinalFormatada = horafinal.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    if (horainitFormatada === horafinalFormatada) {
-      return horainitFormatada;
+    const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+    const horainitFormatada = horainit.toLocaleTimeString([], options);
+    const horafinalFormatada = horafinal.toLocaleTimeString([], options);
+  
+    // Verifica se as horas são do mesmo dia
+    const mesmoDia = horainit.getDate() === horafinal.getDate() &&
+                     horainit.getMonth() === horafinal.getMonth() &&
+                     horainit.getFullYear() === horafinal.getFullYear();
+  
+    if (mesmoDia && horainitFormatada === horafinalFormatada) {
+      return `${horainitFormatada}`;
     } else {
       return `${horainitFormatada} - ${horafinalFormatada}`;
     }
   }
 
   // Função para formatar data
-  function formatarData(data) {
+  function mostrarData({ horainit, horafinal }) {
+    const mesmoDia = horainit.getDate() === horafinal.getDate() &&
+                      horainit.getMonth() === horafinal.getMonth() &&
+                      horainit.getFullYear() === horafinal.getFullYear();
+  
+    if (mesmoDia) {
+      return `${new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
+    } else {
+      return `${new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })} - ${new Date(horafinal).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
+    }
+  }
+
+  // Função para formatar dia da semana 
+  function formatarDiaSemana(data) {
     const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     const diaSemana = diasDaSemana[data.getDay()];
     return `${diaSemana}`;
@@ -28,8 +48,8 @@ function Eventscard({ id, categoria, evento, horainit, horafinal, morada, preco,
     <>
       <div className={styles.card} onClick={() => navigate(`/events/${id}`)}>
         <div className={styles.card1}>
-          <p className={styles.carddata}>{formatarData(horainit)}</p>
-          <p className={styles.carddata}>{ new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' }) }</p>
+          <p className={styles.carddata}>{formatarDiaSemana(horainit)}</p>
+          <p className={styles.carddata}>{mostrarData({ horainit, horafinal }) }</p>
         </div>
 
         <div className={styles.card2}>

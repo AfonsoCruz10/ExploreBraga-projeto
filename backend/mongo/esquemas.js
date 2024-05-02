@@ -30,14 +30,14 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   Creator: {
-    type: String,
-    required: true
+    type: Schema.Types.ObjectId,
+    ref: 'Users'
   },
   InterestedUsers: [{
     type: Schema.Types.ObjectId,
-    ref: 'Users' // Referência ao modelo de evento, remova se não for necessário
+    ref: 'Users'
   }],
-  Image: [String],  
+  Image: [String],
   Address: {
     type: String,
     required: true
@@ -69,18 +69,31 @@ const locationSchema = new mongoose.Schema({
   },
   AgeRecomendation: Number,
   Creator: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Users',
     required: true
   },
   Reviews: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Users' // Referência ao modelo de utilizador
+    username: {
+      type: Schema.Types.ObjectId,
+      ref: 'Users'
+    },
+    classification: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5
+    },
+    comment: {
+      type: String,
+      required: true
+    }
   }],
   Status: {
     type: String,
     enum: ['Pending', 'Active'] // As 2 opções válidas para o atributo "status"
   },
-  Image: String,
+  Image: [String],
   Address: String
 });
 
@@ -101,7 +114,7 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   birthDate: {
-    type: Date, 
+    type: Date,
     required: true
   },
   AdminPermission: {

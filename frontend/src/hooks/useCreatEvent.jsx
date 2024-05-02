@@ -7,7 +7,7 @@ export const useCreatEvent = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const createEvent = async (eventType, eventName, eventBegDate, eventEndDate, eventDescription, eventAge, eventPrice, eventImage, eventAdress) => {
+    const createEvent = async (eventType, eventName, eventBegDate, eventEndDate, eventDescription, eventAge, eventPrice, eventImage, eventAddress) => {
         try {
             setIsLoading(true);
             
@@ -24,18 +24,20 @@ export const useCreatEvent = () => {
                 eventAge,
                 eventPrice,
                 eventImage,
-                eventAdress
+                eventAddress
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}` 
                 }
             });
+            if(res.status === 201){
+                setError(null);
+                navigate('/useraccount');
+            }
         } catch (error) {
             setError(error.response.data.message);
         } finally {
-            setError(null);
             setIsLoading(false);
-            navigate('/useraccount');
         }
     };
 

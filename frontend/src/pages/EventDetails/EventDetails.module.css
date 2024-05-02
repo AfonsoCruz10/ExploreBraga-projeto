@@ -1,38 +1,44 @@
-/* EventDetails.module.css */
-.eventDetails {
-  padding: 20px;
+.eventDetailsContainer {
+  margin: 50px 100px;
+  border: 2px solid #ccc;
+  color: black;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.eventHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
 }
 
 .title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.category {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.description {
-  margin-bottom: 10px;
-}
-
-.date,
-.address,
-.price,
-.creator {
-  margin-bottom: 10px;
-  font-size: 16px;
+  font-family: Arial, sans-serif;
+  font-size: 40px;
+  margin: 20px;
 }
 
 .container {
   display: flex;
-  align-items: center; 
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.shareIcon {
+  font-size: 24px; 
+  cursor: pointer; 
+  margin: 20px; 
+}
+
+.shareIcon:hover {
+  color: #ff5555; 
 }
 
 .counter {
-  margin-left: 5px; 
+  margin-left: 10px; 
 }
 
 .redHeart {
@@ -89,4 +95,41 @@
 
 .arrowIcon.left {
   left: 10px;
+}
+
+
+.eventSpace {
+  display: flex;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.eventDetailsLeft {
+  margin: 20px;
+  flex-grow: 2.75;
+  padding-right: 20px;
+}
+
+.eventDetailsRight {
+  margin: 20px;
+  min-width: 300px; 
+  flex-grow: 1;
+  padding-left: 20px;
+  border-left: 2px solid #000000;
+}
+
+
+.description,
+.date,
+.address {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.category,
+.price,
+.creator {
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
 }

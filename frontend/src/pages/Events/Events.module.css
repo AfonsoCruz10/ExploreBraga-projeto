@@ -104,3 +104,13 @@
     /* bordas arredondadas */
     color: red;
   }
+  .load-more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin: 20px; 
+    font-size: 20px;
+    color: red;
+  }
+  

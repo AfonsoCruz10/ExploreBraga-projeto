@@ -2,7 +2,7 @@
   position: relative;
   top: 110px;
   z-index: 0;
-  min-height: 100vh;
+  min-height: calc(100vh - 110px);
   color: aliceblue;
   background-color: #2f2f2f;
   font-family: "Roboto", sans-serif;

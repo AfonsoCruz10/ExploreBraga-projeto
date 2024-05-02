@@ -1,0 +1,122 @@
+.adminEventsContainer {
+    margin: 50px 100px;
+    text-align: center;
+    border: 1px solid #ccc;
+    color: black;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+
+.sectionButtonContainer {
+    margin-bottom: 20px;
+}
+
+.sectionButton {
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.activeButton {
+    cursor: pointer;
+    margin-right: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.eventTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.eventTable th,
+.eventTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+
+.eventTable th {
+    background-color: #f2f2f2;
+}
+
+.buttonAccept {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonAccept:hover {
+    background-color: #45a049;
+}
+
+.buttonCancel {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonCancel:hover {
+    background-color: #d32f2f;
+}
+
+.buttonPending {
+    background-color: rgb(255, 145, 0);
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonPending:hover {
+    background-color: #c99915;
+}
+
+.buttonInfo {
+    background-color: blue;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonInfo:hover {
+    background-color: #270094;
+}
+
+.userTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.userTable th, .userTable td {
+    border: 1px solid #cfcfcf;
+    padding: 8px;
+    text-align: left;
+}
+
+.userTable th {
+    background-color: #e7e7e7;
+    text-align: left;
+}
+
+.userTable tr:nth-child(even) {
+    background-color: #e7e7e7;
+}
+
+.userTable tr:hover {
+    background-color: #ddd;
+}

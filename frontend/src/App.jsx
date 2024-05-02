@@ -4,15 +4,21 @@ import About from './pages/About/About.jsx'
 import Log_In from './pages/Log/Log_In.jsx'
 import Events from './pages/Events/Events.jsx'
 import Locations from './pages/Locations/Locations.jsx'
+import LocationsList from './pages/LocationsList/LocationsList.jsx'
 import SignUpForm from './pages/SignUp/SignUpForm.jsx'
 import EventDetails from './pages/EventDetails/EventDetails.jsx'
 import UserAccount from './pages/UserAccount/UserAccount.jsx'
 import CreateEvent from './pages/CreatEvent/CreatEvent.jsx'
 import EventsUser from './pages/EventsUser/EventsUser.jsx'
+import EditEvent from './pages/EditEvent/EditEvent.jsx'
+import AdminPage from './pages/AdminPage/AdminPage.jsx'
 import { useAuthContext } from './hooks/useAuthContext.jsx';
+import React, { useRef, useState } from "react";
+
 
 function App() {
     const { user } = useAuthContext();
+    const [userLocationChoice, setUserLocationChoice] = useState('All Places');
 
     // Renderiza o componente principal da aplicação
     return (
@@ -34,15 +40,21 @@ function App() {
                     {/* Rota para a página de eventos */}
                     <Route path="/events" element={<Events />} />
                     {/* Rota para a página de locais */}
-                    <Route path="/locations" element={<Locations />} />
+                    <Route path="/locations" element={<Locations userLocationChoice={userLocationChoice} setUserLocationChoice={setUserLocationChoice} />} />
                     {/* Rota para a página eventos detalhados */}
                     <Route path="/events/:eventId" element={<EventDetails />} />
+                    {/* Rota para a página de locais por categoria */}
+                    <Route path="/locations/seebycategories" element={<LocationsList userLocationChoice={userLocationChoice} setUserLocationChoice={setUserLocationChoice} />} />
                     {/* Rota para a página de conta do usuário */}
                     <Route path="/useraccount" element={user ? <UserAccount /> : <Navigate to="/login" />} />
                     {/* Rota para a página de criar eventos */}
                     <Route path="/userCreatEvent" element={user ? <CreateEvent /> : <Navigate to="/login" />} />
                     {/* Rota para a página para ver os eventos criados e eliminar ou edita-los */}
                     <Route path="/userEvents" element={user ? <EventsUser /> : <Navigate to="/login" />} />
+                    {/* Rota para a página para ver os eventos em estado pending e mudar de estado se quiser */}
+                    <Route path="/adminPage" element={user ? <AdminPage /> : <Navigate to="/login" />} />
+                    {/* Rota para a página editar eventos */}
+                    <Route path="/events/edit/:eventId" element={user ? <EditEvent /> : <Navigate to="/login" />} />
 
                 </Routes>
             </BrowserRouter>

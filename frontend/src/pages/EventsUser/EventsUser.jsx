@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Header from "../../components/Header/Header.jsx";
 import { useUserEvents } from '../../hooks/useEventsUser.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faInfo, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from "./EventsUser.module.css";
+import { useNavigate } from 'react-router-dom';
+
 
 function UserEvents() {
     const { userEventsConnect, eventDelete, userEvents, isLoading, error, errorDelete } = useUserEvents();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,13 +30,9 @@ function UserEvents() {
     const handleDelete = async (eventId) => {
         try {
             await eventDelete(eventId);
-        } catch (error) {
-            console.error('Error delete Events:', error);
-        }
-        try {
             await userEventsConnect();
         } catch (error) {
-            console.error('Error fetching user events:', error);
+            console.error('Error delete Events:', error);
         }
     };
 
@@ -75,7 +74,7 @@ function UserEvents() {
                                         <td>{event.Price}</td>
                                         <td>{event.Status}</td>
                                         <td>
-                                            <button onClick={() => handleEdit(event._id)} className={styles.buttonEdit}>
+                                            <button onClick={() => navigate(`/events/edit/${event._id}`)} className={styles.buttonEdit}>
                                                 <FontAwesomeIcon icon={faEdit} /> Editar
                                             </button>
                                             <button onClick={() => handleDelete(event._id)} className={styles.buttonDelete}>

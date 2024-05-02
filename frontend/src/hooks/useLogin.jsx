@@ -20,10 +20,10 @@ export const useLogin = () => {
                 // Atualize o contexto de autenticação
                 dispatch({type:`LOGIN`, payload: res.data});
             }
+            setError(null);
         } catch (error) {
             setError(error.response.data.message);
         } finally {
-            setError(null);
             setIsLoading(false);
         }
     };

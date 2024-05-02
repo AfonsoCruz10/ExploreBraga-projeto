@@ -20,20 +20,6 @@ const validatePassword = (password) => {
     return password.length >= 8 && /[A-Z]/.test(password);
 };
 
-//Rota para visualizar todos os utilizadores
-router.get('/displayAllUsers', async (request, response) => {
-    try {
-
-        const users = await Users.find({}, '-HashedPassword');
-
-        return response.status(200).json({ data: users });
-    } catch (error) {
-        console.log("Error fetching users:", error.message);
-        response.status(500).json({ message: 'Internal server error! displayuser' });
-    }
-});
-
-
 //Rota para criar uma nova conta
 router.post('/createNewUser', async (req, res) => {
     try {
@@ -178,7 +164,7 @@ router.get('/showEventsUser', authPage, async (req, res) => {
         const userid = req.userid;
 
         // Busque os IDs de eventos associados ao usuário
-        const userIDEvent = await Users.findById(userid).select("EventCreator");
+        const userIDEvent = await Users.findById(userid).select("username EventCreator");
 
         // Verifique se o usuário não possui eventos associados
         if (userIDEvent.EventCreator.length === 0) {
@@ -203,6 +189,7 @@ router.get('/showEventsUser', authPage, async (req, res) => {
             count: eventsDetails.length,
             data: eventsDetails,
         });
+        
     } catch (error) {
         console.log("Error fetching events:", error.message);
         return res.status(500).json({ message: 'Internal server error! SelectEvents' });

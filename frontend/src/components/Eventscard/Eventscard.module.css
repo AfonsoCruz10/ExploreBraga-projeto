@@ -16,13 +16,7 @@
   grid-template-columns: 1fr 1fr 1fr; /* Define duas colunas de tamanho igual */
   place-items: center;/* Centraliza horizontalmente */
 }
-  
-/*.card .card-img {
-  max-width: 100%;
-  height: auto; 
-  border-radius: 5%;
-} */
-  
+
 .card:hover{
   transform: translateY(5px);
   transition: 0.5s;

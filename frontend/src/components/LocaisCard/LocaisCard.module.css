@@ -1,0 +1,99 @@
+/* card locations */
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    grid-gap: 1rem;
+    background-color: #d9d9d9;
+    border-radius: 20px;
+    margin-top: 10px;
+}
+
+/*.card .card-img {
+    max-width: 100%;
+    height: auto; 
+    border-radius: 5%;
+  } */
+
+.card:hover {
+    transform: translateY(5px);
+    transition: 0.5s;
+    border: 1px solid red;
+    box-shadow: 1px 1px 20px red;
+}
+
+.card:active {
+    background-color: rgb(255, 132, 132);
+    transition: 0.1s;
+}
+
+.card1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 90%;
+}
+
+.card2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    width: 90%;
+}
+
+.carddata {
+    font-family: Arial, sans-serif;
+    /* Define a fonte */
+    font-size: 40px;
+    /* Define o tamanho da fonte */
+    color: #333;
+    /* Define a cor do texto */
+    margin-top: 5px;
+    /* Adiciona margem superior */
+    margin-bottom: 5px;
+    /* Adiciona margem inferior */
+}
+
+.cardtitle {
+    /*background-color: yellow;*/
+    font-family: Arial, sans-serif;
+    /* Define a fonte */
+    font-size: 30px;
+    /* Define o tamanho da fonte */
+    color: black;
+    /* Define a cor do texto */
+    margin-top: 5px;
+    /* Adiciona margem superior */
+    margin-bottom: 5px;
+    /* Adiciona margem inferior */
+}
+
+.cardcategoria {
+    font-family: Arial, sans-serif;
+    /* Define a fonte */
+    font-size: 25px;
+    /* Define o tamanho da fonte */
+    color: #AF2413;
+    /* Define a cor do texto */
+    margin-top: 5px;
+    /* Adiciona margem superior */
+    margin-bottom: 5px;
+    /* Adiciona margem inferior */
+}
+
+.cardtext {
+    font-family: Arial, sans-serif;
+    /* Define a fonte */
+    font-size: 20px;
+    /* Define o tamanho da fonte */
+    color: black;
+    /* Define a cor do texto */
+    margin-top: 5px;
+    /* Adiciona margem superior */
+    margin-bottom: 5px;
+    /* Adiciona margem inferior */
+}

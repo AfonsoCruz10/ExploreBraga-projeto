@@ -13,7 +13,8 @@ import EventsUser from './pages/EventsUser/EventsUser.jsx'
 import EditEvent from './pages/EditEvent/EditEvent.jsx'
 import AdminPage from './pages/AdminPage/AdminPage.jsx'
 import { useAuthContext } from './hooks/useAuthContext.jsx';
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
+import LocalDetails from './pages/LocationDetails/LocationDetails.jsx'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
     // Renderiza o componente principal da aplicação
     return (
         <>
+
             {/* Configura o roteamento usando BrowserRouter */}
             <BrowserRouter>
                 {/* Define as rotas da aplicação */}
@@ -43,6 +45,8 @@ function App() {
                     <Route path="/locations" element={<Locations userLocationChoice={userLocationChoice} setUserLocationChoice={setUserLocationChoice} />} />
                     {/* Rota para a página eventos detalhados */}
                     <Route path="/events/:eventId" element={<EventDetails />} />
+                    {/* Rota para a página locais detalhados */}
+                    <Route path="/locations/:localId" element={<LocalDetails />} />
                     {/* Rota para a página de locais por categoria */}
                     <Route path="/locations/seebycategories" element={<LocationsList userLocationChoice={userLocationChoice} setUserLocationChoice={setUserLocationChoice} />} />
                     {/* Rota para a página de conta do usuário */}

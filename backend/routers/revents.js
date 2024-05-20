@@ -86,11 +86,12 @@ router.get('/:id', authPage, async (req, res) => {
       }
     } 
 
-    const usernameEvent = await Users.findById(event.Creator).select("username");
+    const usernameEvent = await Users.findById(event.Creator).select("username ProfileImage");
 
     const showEvent ={
       ...event.toObject(),
-       username: usernameEvent.username
+       username: usernameEvent.username,
+       ProfileImage: usernameEvent.ProfileImage
     }
 
     res.status(200).json({ event:showEvent , check });
@@ -210,7 +211,7 @@ router.delete("/eventDelet", authPage, async (req, res) => {
           // Trate o caso em que a autenticação falhou
           return res.status(401).json({ message: 'Unauthorized: authentication failed' });
       }
-
+      
       const userId = req.userid;
       const eventId = req.body.eventId;
       
@@ -219,7 +220,7 @@ router.delete("/eventDelet", authPage, async (req, res) => {
       
       // Verifique se o usuário é o criador do evento
       if (!user || !user.EventCreator || !user.EventCreator.includes(eventId)) {
-          return res.status(403).json({ message: 'Forbidden: you are not the creator of this event' });
+        return res.status(403).json({ message: 'Forbidden: you are not the creator of this event' });
       }
 
       await Users.findByIdAndUpdate(userId, { $pull: { EventCreator: eventId } });
@@ -295,6 +296,5 @@ router.put('/edit/:id', authPage, async (req, res) => {
       res.status(500).json({ message: 'Internal server error! update' });
   }
 });
-
 
 export default router;

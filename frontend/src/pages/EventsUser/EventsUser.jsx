@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Header from "../../components/Header/Header.jsx";
 import { useUserEvents } from '../../hooks/useEventsUser.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faInfo, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import styles from "./EventsUser.module.css";
 import { useNavigate } from 'react-router-dom';
+import Footer from "../../components/Footer/Footer.jsx";
 
 
 function UserEvents() {
-    const { userEventsConnect, eventDelete, userEvents, isLoading, error, errorDelete } = useUserEvents();
+    const { userEventsConnect, eventDelete, userEvents, isLoading, error } = useUserEvents();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,18 +20,12 @@ function UserEvents() {
                 console.error('Error fetching user events:', error);
             }
         };
-    
         fetchData();
     }, []);
-
-    const handleEdit = (eventId) => {
-        
-    };
 
     const handleDelete = async (eventId) => {
         try {
             await eventDelete(eventId);
-            await userEventsConnect();
         } catch (error) {
             console.error('Error delete Events:', error);
         }
@@ -44,13 +39,13 @@ function UserEvents() {
             <Header />
             <div className="body">
                 <h2 className="titulo">Meus Eventos</h2>
-                <div className={styles.userEventsContainer}>
+                <div className={"defaultContainer " + styles.userEventsContainer}>
                     {isLoading ? (
                         <div className='spinner'></div>
                     ) : error ? (
                         <p className="error">{error}</p>
                     ) : userEvents.length !== 0 ? (
-                        <table className={styles.eventTable}>
+                        <table className='defaultTable '>
                             <thead>
                                 <tr>
                                     <th>Nome do Evento</th>
@@ -91,6 +86,7 @@ function UserEvents() {
                     )}
                 </div>
             </div>
+            <Footer/>
         </>
     );
 }

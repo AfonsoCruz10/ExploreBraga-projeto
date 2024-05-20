@@ -5,6 +5,7 @@ import { useEditEvent } from "../../hooks/useEditEvent.jsx";
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faArrowRight, faArrowLeft, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
+import Footer from "../../components/Footer/Footer.jsx";
 
 // Função para converter o arquivo de imagem em base64
 function convertToBase64(file) {
@@ -21,7 +22,7 @@ function convertToBase64(file) {
 }
 
 function EditEvent() {
-    const { eventId } = useParams(); 
+    const { eventId } = useParams();
     const { editEvent, isLoading, error, eventDetails, getEventDetails } = useEditEvent(eventId);
     const [eventData, setEventData] = useState({
         eventType: '',
@@ -35,7 +36,8 @@ function EditEvent() {
         eventImage: []
     });
     const [imageIndex, setImageIndex] = useState(0);
-    const [isEditing, setIsEditing] = useState(false); 
+    const [isEditing, setIsEditing] = useState(false);
+    const [isSbumited, setIsSbumited] = useState(false);
 
     useEffect(() => {
         const showEvents = async () => {
@@ -54,7 +56,7 @@ function EditEvent() {
         } else {
             setIsEditing(false);
         }
-    }, [error]);
+    }, [isSbumited]);
 
     useEffect(() => {
         if (eventDetails) {
@@ -147,15 +149,16 @@ function EditEvent() {
         const eventEndDate = new Date(dateTimeString);
         const dataFormatada = eventEndDate.toLocaleDateString('pt-PT');
         const horaFormatada = eventEndDate.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit', hour12: false });
-        
+
         return `${dataFormatada}, ${horaFormatada}`;
     };
-      
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await editEvent(eventData.eventType, eventData.eventName, eventData.eventBegDate, eventData.eventEndDate, eventData.eventDescription, eventData.eventAge, eventData.eventPrice, eventData.eventImage, eventData.eventAddress);
+            setIsSbumited(!isSbumited);
         } catch (error) {
             console.error('Error editing event:', error);
         }
@@ -165,7 +168,7 @@ function EditEvent() {
         <>
             <Header />
             <div className="body">
-                <div className={styles.container}>
+                <div className={"defaultContainer " + `${isEditing ? styles.containerForm: styles.containerEventsDetails}`}>
                     {isLoading ? (
                         <div className='spinner'></div>
                     ) : (
@@ -173,8 +176,8 @@ function EditEvent() {
                             {!isEditing ? (
                                 <>
                                     <h2 className={styles.title}>{eventData.eventName}</h2>
-                                    
-                                    { (eventData.eventImage.length!== 0) && 
+
+                                    {(eventData.eventImage.length !== 0) &&
                                         <div className={styles.imageContainer}>
                                             {eventData.eventImage.length > 1 && (
                                                 <FontAwesomeIcon icon={faArrowLeft} className={`${styles.arrowIcon} ${styles.left}`} onClick={handlePreviousImage} />
@@ -192,9 +195,10 @@ function EditEvent() {
                                             <p className={styles.address}>Morada: {eventData.eventAddress}</p>
                                         </div>
                                         <div className={styles.eventDetailsRight}>
-                                            <p className={styles.price}>Preço: { (eventData.eventPrice === 0) ? 'Grátis' : eventData.eventPrice.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}</p>
+                                            <p className={styles.price}>Preço: {(eventData.eventPrice === 0) ? 'Grátis' : eventData.eventPrice.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}</p>
                                             <p className={styles.date}>Data Inicio: {showDataTime(eventData.eventBegDate)}</p>
                                             <p className={styles.date}>Data final: {showDataTime(eventData.eventEndDate)}</p>
+                                            <p className={styles.address}>Idade recomendada: {eventData.eventAge} </p>
                                         </div>
                                     </div>
                                     <button onClick={handleEditToggle} className={styles.editButton}>
@@ -204,11 +208,11 @@ function EditEvent() {
                             ) : (
 
                                 <form className={styles.form} onSubmit={handleSubmit}>
-                                    <FontAwesomeIcon icon={faArrowLeft} onClick={handleEditToggle} style={{ cursor: 'pointer' }} />
+                                    <FontAwesomeIcon icon={faArrowLeft} onClick={handleEditToggle} className={styles.backIcon} />
 
                                     <h2>Editar evento</h2>
-                                    <br/>
-                                    <select value={eventData.eventType} onChange={handleInputChange} name="eventType" className={styles.select} required>
+                                    <br />
+                                    <select value={eventData.eventType} onChange={handleInputChange} name="eventType" className={styles.select + ' defaultselect'} >
                                         <option value="">Escolha uma categoria</option>
                                         <option value="Cultura">Cultura</option>
                                         <option value="Desporto">Desporto</option>
@@ -218,45 +222,54 @@ function EditEvent() {
                                         <option value="Turismo">Turismo</option>
                                     </select>
 
-                                    <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} />
-                                    <input type="datetime-local" placeholder="Data inicial" name="eventBegDate" value={formatDateTime(eventData.eventBegDate)} onChange={handleInputChange} />
-                                    <input type="datetime-local" placeholder="Data final" name="eventEndDate" value={formatDateTime(eventData.eventEndDate)} onChange={handleInputChange} />
-                                    <textarea placeholder="Descrição" name="eventDescription" value={eventData.eventDescription} onChange={handleInputChange} />
-                                    <input type="text" placeholder="Idade recomendada" name="eventAge" value={eventData.eventAge} onChange={handleInputChange} />
-                                    <input type="text" placeholder="Preço" name="eventPrice" value={eventData.eventPrice} onChange={handleInputChange} />
-                                    <input type="text" placeholder="Endereço" name="eventAddress" value={eventData.eventAddress} onChange={handleInputChange} />
-                                    
-                                    <div>
-                                    <input type="file" className="input-field" onChange={(e) => handleImageChange(e.target.files)} style={{ display: 'none' }} id="file" multiple/>
-                                    <label htmlFor="file" className={styles.fileInput}>
-                                        <FontAwesomeIcon icon={faPlus}/>
-                                        <span>Adicionar fotos</span>
-                                    </label>
-                                    {eventData.eventImage.length !== 0 && (
-                                        <>
-                                            <h3>Fotos do Evento</h3>
-                                            
-                                            {eventData.eventImage.map((image, index) => (
-                                                <div key={index} className={styles.imageWrapper}>
-                                                    <img src={image} alt={`Imagem ${index}`} className={styles.image} />
-                                                    <FontAwesomeIcon icon={faTimes} onClick={() => removeImage(index)} className={styles.removeButton}/>
-                                                </div>
-                                            ))}
-                                            
-                                        </>
-                                    )}
-                                </div> 
+                                    <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield}/>
+                                    <p>Data/Hora: </p>
+                                    <div className={styles.inputWrapper}>
+                                        <p className={styles.p}>Inicial: </p>
+                                        <input type="datetime-local" placeholder="Data inicial" name="eventBegDate" value={formatDateTime(eventData.eventBegDate)} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield}/>
+                                        <p className={styles.p}>Final: </p>
+                                        <input type="datetime-local" placeholder="Data final" name="eventEndDate" value={formatDateTime(eventData.eventEndDate)} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield}/>
+                                    </div>
+                                    <textarea placeholder="Descrição" name="eventDescription" value={eventData.eventDescription} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield}/>
+                                    <div className={styles.inputWrapper}>
+                                        <p className={styles.p}>Idade recomendada: </p>
+                                        <input type="number" placeholder="Idade recomendada" name="eventAge" value={eventData.eventAge} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield} min="0"/>
+                                        <p className={styles.p}> Preço: </p>
+                                        <input type="number" placeholder="Preço" name="eventPrice" value={eventData.eventPrice} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield} min="0"/>
+                                    </div>
+                                    <input type="text" placeholder="Endereço" name="eventAddress" value={eventData.eventAddress} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield}/>
 
-                                    <button type="submit" className={styles.buttonSubmite} disabled={isLoading}>Submeter</button>
+                                    <div>
+                                        <input type="file" className="input-field" onChange={(e) => handleImageChange(e.target.files)} style={{ display: 'none' }} id="file" multiple />
+                                        <label htmlFor="file" className={"defaultButton " + styles.fileInput}>
+                                            <FontAwesomeIcon icon={faPlus} />
+                                            <span>Adicionar fotos</span>
+                                        </label>
+                                        {eventData.eventImage.length !== 0 && (
+                                            <>
+                                                <h3>Fotos do Evento</h3>
+
+                                                {eventData.eventImage.map((image, index) => (
+                                                    <div key={index} className={styles.imageWrapper}>
+                                                        <img src={image} alt={`Imagem ${index}`} className={styles.image} />
+                                                        <FontAwesomeIcon icon={faTimes} onClick={() => removeImage(index)} className={styles.removeButton} />
+                                                    </div>
+                                                ))}
+
+                                            </>
+                                        )}
+                                    </div>
+
+                                    <button type="submit" className={"defaultButton " + styles.buttonSubmite} disabled={isLoading}>Submeter</button>
                                     {error && <p className="error">{error}</p>}
 
                                 </form>
                             )}
-                            
                         </>
                     )}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 export const useAdmin = () => {
   const [adminEvents, setAdminEvents] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [isLoadingEvents, setIsLoadingEvents] = useState(false);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [error, setError] = useState(null);
-  const [errorAction, setErrorAction] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   const adminUsersConnect = async () => {
     try {
-      setIsLoading(true);
+      setIsLoadingUsers(true);
       
       // Obtenha o token JWT do localStorage
       const userLocalStorage = JSON.parse(localStorage.getItem('user'));
@@ -22,19 +25,18 @@ export const useAdmin = () => {
       });
       if(response.status === 200){
         setError(null);
-        setAdminEvents(response.data.data);
+        setAdminUsers(response.data.data);
       }
     } catch (error) {
       setError(error.response.data.message);
     } finally {
-      setIsLoading(false);
+      setIsLoadingUsers(false);
     }
   };
 
-
   const adminEventsConnect = async () => {
     try {
-      setIsLoading(true);
+      setIsLoadingEvents(true);
       
       // Obtenha o token JWT do localStorage
       const userLocalStorage = JSON.parse(localStorage.getItem('user'));
@@ -52,82 +54,44 @@ export const useAdmin = () => {
     } catch (error) {
       setError(error.response.data.message);
     } finally {
-      setIsLoading(false);
+      setIsLoadingEvents(false);
     }
   };
-
-  const adminEventsPendingConnect = async () => {
-    try {
-      setIsLoading(true);
-      
-      // Obtenha o token JWT do localStorage
-      const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-      const token = userLocalStorage.token;
-
-      const response = await axios.get('http://localhost:5555/admin/events/pending', {
-        headers: {
-          'Authorization': `Bearer ${token}` 
-        }
-      });
-      if(response.status === 200){
-        setError(null);
-        setAdminEvents(response.data.data);
-      }
-    } catch (error) {
-      setError(error.response.data.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const adminEventsActiveConnect = async () => {
-    try {
-      setIsLoading(true);
-      
-      // Obtenha o token JWT do localStorage
-      const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-      const token = userLocalStorage.token;
-
-      const response = await axios.get('http://localhost:5555/admin/events/active', {
-        headers: {
-          'Authorization': `Bearer ${token}` 
-        }
-      });
-      if(response.status === 200){
-        setError(null);
-        setAdminEvents(response.data.data);
-      }
-    } catch (error) {
-      setError(error.response.data.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
 
   const eventAction = async (eventId, action) => {
     try {
-      setIsLoading(true);
+      setIsLoadingEvents(true);
 
       // Obtenha o token JWT do localStorage
       const userLocalStorage = JSON.parse(localStorage.getItem('user'));
       const token = userLocalStorage.token;
 
       // Faça a solicitação POST para realizar a ação no evento com o ID fornecido
-      await axios.put(`http://localhost:5555/admin/events/${eventId}/${action}`, null, {
+      const response = await axios.put(`http://localhost:5555/admin/events/${eventId}/${action}`, null, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
-      setErrorAction(null);
+
+      if(response.status === 200){
+        let statusEvent = ""; 
+
+        if(action === 'accept'){
+          statusEvent = 'Active'
+        }else if(action === 'cancel'){
+          statusEvent = 'Canceled'
+        }else{
+          statusEvent = 'Pending'
+        }
+        enqueueSnackbar(`Estado do evento atualizado para ${statusEvent}`, { variant:'success' });
+        await adminEventsConnect();
+      }
     } catch (error) {
-      setErrorAction(error.response.data.message);
+      enqueueSnackbar('Erro ao atualizar os estado do evento', { variant: 'error' });
     } finally {
-      setIsLoading(false);
+      setIsLoadingEvents(false);
     }
   };
 
-
-
-  return { adminUsersConnect, adminEventsConnect, adminEventsPendingConnect, adminEventsActiveConnect, eventAction, adminEvents, isLoading, error, errorAction };
+  return { adminUsersConnect, adminEventsConnect, eventAction, adminEvents, adminUsers, isLoadingEvents, isLoadingUsers, error };
 };

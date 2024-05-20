@@ -33,7 +33,7 @@
   .menu-info {
     height: auto;
     display: flex;
-    position: fixed;
+    position: absolute;
     right: 40%;
   }
   
@@ -55,7 +55,7 @@
     height: auto;
     display: flex;
     position: fixed;
-    right: 20px;
+    right: 30px;
   }
   
   .menu-links a {
@@ -79,7 +79,7 @@
     position: fixed;
     right: -4%;
     visibility: hidden;
-    color: #d9d9d9;
+    color: #e6e6e6;
     cursor: pointer;
     background-color: #121212;
     border: none;
@@ -125,11 +125,12 @@
   
   .menu-tabela a:hover {
     color: #af2431;
+    opacity: 0.8;
     transition: 0.7s;
   }
   
   .menu-tabela-button {
-    background-color: #d9d9d9;
+    background-color: #e6e6e6;
     border-radius: 12px;
     display: flex;
     justify-content: center;
@@ -158,7 +159,7 @@
     }
   }
   
-  @media only screen and (max-width: 700px) {
+  @media only screen and (max-width: 750px) {
     .temperatura {
       visibility: hidden;
     }

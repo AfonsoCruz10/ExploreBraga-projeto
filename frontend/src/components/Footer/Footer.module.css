@@ -1,0 +1,98 @@
+.bottomline {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: auto;
+  border: 1px solid #af2431;
+}
+
+.finalline{
+  padding: 0;
+  margin: auto;
+  width: 96%;
+  height: auto;
+  border: 1px solid #e6e6e6;
+}
+
+.footer {
+  position: relative;
+  background-color: #121212;
+  color: #e6e6e6;
+  font-size: 18px;
+  padding: 0px 150px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 0.75fr 0.5fr 0.5fr; 
+  padding: 20px;
+}
+
+
+.suggestions{
+  grid-column: 1;
+  padding: 0px 20px;
+  overflow: hidden;
+}
+
+.routes {
+  grid-column: 2;
+  border-left: 1px solid #e6e6e6;
+  padding: 0px 20px;
+  overflow: hidden;
+}
+
+.contactos {
+  grid-column: 3;    
+  border-left: 1px solid #e6e6e6;
+  padding: 0px 20px;
+  overflow: hidden;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.a {
+  font-size: 18px;
+  text-decoration: none;
+}
+
+.a:hover {
+  text-decoration: underline;
+}
+
+.textarea {
+  width: 97%;
+  font-size: 16px;
+  resize: none; 
+}
+
+.copyright {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.enviar{
+  font-weight: 600;
+  font-size: 16px;
+  padding: 2px 10px;
+  background-color: #e6e6e6;
+  color: rgb(0, 0, 0);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.enviar:hover {
+  color: #af2431;
+  transition: 0.3s;
+  opacity: 0.8;
+}
+
+.icon{
+  margin-right: 10px;
+}

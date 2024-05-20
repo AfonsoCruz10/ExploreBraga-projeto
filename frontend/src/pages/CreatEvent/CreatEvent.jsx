@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import Header from "../../components/Header/Header.jsx";
 import styles from "./CreatEvent.module.css";
 import { useCreatEvent } from "../../hooks/useCreatEvent.jsx";
-import { FileUploader } from "react-drag-drop-files";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes,faPlus } from '@fortawesome/free-solid-svg-icons';
+import Footer from "../../components/Footer/Footer.jsx";
 
 function CreateEvent() {
     const { createEvent, isLoading, error } = useCreatEvent();
@@ -89,18 +89,19 @@ function CreateEvent() {
         }
     };
 
+
     return (
         <>
             <Header />
             <div className="body">
-                <div className={styles.container}>
+                <div className={"defaultContainer " + styles.container}>
                     {isLoading ? (
                         <div className='spinner'></div>
                     ) : (
                         <>
-                            <h2>Create Event</h2>
+                            <h2>Crie o seu evento ...</h2>
                             <form className={styles.form} onSubmit={handleSubmit}>
-                                <select value={eventData.eventType} onChange={handleInputChange} name="eventType" className={styles.select} required>
+                                <select value={eventData.eventType} onChange={handleInputChange} name="eventType" className={styles.select + ' defaultselect'} >
                                     <option value="">Escolha uma categoria</option>
                                     <option value="Cultura">Cultura</option>
                                     <option value="Desporto">Desporto</option>
@@ -109,16 +110,25 @@ function CreateEvent() {
                                     <option value="Lazer">Lazer</option>
                                     <option value="Turismo">Turismo</option>
                                 </select>
-                                <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} />
-                                <input type="datetime-local" placeholder="Data inicial" name="eventBegDate" value={eventData.eventBegDate} onChange={handleInputChange} />
-                                <input type="datetime-local" placeholder="Data final" name="eventEndDate" value={eventData.eventEndDate} onChange={handleInputChange} />
-                                <textarea placeholder="Descrição" name="eventDescription" value={eventData.eventDescription} onChange={handleInputChange} />
-                                <input type="text" placeholder="Idade recomendada" name="eventAge" value={eventData.eventAge} onChange={handleInputChange} />
-                                <input type="text" placeholder="Preço" name="eventPrice" value={eventData.eventPrice} onChange={handleInputChange} />
-                                <input type="text" placeholder="Endereço" name="eventAddress" value={eventData.eventAddress} onChange={handleInputChange} />
+                                <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} className={'defaultInput' }/>
+                                <p>Data/Hora:</p>
+                                <div className={styles.inputWrapper}>
+                                    <p className={styles.p}>Inicial: </p>
+                                    <input type="datetime-local" placeholder="Data inicial" name="eventBegDate" value={eventData.eventBegDate} onChange={handleInputChange} className={'defaultInput'}/>
+                                    <p className={styles.p}>Final: </p>
+                                    <input type="datetime-local" placeholder="Data final" name="eventEndDate" value={eventData.eventEndDate} onChange={handleInputChange} className='defaultInput'/>
+                                </div>
+                                <textarea placeholder="Descrição" name="eventDescription" value={eventData.eventDescription} onChange={handleInputChange} className='defaultInput'/>
+                                
+                                <div className={styles.inputWrapper}>
+                                    <input type="number" placeholder="Idade recomendada" name="eventAge" value={eventData.eventAge} onChange={handleInputChange} className='defaultInput' min="0"/>
+                                    <input type="number" placeholder="Preço" name="eventPrice" value={eventData.eventPrice} onChange={handleInputChange} className='defaultInput' min="0"/>
+                                </div>
+
+                                <input type="text" placeholder="Endereço" name="eventAddress" value={eventData.eventAddress} onChange={handleInputChange} className='defaultInput'/>
                                 <div>
                                     <input type="file" className="input-field" onChange={(e) => handleImageChange(e.target.files)} style={{ display: 'none' }} id="file" multiple/>
-                                    <label htmlFor="file" className={styles.fileInput}>
+                                    <label htmlFor="file" className={"defaultButton " + styles.fileInput}>
                                         <FontAwesomeIcon icon={faPlus}/>
                                         <span>Adicionar fotos</span>
                                     </label>
@@ -137,13 +147,14 @@ function CreateEvent() {
                                     )}
                                 </div>
 
-                                <button type="submit"  className={styles.buttonSubmite}>Create Event</button>
+                                <button type="submit"  className={"defaultButton " + styles.buttonSubmite} disabled={isLoading}>Submeter</button>
                             </form>
                             {error && <p className="error">{error}</p>}
                         </>
                     )}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

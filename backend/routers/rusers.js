@@ -72,7 +72,8 @@ router.post('/createNewUser', async (req, res) => {
             EventHasInterest: [],
             LocalCreator: [],
             LocalReviews: [],
-            LocalFavorites: []
+            LocalFavorites: [],
+            ProfileImage:""
         });
 
         //Salvar o utilizador na base de dados
@@ -237,6 +238,12 @@ router.put("/updateAccount", authPage, async (req, res) => {
             user.email = req.body.newEmail;
         } 
 
+        // Verifique se uma nova imagem de perfil foi enviada
+        if (req.body.NewProfileImage) {
+            // Atualize o campo ProfileImage com a nova imagem de perfil
+            user.ProfileImage = req.body.NewProfileImage;
+        }
+
         // Salve as alterações no banco de dados
         await user.save();
 
@@ -258,5 +265,23 @@ router.put("/updateAccount", authPage, async (req, res) => {
     }
 });
 
+
+router.post('/enviaremail', authPage, async (req, res) => {
+    const { feedback } = req.body;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: 'afonsocru1001@gmail.com',
+        subject: 'Feedback do Usuário',
+        text: `Feedback do usuário: ${feedback}`
+    };
+
+    try {
+        res.status(200).send('E-mail enviado com sucesso!');
+    } catch (error) {
+        console.error('Erro ao enviar e-mail:', error);
+        res.status(500).send('Erro ao enviar e-mail.');
+    }
+});
 
 export default router;

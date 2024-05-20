@@ -125,15 +125,13 @@ function Temp(props) {
     return (
         <>
             <p className={props.name}>
-                <img src={emoji} style={{ height: "25px", marginLeft: "20px" }} />
+                <img src={emoji} style={{ height: "30px", marginLeft: "20px" }} />
             </p>
             <p className={props.name} style={{ color: "white" }} >
 
                 {/* Exibe a temperatura arredondada e colorida, juntamente com o nome da cidade */}
                 {Math.round(temperature)} ºC
-                < span style={{ color: getTemperatureColor(temperature) }
-                }>
-                </span >
+                < span style={{ color: getTemperatureColor(temperature) }} />
             </p >
 
         </>

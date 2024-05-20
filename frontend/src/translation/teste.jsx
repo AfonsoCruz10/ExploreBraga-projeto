@@ -1,1 +1,0 @@
-import i18next from 'https://deno.land/x/i18next/index.js'

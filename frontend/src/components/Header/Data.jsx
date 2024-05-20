@@ -21,7 +21,7 @@ function Data() {
     }, []); // Executa apenas uma vez no início
 
     // Array de meses para mapear o número do mês para o nome do mês
-    const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    const meses = ["Jan", "Fev", "Mar", "Abr", "Maio", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
     // Array de dias da semana para mapear o número do dia para o nome do dia
     const dias_da_semana = ["Domingo", "Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado"];

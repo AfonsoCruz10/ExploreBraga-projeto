@@ -1,40 +1,32 @@
 .LogIn {
   position: relative;
-  width: 400px;
+  width: 500px;
   height: auto;
-  color: #000000;
-  background-color: rgb(255, 255, 255);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-  padding: 50px 35px;
-  margin: 110px auto; 
+  margin: 50px auto;
 }
 
-.LogIn input[type="text"],
-.LogIn input[type="password"] {
-  display: block;
-  height: 50px;
-  width: 97%;
-  background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 3px;
-  padding-left: 10px;
-  margin-top: 8px;
-  font-size: 14px;
-  font-weight: 300;
-}
-
-.LogIn button {
-  margin-top: 50px;
-  width: 100%;
-  background-color: #ffffff;
-  color: #080710;
-  padding: 15px 0;
+.LogIn button[type="submit"] {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  padding: 15px 20px;
   font-size: 18px;
-  font-weight: 600;
-  border-radius: 5px;
+  width: 100%;
+}
+
+.form input[type="text"], 
+.form input[type="password"]{
+  height: 40px;
+  width: 97%;
+}
+
+.eyeIcon {
+  position: absolute;
+  top: 43%;
+  right: 10px;
+  transform: translateY(-50%);
   cursor: pointer;
 }
 
-
+.eyeIcon:hover {
+  color: #af2431;
+}

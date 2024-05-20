@@ -2,43 +2,7 @@
   position: relative;
   width: 700px;
   height: auto;
-  color: #000000;
-  background-color: rgb(255, 255, 255);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-  padding: 50px 35px;
-  margin: 110px auto;
-}
-
-.select {
-  width: 97%;
-  height: 40px;
-  margin-bottom: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  outline: none;
-  transition: border-color 0.3s;
-}
-
-.select:focus {
-  border-color: #6e6e6e; 
-}
-
-.form input,
-.form textarea {
-  padding-left: 10px;
-  display: block;
-  height: 50px;
-  width: 97%;
-  background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 4px;
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 300;
+  margin: 50px auto;
 }
 
 .form textarea {
@@ -47,36 +11,43 @@
   min-height: 150px;
 }
 
-.customFileInput {
-  border: 1px solid #ff0000;
-  border-radius: 4px;
-  padding: 8px;
-  transition: border-color 0.3s;
+.form input {
+  height: 40px;
+  width: 97%;
 }
 
-.customFileInput:hover {
-  border-color: #ff0000;
+.select2{
+  width: 99%;
+  height: 40px;
 }
 
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+
+.inputWrapper input[type="datetime-local"] {
+  width: calc(50% - 10px); 
+  margin-right: 10px; 
+  margin-left: 10px; 
+}
+
+.inputWrapper input[type="number"] {
+  width: calc(50% - 5px); 
+  margin-right: 10px; 
+}
+
+.p{
+  font-size: 16px;
+  margin-bottom: 26px;
+}
 
 .fileInput {
   display: inline-block;
-  background-color: #ffffff;
-  color: #080710;
   padding: 10px 15px;
   font-size: 16px;
-  font-weight: 600;
-  border: 2px solid #080710;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
 }
-
-.fileInput:hover {
-  background-color: #080710;
-  color: #ffffff;
-}
-
 
 .imageWrapper {
   position: relative;
@@ -95,25 +66,25 @@
   position: absolute;
   top: 5px;
   right: 5px; 
+  color: black;
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 50%;
   padding: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .removeButton:hover {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: #af2431;
+  opacity: 0.8;
 }
 
 .buttonSubmite {
-  margin-top: 50px;
-  width: 100%;
-  background-color: #ffffff;
-  color: #080710;
-  padding: 15px 0;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  padding: 15px 20px;
   font-size: 18px;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
+  width: 100%;
 }
+

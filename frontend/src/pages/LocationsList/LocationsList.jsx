@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import Header from "../../components/Header/Header.jsx";
-import { FaArrowDown } from 'react-icons/fa';
+import { SlArrowDown } from 'react-icons/sl';
 import { useSelectLocation } from '../../hooks/useSelectLocation.jsx';
 import LocaisCard from "../../components/LocaisCard/LocaisCard.jsx";
 import styles from "./LocationsList.module.css"
-import Modal from "react-modal";
 import { Categories_List } from "../../CategoriesMenuGrid/CategoriesGrid.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
 
 
 function LocationsList({ userLocationChoice, setUserLocationChoice }) {
     const [searchCat, setSearchCat] = useState(userLocationChoice);
-    console.log("Valor inicial de searchCat:", searchCat);
     const [locaisToShow, setLocaisToShow] = useState(5);
-    const [modalOpen, setModalOpen] = useState(false);
+    const [searchLocalName, setSearchLocalName] = useState("");
     const { selectLocationsConnect, locations, isLoading, error } = useSelectLocation();
-
+    
+    console.log("Valor inicial de searchCat:", searchCat);
     console.log("Escolha da categoria no locationlist:", userLocationChoice);
 
     const handleChangeCat = (event) => {
@@ -33,59 +33,38 @@ function LocationsList({ userLocationChoice, setUserLocationChoice }) {
         showLocations();
     }, []);
 
-
-    const openModal = () => {
-        setModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalOpen(false);
+    const handleInputChange = (e) => {
+        setSearchLocalName(e.target.value);
     };
 
     const handleLoadMore = () => {
         setLocaisToShow(locaisToShow + 5);
     };
 
-
-    useEffect(() => {
-        console.log("Locations:", locations);
-    }, [locations]);
-
     const filteredLocations = locations.filter((local) => {
+        const localNameMatch = searchLocalName === "" || local.Name.toLowerCase().includes(searchLocalName.toLowerCase());
         const categoriaMatch = searchCat === "All Places" || local.Type === searchCat;
-        return categoriaMatch;
+        return localNameMatch && categoriaMatch;
     }).slice(0, locaisToShow);
 
     return (
         <>
             <Header />
             <div className="body">
-                <h1 className="titulo">Locations</h1>
-                <div className={styles.wrapper}>
-                    <div>
-                        <h1>Locations</h1>
+                <h1 className="titulo">Locais</h1>
+                <div>
+
+                    <div className={styles["search-container"]}>
+
+                        <input type="text" placeholder="Pesquisar por local" name="localName" value={searchLocalName} onChange={handleInputChange} className={'defaultInput ' + styles.inputField}/>
+
+                        <select value={searchCat} onChange={handleChangeCat} className={styles.select + ' defaultselect'}>
+                            {Categories_List.map((category, index) => (
+                                <option key={index} value={category.title}>{category.title}</option>
+                            ))}
+                        </select>
+
                     </div>
-
-                    <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
-
-                    <Modal
-                        isOpen={modalOpen}
-                        onRequestClose={closeModal}
-                        overlayClassName={styles["ReactModal__Overlay"]}
-                        className={styles["ReactModal__Content"]}
-                    >
-
-                        <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
-
-                        <div className={styles["search-container"]}>
-                            <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
-                                {Categories_List.map((category, index) => (
-                                    <option key={index} value={category.title}>{category.title}</option>
-                                ))}
-                            </select>
-
-                        </div>
-                    </Modal>
 
                     <div className={styles.cartoes}>
                         {isLoading ? (
@@ -94,30 +73,37 @@ function LocationsList({ userLocationChoice, setUserLocationChoice }) {
                             <p className="error">{error}</p>
                         ) : (
                             <div>
-                                {filteredLocations.map((local, index) => (
-                                    <LocaisCard
-                                        key={index}
-                                        id={local._id}
-                                        Type={local.Type}
-                                        Name={local.Name}
-                                        Adress={local.Address}
-                                        Creator={local.username}
-                                    />
-                                ))}
-                                <div>
-                                    {locations.length > locaisToShow && (
-                                        <div onClick={handleLoadMore}>
-                                            <FaArrowDown />
-                                        </div>
-                                    )}
-                                </div>
+                                {filteredLocations.length  ? (
+                                    <>                                    
+                                    {filteredLocations.map((local, index) => (
+                                        <LocaisCard
+                                            key={index}
+                                            id={local._id}
+                                            Image={local.Image}
+                                            Type={local.Type}
+                                            Name={local.Name}
+                                            Adress={local.Address}
+                                            Creator={local.username}
+                                        />
+                                    ))}
+                                    <div>
+                                        {filteredLocations.length > locaisToShow && (
+                                            <div className={styles.Arrow} onClick={handleLoadMore}>
+                                                <SlArrowDown /> 
+                                            </div>
+                                        )}
+                                    </div>
+                                    </>
+
+                                ) :(
+                                    <p>Nenhum local encontrado!</p>
+                                )}
                             </div>
                         )}
                     </div>
-
                 </div>
-
             </div>
+            <Footer />
         </>
     );
 }

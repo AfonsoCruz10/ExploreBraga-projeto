@@ -1,45 +1,9 @@
-
 .userEventsContainer {
-    margin: 50px 100px;
-    text-align: center;
-    border: 1px solid #ccc;
-    color: black;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-.eventTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.eventTable th,
-.eventTable td {
-    border: 1px solid #ccc;
-    padding: 8px;
-}
-
-.eventTable th {
-    background-color: #f2f2f2;
-}
-
-.eventItem {
-    margin-bottom: 20px;
-}
-
-.eventItem p {
-    margin: 5px 0;
-}
-
-.eventItem p strong {
-    font-weight: bold;
-    margin-right: 5px;
+    margin: auto 100px;
 }
 
 .buttonEdit {
-    background-color: #4CAF50;
+    background-color: #008500;
     color: white;
     padding: 8px 20px;
     border: none;
@@ -49,11 +13,12 @@
 }
 
 .buttonEdit:hover {
-    background-color: #45a049;
+    opacity: 0.8;
+    transition: 0.3s;
 }
 
 .buttonDelete {
-    background-color: #f44336;
+    background-color: #af2431;
     color: white;
     padding: 8px 20px;
     border: none;
@@ -63,7 +28,8 @@
 }
 
 .buttonDelete:hover {
-    background-color: #d32f2f;
+    opacity: 0.8;
+    transition: 0.3s;
 }
 
 

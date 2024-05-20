@@ -36,13 +36,13 @@ function Log_In() {
         <>
             <Header />
             <div className="body">
-                <div className={style.LogIn}>
+                <div className={"defaultContainer " + style.LogIn}>
                     {isLoading ? (
                         <div className='spinner'></div>
                     ) : (
                         <>
-                        <h1><b>Login</b></h1>
-                        <form onSubmit={handleLogin}>
+                        <h1><b>Iniciar sessão</b></h1>
+                        <form className={style.form} onSubmit={handleLogin}>
                             <div>
                                 <input 
                                     type="text"
@@ -50,6 +50,7 @@ function Log_In() {
                                     name="email"
                                     value={formData.email} 
                                     onChange={handleChange} 
+                                    className='defaultInput'
                                 />
                             </div>
                             <div style={{ position: 'relative' }}>
@@ -59,11 +60,12 @@ function Log_In() {
                                     name="password" 
                                     value={formData.password} 
                                     onChange={handleChange}
+                                    className='defaultInput'
                                 />
                                 <FontAwesomeIcon
                                     icon={showPassword ? faEyeSlash : faEye}
                                     onClick={handleTogglePassword}
-                                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                                    className={style.eyeIcon}
                                 />
                             </div>
                             <div>
@@ -73,12 +75,12 @@ function Log_In() {
                                     checked={remember}
                                     onChange={() => setRemember(!remember)}
                                 />
-                                <label htmlFor="rememberCheckbox">Remember me</label>
+                                <label htmlFor="rememberCheckbox">Lembra-me</label>
                             </div>
-                            <button type="submit" disabled={isLoading}>Log in</button>
+                            <button type="submit" className="defaultButton"  disabled={isLoading}>Entrar</button>
                         </form>
                         {error && <p className="error">{error}</p>}
-                        <Link to="/signup">Create User</Link>
+                        <Link to="/signup"> <b>Registar conta</b></Link>
                         </>
                     )}
                 </div>

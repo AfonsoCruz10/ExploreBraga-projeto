@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 export const useUserEvents = () => {
     const [userEvents, setUserEvents] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [errorDelete, setErrorDelete] = useState(null);
+    const { enqueueSnackbar } = useSnackbar();
 
     const userEventsConnect = async () => {
         try {
@@ -41,19 +42,24 @@ export const useUserEvents = () => {
             const token = userLocalStorage.token;
 
             // Faça a solicitação DELETE para excluir o evento com o ID fornecido
-            await axios.delete(`http://localhost:5555/events/eventDelet`, {
+            const response = await axios.delete(`http://localhost:5555/events/eventDelet`, {
                 data: { eventId },
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            setErrorDelete(null);
+            if(response.status === 200){
+                 // Atualiza a lista de eventos do usuário após a exclusão bem-sucedida
+                 setUserEvents((prevEvents) => prevEvents.filter(event => event._id !== eventId));
+                 enqueueSnackbar('Evento excluído com sucesso!', { variant: 'success' });
+            }
         } catch (error) {
-            setErrorDelete(error.response.data.message);
+            console.error('Error deleting event:', error);
+            enqueueSnackbar('Erro ao excluir evento.', { variant: 'error' });
         } finally{
             setIsLoading(false);
         }
     };
 
-    return { userEventsConnect, eventDelete, userEvents,  isLoading, error, errorDelete };
+    return { userEventsConnect, eventDelete, userEvents,  isLoading, error };
 };

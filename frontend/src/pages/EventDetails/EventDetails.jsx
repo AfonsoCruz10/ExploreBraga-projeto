@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Header from '../../components/Header/Header.jsx';
 import styles from './EventDetails.module.css';
-import { FaArrowLeft, FaArrowRight, FaHeart, FaShare} from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaHeart, FaShare, FaUser} from 'react-icons/fa';
 import { useEventDetails } from '../../hooks/useEventDetails.jsx';
 import MyMap from '../../components/MyMap.jsx';
+import Footer from "../../components/Footer/Footer.jsx";
+import { useSnackbar } from 'notistack';
 
 function EventDetails() {
     const [imageIndex, setImageIndex] = useState(0);
     const { buscarEventDetails, interested, event, counter, check, isLoading, errorBuscar, errorInterested } = useEventDetails();
     const { eventId } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,19 +27,20 @@ function EventDetails() {
     }, [eventId]);
 
     const handleShare = () => {
-        // Verifica se o navegador suporta a API de compartilhamento
         if (navigator.share) {
-            // Se suportado, chama a API de compartilhamento
             navigator.share({
                 title: document.title,
                 text: 'Confira este evento!',
                 url: window.location.href
             })
-            .then(() => console.log('Compartilhado com sucesso!'))
-            .catch((error) => console.error('Erro ao compartilhar:', error));
+            .then(() => {
+                enqueueSnackbar('Evento compartilhado com sucesso!', { variant: 'success' });
+            })
+            .catch(() => {
+                enqueueSnackbar('Erro ao compartilhar evento.', { variant: 'error' });
+            });
         } else {
-            // Se não suportado, mostra uma mensagem de fallback
-            alert('Compartilhamento não suportado neste navegador.');
+            enqueueSnackbar('Compartilhamento não suportado neste navegador.', { variant: 'info' });
         }
     };
 
@@ -64,7 +68,7 @@ function EventDetails() {
         <>
             <Header />
             <div className="body">
-                <div className={styles.eventDetailsContainer}>
+                <div className={"defaultContainer " + styles.eventDetailsContainer}>
                     {isLoading ? (
                         <div className='spinner'></div>
                     ) : (
@@ -114,7 +118,19 @@ function EventDetails() {
                                             <p className={styles.price}>Preço: { (event.Price === 0) ? 'Grátis' : event.Price.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}</p>
                                             <p className={styles.date}>Data inicio: {showDataTime(event.BegDate)}</p>
                                             <p className={styles.date}>Data final: {showDataTime(event.EndDate)}</p>
-                                            <p className={styles.creator}>Organizador: {event.username}</p>
+                                            <p className={styles.address}>Idade recomendada: {event.AgeRecomendation} </p>
+                                            
+                                            <div className={styles.avatarWrapper}>
+                                    
+                                                <label className={styles.avatarLabel}>  
+                                                    {event.ProfileImage ?
+                                                        <img src={event.ProfileImage} alt="Avatar do usuário"/>
+                                                        : <FaUser className={styles.defaultAvatar} />
+                                                    }
+                                                </label>
+
+                                                <p className={styles.creator}>{event.username}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 
@@ -128,6 +144,7 @@ function EventDetails() {
                     )}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

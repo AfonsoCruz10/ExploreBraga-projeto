@@ -7,15 +7,6 @@
     grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
-.titulo {
-    margin: auto;
-    grid-row-start: 2;
-    grid-row-end: 3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .info {
     grid-row-start: 3;
     grid-row-end: 5;
@@ -26,6 +17,8 @@
 
 .texto {
     width: 70%;
+    text-align: center;
+    font-size: 16px;
 }
 
 .pessoasWrapper {
@@ -46,7 +39,7 @@
 }
 
 .pess {
-    background-color: #d9d9d9;
+    background-color: #e6e6e6;
     width: 300px;
     height: 400px;
     display: flex;
@@ -58,7 +51,7 @@
 }
 
 .pess:hover {
-    background-color: #af1423;
+    background-color: #af2431;
 }
 
 
@@ -75,7 +68,7 @@
 }
 
 .imagemAfonso {
-    background-image: url('afonso.jpeg');
+    background-image: url('afonsofoto.jpg');
 }
 
 .imagemHenrique {

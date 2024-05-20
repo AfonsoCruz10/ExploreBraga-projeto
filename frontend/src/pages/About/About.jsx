@@ -1,18 +1,16 @@
 import styles from "./About.module.css";
 import Header from "../../components/Header/Header.jsx";
+import Footer from "../../components/Footer/Footer.jsx";
 
 function About() {
     return (
         <>
             <Header />
             <div className="body">
-                <div className={styles.titulo}>
-                    <h1 style={{ fontFamily: 'Arial, sans-serif', fontSize: '60px', padding: '35px', marginBottom: '5px' }}>ABOUT US</h1>
-                </div>
+                <h1 className="titulo">Sobre nós</h1>
                 <div className={styles.info}>
                     <div className={styles.texto}>
-                        <p> We are 4 Science Computer students at University of Minho and we decided to do this web app as our degree final project.
-                            We hope you like it as much as we had fun developing it.
+                        <p> Nós somos 4 estudantes de Ciência da Computação na Universidade do Minho e decidimos fazer este aplicativo web como nosso projeto final de graduação. Esperamos que você goste tanto quanto nos divertimos desenvolvendo-o.
                         </p>
                     </div>
                 </div>
@@ -47,6 +45,7 @@ function About() {
                     </div>
                 </div>
             </div >
+            <Footer />
         </>
     );
 }

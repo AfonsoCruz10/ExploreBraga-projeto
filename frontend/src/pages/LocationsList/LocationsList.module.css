@@ -1,105 +1,39 @@
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: red;
-}
-
 .cartoes {
-    overflow: scroll;
-
-    background-color: blue;
-    display: grid;
-    grid-template-rows: auto 300px;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-    grid-gap: 1rem;
-    height: auto;
+    margin: auto 200px;
+    margin-bottom: 50px;
+    text-align: center;
 }
 
-
-/* Estilos para o modal */
-.ReactModal__Overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    /* centraliza horizontalmente */
-    align-items: center;
-    /* centraliza verticalmente */
-}
-
-.ReactModal__Content {
-    outline: none;
-    position: relative;
-    background-color: #ffffff;
-    /* cor de fundo */
-    border: 1px solid #ccc;
-    /* borda */
-    border-radius: 10px;
-    /* bordas arredondadas */
-    padding: 20px;
-    /* espaçamento interno */
-    max-width: 80%;
-    /* largura máxima */
-    max-height: 80%;
-    /* altura máxima */
-    overflow-y: auto;
-    /* habilita rolagem vertical */
-}
-
-/* Estilos para o conteúdo dentro do modal */
 .search-container {
-    margin: 20px;
-    /* margem inferior */
-}
-
-/* Estilos para o botão de fechar */
-.close-button {
-    position: absolute;
-    top: 0px;
-    right: 10px;
-    cursor: pointer;
-    font-size: 30px;
-    color: #000000;
-}
-
-.caixaevents {
-    width: 100%;
-    /* largura total */
-    padding: 10px;
-    /* espaçamento interno */
-    border: 1px solid #ccc;
-    /* borda */
-    border-radius: 5px;
-    /* bordas arredondadas */
-    font-size: 16px;
-    /* tamanho da fonte */
-    margin-bottom: 20px;
-    /* margem inferior */
-    cursor: pointer;
-}
-
-.calendarioE {
-    width: 100%;
-    /* largura total */
-    border: 1px solid #ccc;
-    /* borda */
-    border-radius: 5px;
-    /* bordas arredondadas */
-    color: red;
-}
-
-.load-more {
+    width: 90%;
     display: flex;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
+    margin-bottom: 20px;
+}
+
+.inputField {
+    height: 30px;
+    width: 30%;
+}
+
+.select{
+    margin-left: 30px;
+    width: 20%;
+    height: 30px;
+}
+
+.Arrow {
+    background-color: transparent;
+    color: #e6e6e6;
     cursor: pointer;
-    margin: 20px;
-    font-size: 20px;
-    color: red;
+    border: 0;
+    font-size: 50px;
+    left: 50%;
+    text-shadow: 25px 25px 50px #121212;
+}
+
+.Arrow:hover {
+    color: #af2431;
+    transition: 0.3s;
 }

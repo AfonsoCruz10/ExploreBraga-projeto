@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useAuthContext } from './useAuthContext'; 
+import { useSnackbar } from 'notistack';
 
 export const useInfoAccount = () => {
     const [info, setInfo] = useState({});
@@ -9,6 +10,7 @@ export const useInfoAccount = () => {
     const { dispatch } = useAuthContext();
     const [errorNewEmail, setErrorNewEmail] = useState('');
     const [errorNewUsername, setErrorNewUsername] = useState('');
+    const { enqueueSnackbar } = useSnackbar();
 
     const useraccountConnect = async () => {
         try {
@@ -35,7 +37,7 @@ export const useInfoAccount = () => {
         }
     };
 
-    const updateUserInfo = async (newUsername, newEmail) => {
+    const updateUserInfo = async (newUsername, newEmail, NewProfileImage) => {
         try {
             setIsLoading(true);
             // Obtenha o token JWT do localStorage
@@ -43,7 +45,7 @@ export const useInfoAccount = () => {
             const token = userLocalStorage.token;
             
             const response = await axios.put(`http://localhost:5555/users/updateAccount`, 
-                    { newUsername, newEmail },{
+                    { newUsername, newEmail, NewProfileImage},{
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -63,6 +65,7 @@ export const useInfoAccount = () => {
 
                 // Atualize o estado do usuário com os novos dados
                 setInfo(response.data.user);
+                enqueueSnackbar('Conta atualizada com sucesso!', { variant: 'success' });
             }
         } catch (error) {
             if (newUsername === ""){

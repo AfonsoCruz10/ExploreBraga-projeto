@@ -1,16 +1,10 @@
 .adminEventsContainer {
-    margin: 50px 100px;
+    margin: auto 100px;
     text-align: center;
-    border: 1px solid #ccc;
-    color: black;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
 }
 
-
 .sectionButtonContainer {
+    text-align: center;
     margin-bottom: 20px;
 }
 
@@ -22,28 +16,104 @@
 .activeButton {
     cursor: pointer;
     margin-right: 20px;
+    color: #af2431;
+    font-size: 18px;
     font-weight: bold;
     text-decoration: underline;
 }
 
-.eventTable {
-    width: 100%;
-    border-collapse: collapse;
+
+
+.Wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
 }
 
-.eventTable th,
-.eventTable td {
+.searchInputs{
+    flex-direction: row;
+    align-items: center;
+}
+
+.inputField {
+    height: 30px;
+    width: 30%;
+}
+
+.select{
+    margin-left: 10px;
+    width: 20%;
+    height: 30px;
+}
+
+.button-text {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button-text:hover {
+    color: #af2431;
+}
+
+/* Estilos para o modal */
+.ReactModal__Overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+.ReactModal__Content {
+    outline: none;
+    position: relative;
+    background-color: #e6e6e6;
     border: 1px solid #ccc;
-    padding: 8px;
+    border-radius: 10px; 
+    padding: 20px; 
+    max-width: 80%; 
+    max-height: 80%; 
+    overflow-y: auto; 
 }
 
-.eventTable th {
-    background-color: #f2f2f2;
+.search-container {
+    margin: 20px;
 }
+
+.select2{
+    width: 99%;
+    height: 40px;
+}
+
+.close-button {
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 30px;
+    color: #000000;
+}
+
+.calendarioE {
+    width: 99%;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    color: #af2431;
+}
+
+
+
+
+
 
 .buttonAccept {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #008500;
+    color:#e6e6e6;
     padding: 8px 20px;
     border: none;
     border-radius: 4px;
@@ -52,12 +122,12 @@
 }
 
 .buttonAccept:hover {
-    background-color: #45a049;
+    opacity: 0.8;
 }
 
 .buttonCancel {
-    background-color: #f44336;
-    color: white;
+    background-color: #af2431;
+    color: #e6e6e6;
     padding: 8px 20px;
     border: none;
     border-radius: 4px;
@@ -66,12 +136,12 @@
 }
 
 .buttonCancel:hover {
-    background-color: #d32f2f;
+    opacity: 0.8;
 }
 
 .buttonPending {
     background-color: rgb(255, 145, 0);
-    color: white;
+    color: #e6e6e6;
     padding: 8px 20px;
     border: none;
     border-radius: 4px;
@@ -80,12 +150,12 @@
 }
 
 .buttonPending:hover {
-    background-color: #c99915;
+    opacity: 0.8;
 }
 
 .buttonInfo {
     background-color: blue;
-    color: white;
+    color: #e6e6e6;
     padding: 8px 20px;
     border: none;
     border-radius: 4px;
@@ -94,29 +164,42 @@
 }
 
 .buttonInfo:hover {
-    background-color: #270094;
+    opacity: 0.8;
 }
 
-.userTable {
+.avatarWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
+}
+
+.avatarLabel {
+    position: relative;
+    width: 30px; 
+    height: 30px;
+    left: 0px;
+    border-radius: 50%; 
+    background-color: #ccc;
+    overflow: hidden;
+}
+
+.avatarLabel .defaultAvatar {
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 10px; 
+    height: 10px;
+}
+
+.avatarLabel img {
     width: 100%;
-    border-collapse: collapse;
+    height: 100%;
+    object-fit: cover;
+    object-position: center; 
 }
 
-.userTable th, .userTable td {
-    border: 1px solid #cfcfcf;
-    padding: 8px;
-    text-align: left;
-}
-
-.userTable th {
-    background-color: #e7e7e7;
-    text-align: left;
-}
-
-.userTable tr:nth-child(even) {
-    background-color: #e7e7e7;
-}
-
-.userTable tr:hover {
-    background-color: #ddd;
+.creator {
+    position: relative;
+    margin-left: 10px;
 }

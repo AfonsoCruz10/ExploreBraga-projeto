@@ -33,22 +33,32 @@ function Eventscard({ id, categoria, evento, horainit, horafinal, morada, preco,
     if (mesmoDia) {
       return `${new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
     } else {
-      return `${new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })} - ${new Date(horafinal).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
+      return `${new Date(horainit).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit'})} - ${new Date(horafinal).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })}`;
     }
   }
 
   // Função para formatar dia da semana 
-  function formatarDiaSemana(data) {
+  function formatarDiaSemana({horainit,horafinal}) {
     const diasDaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-    const diaSemana = diasDaSemana[data.getDay()];
-    return `${diaSemana}`;
+    const diaSemanainit = diasDaSemana[horainit.getDay()];
+    const mesmoDia = horainit.getDate() === horafinal.getDate() &&
+                      horainit.getMonth() === horafinal.getMonth() &&
+                      horainit.getFullYear() === horafinal.getFullYear();
+
+    if (mesmoDia) {
+      return `${diaSemanainit}`;
+    }else{
+      const diaSemanafim = diasDaSemana[horafinal.getDay()];
+      return `${diaSemanainit} - ${diaSemanafim}`;
+    }
+    
   }
 
   return (
     <>
       <div className={styles.card} onClick={() => navigate(`/events/${id}`)}>
         <div className={styles.card1}>
-          <p className={styles.carddata}>{formatarDiaSemana(horainit)}</p>
+          <p className={styles.carddata}>{formatarDiaSemana({ horainit, horafinal })}</p>
           <p className={styles.carddata}>{mostrarData({ horainit, horafinal }) }</p>
         </div>
 

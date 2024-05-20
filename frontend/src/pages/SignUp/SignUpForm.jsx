@@ -39,13 +39,13 @@ function SignUpForm() {
       <Header />
       <div className="body">
 
-        <div className={style.SignUp}>
+        <div className={"defaultContainer " + style.SignUp}>
           {isLoading ? (
             <div className='spinner'></div>
           ) : (
             <>
-              <h1><b>Sign Up</b></h1>
-              <form onSubmit={handleSubmit}>
+              <h1><b>Registo</b></h1>
+              <form className={style.form} onSubmit={handleSubmit}>
                 <div>
                   <input
                     type="text"
@@ -53,6 +53,7 @@ function SignUpForm() {
                     name="username"
                     value={formData.username}
                     onChange={handleChange}
+                    className='defaultInput'
                   />
                 </div>
                 <div>
@@ -62,6 +63,7 @@ function SignUpForm() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    className='defaultInput'
                   />
                 </div>
                 <div style={{ position: 'relative' }}>
@@ -71,11 +73,12 @@ function SignUpForm() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    className='defaultInput'
                   />
                   <FontAwesomeIcon
                     icon={showPassword ? faEyeSlash : faEye}
                     onClick={handleTogglePassword}
-                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                    className={style.eyeIcon}
                   />
                 </div>
                 <div style={{ position: 'relative' }}>
@@ -85,26 +88,28 @@ function SignUpForm() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
+                    className='defaultInput'
                   />
                   <FontAwesomeIcon
                     icon={showPassword ? faEyeSlash : faEye}
                     onClick={handleTogglePassword}
-                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
+                    className={style.eyeIcon}
                   />
                 </div>
                 <div>
                   <input
                     type="date"
-                    placeholder="Date of Birth"
+                    placeholder="Data de nascimento"
                     name="birthDate"
                     value={formData.birthDate}
                     onChange={handleChange}
+                    className='defaultInput'
                   />
                 </div>
-                <button type="submit" disabled={isLoading}> Submit </button>
+                <button type="submit" className={"defaultButton " + style.buttonSubmite} disabled={isLoading}> Submeter </button>
               </form>
               {error && <p className="error">{error}</p>}
-              <Link to="/login">Already have an account? Login here</Link>
+              <Link to="/login"><b>Já tens conta! Iniciar sessão aqui.</b></Link>
             </>
           )}
         </div>

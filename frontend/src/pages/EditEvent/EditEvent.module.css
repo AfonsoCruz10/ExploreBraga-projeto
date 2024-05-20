@@ -1,21 +1,18 @@
-.container {
-  height: auto;
-  color: #000000;
-  background-color: rgb(255, 255, 255);
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  border: 2px solid #ccc;
-  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-  padding: 30px;
+.containerEventsDetails {
   margin: 50px 100px;
 }
 
+.containerForm{
+  position: relative;
+  width: 700px;
+  height: auto;
+  margin: 50px auto;
+}
+
 .title {
-  font-family: Arial, sans-serif;
   font-size: 40px;
   margin-bottom: 25px;
 }
-
 
 .imageContainer {
   position: relative;
@@ -35,13 +32,13 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 36px;
-  color: #ff0000;
+  color: #af2431;
   cursor: pointer;
   z-index: 1;
 }
 
 .arrowIcon:hover {
-  color: #ff5555;
+  opacity: 0.8;
 }
 
 .arrowIcon.right {
@@ -54,147 +51,151 @@
 
 
 .eventSpace {
+  margin: 20px 0px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: flex-start;
   text-align: left;
 }
 
 .eventDetailsLeft {
-  margin: 20px;
-  flex-grow: 2.75;
-  padding-right: 20px;
+  margin-top: auto;
+  margin-right: 20px;
+  margin-bottom: auto;
+  margin-left: 0px;
+  flex-grow: 2.75; 
+  flex-basis: 0; 
 }
 
 .eventDetailsRight {
-  margin: 20px;
-  min-width: 300px; 
+  margin: auto 20px;
   flex-grow: 1;
+  flex-basis: 0;
   padding-left: 20px;
+  max-width: calc(25% - 40px);
   border-left: 2px solid #000000;
-}
-
-.editButton {
-  margin-top: 20px;
-  width: 100%;
-  background-color: #008000; 
-  color: #fff; 
-  padding: 15px 0;
-  font-size: 18px;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.editButton:hover {
-  background-color: #006400; 
 }
 
 .description,
 .date,
 .address {
-  margin-bottom: 10px;
   font-size: 16px;
 }
 
 .category,
-.price,
-.creator {
-  margin-bottom: 10px;
+.price {
   font-size: 16px;
   font-weight: bold;
 }
 
-.select {
-  width: 97%;
-  height: 40px;
-  margin-bottom: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  outline: none;
-  transition: border-color 0.3s;
+.editButton {
+  margin-top: 20px;
+  width: 100%;
+  background-color: #008500; 
+  color: #fff; 
+  padding: 15px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.select:focus {
-  border-color: #6e6e6e; 
+.editButton:hover {
+  opacity: 0.8;
 }
 
-.form input,
-.form textarea {
-  padding-left: 10px;
-  display: block;
-  height: 50px;
-  width: 97%;
-  background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 4px;
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 300;
+.backIcon {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.backIcon:hover {
+  color: #af2431;
 }
 
 .form textarea {
-  min-width: 97%;
-  max-width: 97%; 
+  width: 97%;
   min-height: 150px;
 }
 
-.fileInput {
-  display: inline-block;
-  background-color: #ffffff;
-  color: #080710;
-  padding: 10px 15px;
-  font-size: 16px;
-  font-weight: 600;
-  border: 2px solid #080710;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+.form input {
+  height: 40px;
+  width: 97%;
 }
 
-.fileInput:hover {
-  background-color: #080710;
-  color: #ffffff;
+.select2{
+  height: 40px;
+  width: 97%;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+
+.p{
+  font-size: 16px;
+  margin-bottom: 26px;
+}
+
+.inputWrapper input[type="datetime-local"] {
+  width: calc(50% - 10px); 
+  margin-right: 10px; 
+  margin-left: 10px; 
+}
+
+.inputWrapper input[type="number"] {
+  width: calc(30% - 5px); 
+  margin-right: 10px; 
+  margin-left: 10px; 
+} 
+
+.fileInput {
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 16px;
 }
 
 .imageWrapper {
   position: relative;
   display: inline-block;
-  margin-right: 10px; 
+  margin-right: 10px;   
   margin-bottom: 10px; 
 }
 
 .image {
-  max-width: 200px; 
-  height: auto;
+  width: 150px; 
+  height: 100px;
   border-radius: 5px;
 }
 
 .removeButton {
   position: absolute;
   top: 5px;
-  right: 5px; 
+  right: 5px;
+  color: black;
   background-color: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 50%;
   padding: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .removeButton:hover {
-  background-color: rgba(255, 0, 0, 0.5);
+  background-color: #af2431;
+  opacity: 0.8;
 }
 
 .buttonSubmite {
-  margin-top: 50px;
-  width: 100%;
-  background-color: #ffffff;
-  color: #080710;
-  padding: 15px 0;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  padding: 15px 20px;
   font-size: 18px;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
+  width: 100%;
 }
+
 
 

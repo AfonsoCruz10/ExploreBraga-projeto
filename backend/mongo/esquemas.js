@@ -117,6 +117,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  ProfileImage: String,
   AdminPermission: {
     type: Boolean,
     default: false

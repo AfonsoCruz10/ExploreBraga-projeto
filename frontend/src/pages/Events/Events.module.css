@@ -1,116 +1,88 @@
-
 .events {
-    margin: auto 200px;
-    text-align: center;
-  }
-  
-  .button-text {
-    font-family: Arial, sans-serif;
-    font-size: 20px;
-    cursor: pointer;
-    display: inline-block;
-    padding-right: 10px;
-    /* Espaço à direita do texto */
-    text-align: right;
-    /* Alinha o texto à direita */
-  }
-  
-  .button-text::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 10px;
-    /* Largura da área clicável à direita do texto */
-  }
-  
-  .button-text:hover {
-    color: red;
-  }
+  margin: auto 100px;
+  margin-bottom: 50px;
+  text-align: center;
+}
 
-  /* Estilos para o modal */
-  .ReactModal__Overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); 
-    display: flex;
-    justify-content: center; 
-    /* centraliza horizontalmente */
-    align-items: center; 
-    /* centraliza verticalmente */
-  }
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center;
+}
 
-  .ReactModal__Content {
-    outline: none;
-    position: relative;
-    background-color: #ffffff;
-    /* cor de fundo */
-    border: 1px solid #ccc;
-    /* borda */
-    border-radius: 10px; 
-    /* bordas arredondadas */
-    padding: 20px; 
-    /* espaçamento interno */
-    max-width: 80%; 
-    /* largura máxima */
-    max-height: 80%; 
-    /* altura máxima */
-    overflow-y: auto; 
-    /* habilita rolagem vertical */
-  }
+.inputField {
+  height: 30px;
+  width: 50%;
+}
 
-  /* Estilos para o conteúdo dentro do modal */
-  .search-container {
-    margin: 20px;
-    /* margem inferior */
-  }
+.button-text {
+  font-size: 16px;
+  cursor: pointer;
+}
 
-  /* Estilos para o botão de fechar */
-  .close-button {
-    position: absolute;
-    top: 0px;
-    right: 10px;
-    cursor: pointer;
-    font-size: 30px;
-    color: #000000;
-  }
-  
-  .caixaevents {
-    width: 100%;
-    /* largura total */
-    padding: 10px;
-    /* espaçamento interno */
-    border: 1px solid #ccc;
-    /* borda */
-    border-radius: 5px;
-    /* bordas arredondadas */
-    font-size: 16px;
-    /* tamanho da fonte */
-    margin-bottom: 20px;
-    /* margem inferior */
-    cursor: pointer;
-  }
-  
-  .calendarioE {
-    width: 100%;
-    /* largura total */
-    border: 1px solid #ccc;
-    /* borda */
-    border-radius: 5px;
-    /* bordas arredondadas */
-    color: red;
-  }
-  .load-more {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    margin: 20px; 
-    font-size: 20px;
-    color: red;
-  }
-  
+.button-text:hover {
+  color: #af2431;
+}
+
+/* Estilos para o modal */
+.ReactModal__Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+}
+
+.ReactModal__Content {
+  outline: none;
+  position: relative;
+  background-color: #e6e6e6;
+  border: 1px solid #ccc;
+  border-radius: 10px; 
+  padding: 20px; 
+  max-width: 80%; 
+  max-height: 80%; 
+  overflow-y: auto; 
+}
+
+.search-container {
+  margin: 20px;
+}
+
+
+.close-button {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 30px;
+  color: #000000;
+}
+
+.calendarioE {
+  width: 99%;
+  background-color: #ffffff;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  color: #af2431;
+}
+
+.Arrow {
+  background-color: transparent;
+  color: #e6e6e6;
+  cursor: pointer;
+  border: 0;
+  font-size: 50px;
+  left: 50%;
+  text-shadow: 25px 25px 50px #121212;
+}
+
+.Arrow:hover {
+  color: #af2431;
+  transition: 0.3s;
+}

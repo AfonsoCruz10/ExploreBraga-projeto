@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 export const useSignUp = () => {
     const [isLoading, setIsLoading] = useState(null);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
     const signupConnection = async ( username, email, password, confirmPassword, birthDate) => {
         try {
@@ -15,6 +17,8 @@ export const useSignUp = () => {
                 const response = await axios.post('http://localhost:5555/users/createNewUser', {username, email, password, birthDate});
                 if (response.status === 201) {
                     setError(null);
+                    navigate('/login');
+                    enqueueSnackbar('Registo bem-sucedido!', { variant: 'success' });
                 }
             } else {
                 setError("Diferent passwords");
@@ -24,7 +28,6 @@ export const useSignUp = () => {
             setError(error.response.data.message);
         } finally {
             setIsLoading(false);
-            navigate('/login');
         }
     };
 

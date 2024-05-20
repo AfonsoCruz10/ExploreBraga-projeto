@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 export const useEditEvent = (eventId) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [eventDetails, setEventDetails] = useState(null);
-    const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
     // Função para obter os detalhes do evento com base no ID do evento
     const getEventDetails = async () => {
@@ -48,7 +48,10 @@ export const useEditEvent = (eventId) => {
                     'Authorization': `Bearer ${token}` 
                 }
             });
-            setError(null);
+            if (res.status === 200) {
+                setError(null);
+                enqueueSnackbar('Evento atualizado com sucesso!', { variant: 'success' }); 
+            }
         } catch (error) {
             setError(error.response.data.message);
         } finally {

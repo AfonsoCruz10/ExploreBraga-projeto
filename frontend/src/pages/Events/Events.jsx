@@ -1,3 +1,4 @@
+// Eventos.jsx
 import React, { useState, useEffect } from "react";
 import Header from "../../components/Header/Header.jsx";
 import Eventscard from "../../components/Eventscard/Eventscard.jsx";
@@ -5,13 +6,15 @@ import Modal from "react-modal";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styles from "./Events.module.css";
-import { FaArrowDown } from 'react-icons/fa';
+import { SlArrowDown } from 'react-icons/sl';
 import { useSelectEvents } from '../../hooks/useSelectEvents.jsx';
+import Footer from "../../components/Footer/Footer.jsx";
 
 Modal.setAppElement("#root");
 
 function Events() {
   const [searchCat, setSearchCat] = useState('');
+  const [searchEventName, setSearchEventName] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [eventsToShow, setEventsToShow] = useState(5);
@@ -30,6 +33,10 @@ function Events() {
 
   const handleChangeCat = (event) => {
     setSearchCat(event.target.value);
+  };
+
+  const handleInputChange = (e) => {
+    setSearchEventName(e.target.value);
   };
 
   const handleDateChange = (date) => {
@@ -60,8 +67,9 @@ function Events() {
 
   const filteredEvents = events.filter((evento) => {
     const categoriaMatch = searchCat === "" || evento.Type === searchCat;
-    const dataMatch = !selectedDate || new Date(evento.BegDate).toDateString() === selectedDate.toDateString();
-    return categoriaMatch && dataMatch;
+    const dataMatch = !selectedDate || new Date(evento.BegDate) >= selectedDate;
+    const eventNameMatch = evento.Name.toLowerCase().includes(searchEventName.toLowerCase());
+    return categoriaMatch && dataMatch && eventNameMatch;
   }).slice(0, eventsToShow);
 
   return (
@@ -72,8 +80,12 @@ function Events() {
         <div className={styles.events}>
           <h1 className="titulo">Eventos</h1>
 
-          <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
-
+          <div className={styles.Wrapper}>
+            <input type="text" placeholder="Pesquisar por evento ..." name="eventName" value={searchEventName} onChange={handleInputChange} className={'defaultInput ' + styles.inputField}/>
+            
+            <p className={styles["button-text"]} onClick={openModal}> Abrir Filtros </p>
+          </div>
+          
           <Modal
             isOpen={modalOpen}
             onRequestClose={closeModal}
@@ -84,7 +96,7 @@ function Events() {
             <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
 
             <div className={styles["search-container"]}>
-              <select value={searchCat} onChange={handleChangeCat} className={styles.caixaevents}>
+              <select value={searchCat} onChange={handleChangeCat} className='defaultselect'>
                 <option value="">Escolha uma categoria</option>
                 <option value="Cultura">Cultura</option>
                 <option value="Desporto">Desporto</option>
@@ -93,6 +105,7 @@ function Events() {
                 <option value="Lazer">Lazer</option>
                 <option value="Turismo">Turismo</option>
               </select>
+              
               <Calendar
                 onChange={handleDateChange}
                 value={selectedDate}
@@ -111,10 +124,10 @@ function Events() {
           ) : error ? (
             <p className="error">{error}</p>
           ) : (
-            <>
-              <div>
-                {events.length ? (
-                  filteredEvents.map((event, index) => (
+            <div>
+              {filteredEvents.length ? (
+                <>
+                  {filteredEvents.map((event, index) => (
                     <Eventscard
                       key={index}
                       id={event._id}
@@ -126,21 +139,22 @@ function Events() {
                       preco={event.Price}
                       organizador={event.username}
                     />
-                  ))
-                ) : (
-                  <p>Nenhum evento Ativo encontrado!</p>
-                )}
-              </div>
+                  ))}
 
-              {eventsToShow < events.length && (
-                <div className={styles["load-more"]} onClick={handleLoadMore}>
-                  <FaArrowDown />
-                </div>
+                  {eventsToShow < filteredEvents.length && (
+                    <div className={styles.Arrow} onClick={handleLoadMore}>
+                      <SlArrowDown /> 
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p>Nenhum evento ativo encontrado!</p>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
+      <Footer />
     </>
   );
 }

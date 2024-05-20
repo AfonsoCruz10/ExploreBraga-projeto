@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useAuthContext } from './useAuthContext'; 
+import { useSnackbar } from 'notistack';
 
 export const useLogin = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const { dispatch } = useAuthContext(); 
+    const { enqueueSnackbar } = useSnackbar();
 
     const loginConnection = async (email, password, remember) => {
         try {
@@ -19,8 +21,10 @@ export const useLogin = () => {
 
                 // Atualize o contexto de autenticação
                 dispatch({type:`LOGIN`, payload: res.data});
+                
+                setError(null);
+                enqueueSnackbar('Login bem-sucedido!', { variant: 'success' });
             }
-            setError(null);
         } catch (error) {
             setError(error.response.data.message);
         } finally {

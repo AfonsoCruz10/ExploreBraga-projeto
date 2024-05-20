@@ -7,6 +7,7 @@ import eventsRouter from "./routers/revents.js";
 import locationsRouter from "./routers/rlocations.js";
 import userRouter from "./routers/rusers.js";
 import adminRouter from "./routers/radmin.js";
+import initCronjob from "./middleware/OldEvents.js"
 
 const app = express();
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -46,3 +47,7 @@ app.use((error, req, res, next) => {
 
 // Chama a função para conectar ao banco de dados e iniciar o servidor Express
 db(app);
+
+// Inicializa o cronometro para que todos os dias á meia noite elimina eventos antigos (uma semana passada)
+initCronjob();
+

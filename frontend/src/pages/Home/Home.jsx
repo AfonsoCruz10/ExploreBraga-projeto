@@ -3,6 +3,7 @@ import Header from "../../components/Header/Header.jsx";
 import Button_Route from '../../components/Button_Route.jsx';
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import { useRef, useState } from "react";
+import Footer from "../../components/Footer/Footer.jsx";
 
 /*
 Pagina inicial do Projeto (HomePage)
@@ -40,8 +41,8 @@ function Home() {
 
     return (
         <>
+            <Header />
             <div className="body">
-                <Header />
                 <section ref={section1}>
                     <div className={style.section1}>
                         <h1 className={style.titulo}>START <br /> EXPLORING</h1>
@@ -66,8 +67,8 @@ function Home() {
                         </button>
                     </div>
                 </section>
-
             </div>
+            <Footer />
         </>
     );
 }

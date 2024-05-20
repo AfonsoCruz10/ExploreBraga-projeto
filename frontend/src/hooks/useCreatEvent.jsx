@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack'; 
 
 export const useCreatEvent = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
 
     const createEvent = async (eventType, eventName, eventBegDate, eventEndDate, eventDescription, eventAge, eventPrice, eventImage, eventAddress) => {
         try {
@@ -32,6 +34,7 @@ export const useCreatEvent = () => {
             });
             if(res.status === 201){
                 setError(null);
+                enqueueSnackbar('Evento criado com sucesso!', { variant: 'success' }); 
                 navigate('/useraccount');
             }
         } catch (error) {

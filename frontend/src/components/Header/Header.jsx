@@ -4,7 +4,7 @@ import Temp from "./Temp";
 import { FiMenu } from "react-icons/fi";
 import { useState } from "react";
 import { FaRegUser } from "react-icons/fa";
-import styles from "./Header.module.css"; // Import styles from Header.module.css
+import styles from "./Header.module.css"; 
 
 function Header() {
     const [estaAberto, setEstaAberto] = useState(false);
@@ -22,7 +22,8 @@ function Header() {
                     <Temp name={styles.temperatura}/>
                 </div>
                 <div className={styles["menu-links"]}>
-                    <a href="/about"> ABOUT US </a>
+                    <a href="/locations"> LOCAIS </a>
+                    <a href="/events"> EVENTOS </a>
                     <a href="/login"> <FaRegUser/> </a>
                 </div>
                 <button className={styles["menu-drop"]} onClick={toggleAberto}>
@@ -32,7 +33,6 @@ function Header() {
                     <a href="/home"><div className={styles["menu-tabela-button"]}>HOME</div></a>
                     <a href="/events"><div className={styles["menu-tabela-button"]}>EVENTS</div></a>
                     <a href="/locations"><div className={styles["menu-tabela-button"]}>LOCATIONS</div></a>
-                    <a href="/about"><div className={styles["menu-tabela-button"]}>ABOUT US</div></a>
                     <a href="/login"><div className={styles["menu-tabela-button"]}>LOGIN</div></a>
                 </div>
             </div>

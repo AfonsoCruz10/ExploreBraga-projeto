@@ -2,16 +2,20 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useAuthContext } from './useAuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 export const useLocalDetails = () => {
     const [local, setLocal] = useState(null);
-    const [counter, setcounter] = useState();// numero de pessoas interessadas
-    const [check, setCheck] = useState(false); // verifica se o user está interessado
-    const [isLoading, setIsLoading] = useState(null);
+    const [check, setCheck] = useState(false); 
+    const [associatedEvents, setAssociatedEvents] = useState([]);
+    const [isLoading, setIsLoading] = useState(null);;
+    const [isLoadingEvents, setIsLoadingEvents] = useState(false);
     const [errorBuscar, setErrorBuscar] = useState(null);
     const [errorInterested, setErrorInterested] = useState(null);
+    const [errorEvents, setErrorEvents] = useState(null);
     const navigate = useNavigate();
     const { user } = useAuthContext();
+    const { enqueueSnackbar } = useSnackbar();
 
     const buscarLocalDetails = async (localId) => {
         try {
@@ -37,8 +41,6 @@ export const useLocalDetails = () => {
             if (response.status === 200) {
                 setErrorBuscar(null);
                 setLocal(response.data.local);
-                console.log("responsedatalocal: ", response.data.local);
-                //setcounter(response.data.local.InterestedUsers.length);
                 setCheck(response.data.check)
             }
         } catch (error) {
@@ -48,39 +50,57 @@ export const useLocalDetails = () => {
         }
     };
 
-    const favoritesLocationsList = async (localId, userId) => {
+    const favoritesLocationsList = async ( localId ) => {
         try {
-            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
 
-            if (!userLocalStorage || !userLocalStorage.token) {
-                navigate("/login");
-                return;
-            }
+            if(user){
+                // Obtenha o token JWT do localStorage
+                const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+                const token = userLocalStorage.token; 
 
-            const token = userLocalStorage.token;
+                // Se já deu like, remove o ID do usuário da lista
+                const resp = await axios.put(
+                    `http://localhost:5555/locations/addToFavorites/${localId}`,
+                    null,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
 
-            // Se já deu like, remove o ID do usuário da lista
-            const resp = await axios.put(
-                `http://localhost:5555/locations/${localId}/addToFavorites`,
-                { userId },
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
+                if (resp.status === 200) {
+                    setErrorInterested(null);
+                    setCheck(resp.data.check);
+                    if (!check){
+                        enqueueSnackbar("Local adicionado da sua lista de favoritos", { variant: "success" });
+                    } else{
+                        enqueueSnackbar("Local removido da sua lista de favoritos", { variant: "success" });
                     }
                 }
-            );
-
-            if (resp.status === 200) {
-                setErrorInterested(null);
-                setcounter(resp.data.count);
-                setCheck(resp.data.check);
+            } else{
+                navigate("/login");
             }
+
         } catch (error) {
+            enqueueSnackbar("Erro ao adiconar/remover o local à sua lista de favoritos", { variant: "error" });
             setErrorInterested(error.response ? error.response.data.message : "Error adding to favorites");
         }
     };
 
 
-    return { buscarLocalDetails, favoritesLocationsList, local, counter, check, isLoading, errorBuscar, errorInterested }
+    const buscarEventosAssociados = async (localId) => {
+        setIsLoadingEvents(true);
+        setErrorEvents(null);
+        try {
+            const response = await axios.get(`http://localhost:5555/locations/assocEvents/${localId}`);
+            setAssociatedEvents(response.data.events);
+        } catch (error) {
+            setErrorEvents(error.response.data.message);
+        } finally {
+            setIsLoadingEvents(false);
+        }
+    };
+    
+    return { buscarLocalDetails, favoritesLocationsList, buscarEventosAssociados, local, associatedEvents, check, isLoading, isLoadingEvents, errorBuscar, errorInterested, errorEvents }
 }

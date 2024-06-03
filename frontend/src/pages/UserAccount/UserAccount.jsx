@@ -4,17 +4,18 @@ import Header from "../../components/Header/Header.jsx";
 import { useNavigate } from 'react-router-dom';
 import { useLogOut } from '../../hooks/useLogOut.jsx';
 import { useInfoAccount } from '../../hooks/useInfoAccount.jsx';
-import { FaEdit, FaUser, FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { FaEdit, FaUser, FaArrowLeft } from 'react-icons/fa';
+import { MdOutlineDeleteForever } from "react-icons/md";
 import Footer from "../../components/Footer/Footer.jsx";
 
 function UserAccount() {
     const { logOutConnection } = useLogOut();
-    const { useraccountConnect, updateUserInfo, info, isLoading, error, errorNewEmail, errorNewUsername } = useInfoAccount();
+    const { useraccountConnect, updateUserInfo, updateUserInfoImagem, info, isLoading, error, errorNewEmail, errorNewUsername, errorNewImage } = useInfoAccount();
     const navigate = useNavigate();
     const [editingField, setEditingField] = useState(null);
     const [newUsername, setNewUsername] = useState("");
     const [newEmail, setNewEmail] = useState("");
-    const [NewProfileImage, setNewProfileImage] = useState(null);
+    const [NewProfileImage, setNewProfileImage] = useState("");
     var birthDate = new Date(info.birthDate).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' });
     var age = new Date().getFullYear() - new Date(info.birthDate).getFullYear();
 
@@ -66,15 +67,28 @@ function UserAccount() {
         navigate('/userEvents');
     };
 
+    const handleShowUserLocationClick = () => {
+        navigate('/userLocations');
+    };
+
+    const handleCreateLocationClick = () => {
+        navigate('/userCreateLocation');
+    };
+
     const handleEditUsername = () => {
+        setNewUsername("")
         setEditingField(editingField === 'username' ? null : 'username');
     };
 
     const handleEditEmail = () => {
+        setNewEmail("")
         setEditingField(editingField === 'email' ? null : 'email');
     };
 
     const handleEditImage = () => {
+        if(editingField === 'image'){
+            setNewProfileImage(info.ProfileImage);
+        }
         setEditingField(editingField === 'image' ? null : 'image');
     };
 
@@ -93,12 +107,23 @@ function UserAccount() {
     };
 
     const handleRemoveImage = () => {
-        setNewProfileImage(null);
+        setNewProfileImage("");
     };
 
     const handleSaveChanges = async () => {
         try {
-            await updateUserInfo(newUsername, newEmail, NewProfileImage);
+            await updateUserInfo( newUsername, newEmail );
+            setNewEmail("")
+            setNewUsername("")
+        } catch (error) {
+            console.error('Error UpdateAccount:', error);
+        }
+        setEditingField(null);
+    };
+
+    const handleSaveChangesImage = async () => {
+        try {
+            await updateUserInfoImagem( NewProfileImage );
         } catch (error) {
             console.error('Error UpdateAccount:', error);
         }
@@ -127,7 +152,7 @@ function UserAccount() {
                                     <>
                                         <div className={styles.botoesimagem}>
                                             <FaArrowLeft className={styles.backIcon} onClick={handleEditImage} />
-                                            <FaTimes className={styles.removeIcon} onClick={handleRemoveImage} />
+                                            <MdOutlineDeleteForever className={styles.removeIcon} onClick={handleRemoveImage} />
                                         </div>
 
                                         <label className={styles.avatarLabel} style={{ cursor: 'pointer' }}>
@@ -137,19 +162,21 @@ function UserAccount() {
                                             }
                                             <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                                         </label>
-                                        <button type="submit" disabled={isLoading} onClick={handleSaveChanges} className={"defaultButton " + styles.submitButton} > Salvar </button>
+                                        <button type="submit" disabled={isLoading} onClick={handleSaveChangesImage} className={"defaultButton " + styles.submitButton} > Salvar </button>
                                     </>
                                 ) : (
                                     <>
                                         <label className={styles.avatarLabel}>
-                                            {NewProfileImage ?
-                                                <img src={NewProfileImage} alt="Avatar do usuário" />
+                                            { info.ProfileImage ?
+                                                <img src={info.ProfileImage} alt="Avatar do usuário" />
                                                 : <FaUser className={styles.defaultAvatar} />
                                             }
                                             <span className={styles.editText} onClick={handleEditImage}><b>Mudar</b> <FaEdit style={{ marginLeft: '5px' }} /></span>
                                         </label>
                                     </>
                                 )}
+                                <br />
+                                {errorNewImage && <span className="error">{errorNewImage}</span>}
                             </div>
 
                             <h2>{info.AdminPermission ? 'Admin' : 'User'} Account</h2>
@@ -187,8 +214,11 @@ function UserAccount() {
                                 <p><strong>Data de Nascimento:</strong> {birthDate} ({age} anos)</p>
                             </div>
 
-                            <button className={"defaultButton " + styles.EventsButton} onClick={handleShowUserEventsClick}> Ver Eventos </button>
+                            <button className={"defaultButton " + styles.EventsButton} onClick={handleCreateLocationClick}> Criar Locais </button>
                             <button className={"defaultButton " + styles.EventsButton} onClick={handleCreateEventClick}> Criar Eventos </button>
+                            <button className={"defaultButton " + styles.EventsButton} onClick={handleShowUserLocationClick}> Ver Locais </button>
+                            <button className={"defaultButton " + styles.EventsButton} onClick={handleShowUserEventsClick}> Ver Eventos </button>
+
                         </>
                     )}
                 </div>

@@ -13,26 +13,58 @@ import Footer from "../../components/Footer/Footer.jsx";
 Modal.setAppElement("#root");
 
 function AdminPage() {
-    const { adminUsersConnect, adminEventsConnect, eventAction, adminEvents, adminUsers, isLoadingEvents, isLoadingUsers, error } = useAdmin();
+    const { adminUsersConnect, adminEventsConnect, adminLocationsConnect, eventAction, locAction, eventDelete, localDelete, adminEvents, adminUsers, adminLocations, isLoadingEvents, isLoadingUsers,isLoadingLocations,  errorEvents, errorLocations, errorUsers} = useAdmin();
     const navigate = useNavigate();
     const [activeSection, setActiveSection] = useState('events');
     const [modalOpen, setModalOpen] = useState(false);
-    const [searchCat, setSearchCat] = useState('');
+    const [searchCatEvent, setSearchCatEvent] = useState('');
     const [searchEventName, setSearchEventName] = useState('');
-    const [searchStatus, setSearchStatus] = useState('');
+    const [searchStatusEvent, setSearchStatusEvent] = useState('');
+    const [searchCatLocal, setSearchCatLocal] = useState('');
+    const [searchLocalName, setSearchLocalName] = useState('');
+    const [searchStatusLocal, setSearchStatusLocal] = useState('');
     const [selectedDate, setSelectedDate] = useState(null);
 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                
+
                 await adminEventsConnect();
-            
-                await adminUsersConnect();
+                
                 
             } catch (error) {
-                console.error('Error fetching admin data:', error);
+                console.error('Error fetching admin data events:', error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                
+                await adminLocationsConnect();
+                
+                
+            } catch (error) {
+                console.error('Error fetching admin data locations:', error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+
+                await adminUsersConnect();
+
+                
+            } catch (error) {
+                console.error('Error fetching admin data Users:', error);
             }
         };
     
@@ -43,24 +75,44 @@ function AdminPage() {
         setModalOpen(!modalOpen);
     };
 
-    const handleAction = async (eventId, action) => {
+    const handleActionEvents = async (eventId, action) => {
         try {
             await eventAction(eventId, action);
         } catch (error) {
             console.error('Error performing action on event:', error);
         }
+    }; 
+
+    const handleActionLocations = async (locationId, action) => {
+        try {
+            await locAction(locationId, action);
+        } catch (error) {
+            console.error('Error performing action on location:', error);
+        }
     };
 
-    const handleChangeCat = (event) => {
-        setSearchCat(event.target.value);
+    const handleChangeCatEvent = (e) => {
+        setSearchCatEvent(e.target.value);
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChangeEvent = (e) => {
         setSearchEventName(e.target.value);
     };
 
-    const handleStatus = (e) => {
-        setSearchStatus(e.target.value);
+    const handleStatusEvent = (e) => {
+        setSearchStatusEvent(e.target.value);
+    };
+
+    const handleChangeCatLoc = (e) => {
+        setSearchCatLocal(e.target.value);
+    };
+
+    const handleInputChangeLoc = (e) => {
+        setSearchLocalName(e.target.value);
+    };
+
+    const handleStatusLoc = (e) => {
+        setSearchStatusLocal(e.target.value);
     };
 
     const handleDateChange = (date) => {
@@ -78,13 +130,19 @@ function AdminPage() {
     };
 
     const filteredEvents = adminEvents.filter((evento) => {
-        const categoriaMatch = searchCat === "" || evento.Type === searchCat;
-        const statusMatch = searchStatus === "" || evento.Status === searchStatus;
+        const categoriaMatch = searchCatEvent === "" || evento.Type === searchCatEvent;
+        const statusMatch = searchStatusEvent === "" || evento.Status === searchStatusEvent;
         const dataMatch = !selectedDate || new Date(evento.BegDate) >= selectedDate;
         const eventNameMatch = evento.Name.toLowerCase().includes(searchEventName.toLowerCase());
         return categoriaMatch && dataMatch && eventNameMatch && statusMatch;
     });
 
+    const filteredLocations = adminLocations.filter((loc) => {
+        const categoriaMatch = searchCatLocal === "" || loc.Type === searchCatLocal;
+        const statusMatch = searchStatusLocal === "" || loc.Status === searchStatusLocal;
+        const NameMatch = loc.Name.toLowerCase().includes(searchLocalName.toLowerCase());
+        return categoriaMatch && NameMatch && statusMatch;
+    });
     return (
         <>
             <Header />
@@ -100,6 +158,12 @@ function AdminPage() {
                             Eventos
                         </span>
                         <span
+                            className={activeSection === 'locations' ? styles.activeButton : styles.sectionButton}
+                            onClick={() => setActiveSection('locations')}
+                        >
+                            Locais
+                        </span>
+                        <span
                             className={activeSection === 'users' ? styles.activeButton : styles.sectionButton}
                             onClick={() => setActiveSection('users')}
                         >
@@ -112,16 +176,16 @@ function AdminPage() {
                         <>
                             {isLoadingEvents ? (
                                 <div className='spinner'></div>
-                            ) : error ? (
-                                <p className="error">{error}</p>
+                            ) : errorEvents ? (
+                                <p className="error">{errorEvents}</p>
                             ) : (
                                 <>
                                 <div className={styles.Wrapper}>
 
                                     <div className= {styles.searchInputs}>
-                                        <input type="text" placeholder="Pesquisar por evento ..." name="eventName" value={searchEventName} onChange={handleInputChange} className={'defaultInput ' + styles.inputField}/>
+                                        <input type="text" placeholder="Pesquisar por evento ..." value={searchEventName} onChange={handleInputChangeEvent} className={'defaultInput ' + styles.inputField}/>
                                         
-                                        <select value={searchStatus} onChange={handleStatus} className={styles.select + ' defaultselect'}>
+                                        <select value={searchStatusEvent} onChange={handleStatusEvent} className={styles.select + ' defaultselect'}>
                                           <option value="">Pesquisar por estado</option>
                                           <option value="Active">Active</option>
                                           <option value="Pending">Pending </option>
@@ -141,7 +205,7 @@ function AdminPage() {
                                   <span className={styles["close-button"]} onClick={openModal}>&times;</span>
 
                                   <div className={styles["search-container"]}>
-                                    <select value={searchCat} onChange={handleChangeCat} className={styles.select2 + ' defaultselect'}>
+                                    <select value={searchCatEvent} onChange={handleChangeCatEvent} className={styles.select2 + ' defaultselect'}>
                                       <option value="">Escolha uma categoria</option>
                                       <option value="Cultura">Cultura</option>
                                       <option value="Desporto">Desporto</option>
@@ -190,14 +254,14 @@ function AdminPage() {
                                                     <td>{event.username}</td>
                                                     <td>
                                                         {/* Botões de ação */}
-                                                        <button onClick={() => handleAction(event._id, 'accept')} className={styles.buttonAccept}>
+                                                        <button onClick={() => handleActionEvents(event._id, 'accept')} className={styles.buttonAccept}>
                                                             <FontAwesomeIcon icon={faCheck} /> Aceitar
                                                         </button>
-                                                        <button onClick={() => handleAction(event._id, 'pending')} className={styles.buttonPending}>
+                                                        <button onClick={() => handleActionEvents(event._id, 'pending')} className={styles.buttonPending}>
                                                             <FontAwesomeIcon icon={faSpinner} /> Pendente
                                                         </button>
-                                                        <button onClick={() => handleAction(event._id, 'cancel')} className={styles.buttonCancel}>
-                                                            <FontAwesomeIcon icon={faTimes} /> Cancelar
+                                                        <button onClick={() => eventDelete(event._id)} className={styles.buttonCancel}>
+                                                            <FontAwesomeIcon icon={faTimes} /> Eliminar
                                                         </button>
                                                         <button onClick={() => navigate(`/events/${event._id}`)} className={styles.buttonInfo}>
                                                             <FontAwesomeIcon icon={faInfo} /> Detalhes
@@ -209,20 +273,110 @@ function AdminPage() {
                                     </table>
                                     </>
                                 ) : (
-                                    <p>Nenhum evento pendente encontrado!</p>
+                                    <p>Nenhum evento encontrado!</p>
                                 )}
                                 </>
                             )}
                         </>
                     )}
 
+
+                    {/* Seção de eventos pendentes*/}
+                    {activeSection === 'locations' && (
+                        <>
+                            {isLoadingLocations ? (
+                                <div className='spinner'></div>
+                            ) : errorLocations ? (
+                                <p className="error">{errorLocations}</p>
+                            ) : (
+                                <>
+                                <div className={styles.Wrapper}>
+
+                                    <div className= {styles.searchInputs}>
+                                        <input type="text" placeholder="Pesquisar por local ..." value={searchLocalName} onChange={handleInputChangeLoc} className={'defaultInput ' + styles.inputField}/>
+                                        
+                                        <select value={searchStatusLocal} onChange={handleStatusLoc} className={styles.select + ' defaultselect'}>
+                                          <option value="">Pesquisar por estado</option>
+                                          <option value="Active">Active</option>
+                                          <option value="Pending">Pending </option>
+                                        </select>
+                                    
+                                    
+                                        <select value={searchCatLocal} onChange={handleChangeCatLoc} className={styles.select + ' defaultselect'}>
+                                            <option value="">Escolha uma categoria</option>
+                                            <option value="Comida">Comida</option>
+                                            <option value="Educação">Educação</option>
+                                            <option value="Compras">Compras</option>
+                                            <option value="Beleza">Beleza</option>
+                                            <option value="Entretenimento">Entretenimento</option>
+                                            <option value="Religião">Religião</option>
+                                            <option value="MonumentosHistóricos">Monumentos históricos</option>
+                                            <option value="Artes">Artes</option>
+                                        </select>
+                                    
+
+                                    </div>
+                                </div>
+
+                                {filteredLocations.length !== 0 ? (
+                                    <>
+                                    <table className='defaultTable '>
+                                        {/* Cabeçalho da tabela */}
+                                        <thead>
+                                            <tr>
+                                                <th>Nome do Local</th>
+                                                <th>Tipo</th>
+                                                <th>Estado</th>
+                                                <th>Username</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        {/* Corpo da tabela */}
+                                        <tbody>
+                                            {filteredLocations.map(loc => (
+                                                <tr key={loc._id}>
+                                                    <td>{loc.Name}</td>
+                                                    <td>{loc.Type}</td>
+                                                    <td>{loc.Status}</td>
+                                                    <td>{loc.username}</td>
+                                                    <td>
+                                                        {/* Botões de ação */}
+                                                        <button onClick={() => handleActionLocations(loc._id, 'accept')} className={styles.buttonAccept}>
+                                                            <FontAwesomeIcon icon={faCheck} /> Aceitar
+                                                        </button>
+                                                        <button onClick={() => handleActionLocations(loc._id, 'pending')} className={styles.buttonPending}>
+                                                            <FontAwesomeIcon icon={faSpinner} /> Pendente
+                                                        </button>
+                                                        <button onClick={() => localDelete(loc._id)} className={styles.buttonCancel}>
+                                                            <FontAwesomeIcon icon={faTimes} /> Cancelar
+                                                        </button>
+                                                        <button onClick={() => navigate(`/locations/${loc._id}`)} className={styles.buttonInfo}>
+                                                            <FontAwesomeIcon icon={faInfo} /> Detalhes
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                    </>
+                                ) : (
+                                    <p>Nenhum local encontrado!</p>
+                                )}
+                                </>
+                            )}
+                        </>
+                    )}
+
+
+
+
                     {/* Seção de User*/}
                     {activeSection === 'users' && (
                         <>
                             {isLoadingUsers ? (
                                 <div className='spinner'></div>
-                            ) : error ? (
-                                <p className="error">{error}</p>
+                            ) : errorUsers ? (
+                                <p className="error">{errorUsers}</p>
                             ) : adminUsers.length !== 0 ? (
                                 <table className='defaultTable '>
                                     <thead>

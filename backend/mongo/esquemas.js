@@ -48,7 +48,11 @@ const eventSchema = new mongoose.Schema({
   },
   Status: {
     type: String,
-    enum: ['Pending', 'Active', 'Canceled'] // As 3 opções válidas para o atributo "status"
+    enum: ['Pending', 'Active']
+  },
+  LocAssoc: {
+    type: Schema.Types.ObjectId,
+    ref: 'Locations'
   }
 });
 
@@ -74,7 +78,7 @@ const locationSchema = new mongoose.Schema({
     required: true
   },
   Reviews: [{
-    username: {
+    RevUserId: {
       type: Schema.Types.ObjectId,
       ref: 'Users'
     },
@@ -94,7 +98,11 @@ const locationSchema = new mongoose.Schema({
     enum: ['Pending', 'Active'] // As 2 opções válidas para o atributo "status"
   },
   Image: [String],
-  Address: String
+  Address: String,
+  LocEvents: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Events'
+  }]
 });
 
 // Esquema do Coleção Users
@@ -131,10 +139,6 @@ const userSchema = new mongoose.Schema({
     ref: 'Events' // Referência ao modelo de evento, remova se não for necessário
   }],
   LocalCreator: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Locations' // Referência ao modelo de local, remova se não for necessário
-  }],
-  LocalReviews: [{
     type: Schema.Types.ObjectId,
     ref: 'Locations' // Referência ao modelo de local, remova se não for necessário
   }],

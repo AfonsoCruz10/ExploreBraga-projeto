@@ -3,7 +3,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import axios from 'axios';
 
-function MyMap( {address} ) {
+function MyMap({ address }) {
   const [map, setMap] = useState(null);
   const [marker, setMarker] = useState(null);
 
@@ -27,17 +27,18 @@ function MyMap( {address} ) {
   useEffect(() => {
     const fetchCoordinates = async () => {
       try {
-        console.log("adressss", address)
-        const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
-        if (response.data && response.data.length > 0) {
-          const { lat, lon } = response.data[0];
-          const newLatLng = [parseFloat(lat), parseFloat(lon)];
-          map.setView(newLatLng, 14);
-          if (marker) {
-            marker.setLatLng(newLatLng);
-          } else {
-            const newMarker = L.marker(newLatLng, { draggable: false }).addTo(map);
-            setMarker(newMarker);
+        if (address) {
+          const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&addressdetails=1&limit=1`);
+          if (response.data && response.data.length > 0) {
+            const { lat, lon, display_name } = response.data[0];
+            const newLatLng = [parseFloat(lat), parseFloat(lon)];
+            map.setView(newLatLng, 14);
+            if (marker) {
+              marker.setLatLng(newLatLng).bindPopup(display_name).openPopup();
+            } else {
+              const newMarker = L.marker(newLatLng, { draggable: false }).addTo(map).bindPopup(display_name).openPopup();
+              setMarker(newMarker);
+            }
           }
         }
       } catch (error) {
@@ -48,7 +49,7 @@ function MyMap( {address} ) {
     if (map) {
       fetchCoordinates();
     }
-  }, [map]);
+  }, [map, address]); // Adiciona 'address' como dependência para que o efeito seja executado quando o endereço mudar
 
   return (
     <div id="map" style={{ height: '400px', width: '100%' }}></div>

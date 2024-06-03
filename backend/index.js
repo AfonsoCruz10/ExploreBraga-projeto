@@ -7,11 +7,11 @@ import eventsRouter from "./routers/revents.js";
 import locationsRouter from "./routers/rlocations.js";
 import userRouter from "./routers/rusers.js";
 import adminRouter from "./routers/radmin.js";
-import initCronjob from "./middleware/OldEvents.js"
+import initCronjob from "./mongo/OldEvents.js"
 
 const app = express();
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ limit: '10mb' , extended: true }));
+app.use(bodyParser.json({ limit: '20mb' }));
+app.use(bodyParser.urlencoded({ limit: '20mb' , extended: true }));
 app.use(cors({
   origin: 'http://localhost:5173', // Substitua pelo domínio da sua aplicação cliente
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
@@ -35,7 +35,6 @@ app.use('/events', eventsRouter);
 app.use('/locations', locationsRouter);
 app.use('/users', userRouter);
 app.use('/admin', adminRouter);
-
 
 // Middleware de tratamento de erros global
 app.use((error, req, res, next) => {

@@ -1,0 +1,34 @@
+.userEventsContainer {
+    margin: auto 100px;
+    text-align: center;
+}
+
+.buttonEdit {
+    background-color: #008500;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonEdit:hover {
+    opacity: 0.8;
+    transition: 0.3s;
+}
+
+.buttonDelete {
+    background-color: #af2431;
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.buttonDelete:hover {
+    opacity: 0.8;
+    transition: 0.3s;
+}

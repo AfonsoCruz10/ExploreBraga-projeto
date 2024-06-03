@@ -2,7 +2,7 @@
     margin: 50px 100px;
 }
 
-.eventHeader {
+.localHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,103 +13,6 @@
     font-family: Arial, sans-serif;
     font-size: 40px;
     margin: 20px;
-}
-
-.container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.shareIcon {
-    font-size: 24px;
-    cursor: pointer;
-    margin: 20px;
-}
-
-.shareIcon:hover {
-    color: #ff5555;
-}
-
-.counter {
-    margin-left: 10px;
-}
-
-.redHeart {
-    color: red;
-    font-size: 24px;
-    cursor: pointer;
-    margin: 20px;
-}
-
-.redHeart:hover {
-    color: #ff5555;
-}
-
-.borderHeart {
-    font-size: 24px;
-    cursor: pointer;
-    margin: 20px;
-}
-
-.borderHeart:hover {
-    color: #ff5555;
-}
-
-.imageContainer {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.eventImage {
-    width: 100%;
-    height: auto;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.arrowIcon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 36px;
-    color: #ff0000;
-    cursor: pointer;
-    z-index: 1;
-}
-
-.arrowIcon:hover {
-    color: #ff5555;
-}
-
-.arrowIcon.right {
-    right: 10px;
-}
-
-.arrowIcon.left {
-    left: 10px;
-}
-
-
-.eventSpace {
-    display: flex;
-    justify-content: flex-start;
-    text-align: left;
-}
-
-.eventDetailsLeft {
-    margin: 20px;
-    flex-grow: 2.75;
-    padding-right: 20px;
-}
-
-.eventDetailsRight {
-    margin: 20px;
-    min-width: 300px;
-    flex-grow: 1;
-    padding-left: 20px;
-    border-left: 2px solid #000000;
 }
 
 .reviewMedia {
@@ -123,19 +26,129 @@
     margin-left: 10px;
 }
 
+.botoesFavShare {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+
+.shareIcon {
+    font-size: 24px;
+    cursor: pointer;
+    margin: 20px;
+}
+
+.shareIcon:hover {
+    color: #af2431;
+    opacity: 0.8;
+}
+
+.counter {
+    margin-left: 10px;
+}
+
+.fav {
+    color: #af2431;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 20px;
+}
+
+.fav:hover {
+    color: #af2431;
+    opacity: 0.8;
+}
+
+.borderFav {
+    font-size: 24px;
+    cursor: pointer;
+    margin: 20px;
+}
+
+.borderFav:hover {
+    color: #af2431;
+    opacity: 0.8;
+}
+
+.imageContainer {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.localImage {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.arrowIcon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 36px;
+    color: #af2431;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.arrowIcon:hover {
+    color: #af2431;
+}
+
+.arrowIcon.right {
+    right: 10px;
+}
+
+.arrowIcon.left {
+    left: 10px;
+}
+
+
+.localSpace {
+    margin: 20px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    text-align: left;
+}
+  
+.localDetailsLeft {
+    margin-top: auto;
+    margin-right: 20px;
+    margin-bottom: auto;
+    margin-left: 0px;
+    flex-grow: 2.75; 
+    flex-basis: 0; 
+}
+  
+.localDetailsRight {
+    margin: auto 20px;
+    flex-grow: 1;
+    flex-basis: 0;
+    max-width: calc(25% - 40px);
+    padding-left: 20px;
+    border-left: 2px solid #000000;
+}
+
+
 .description,
-.date,
 .address {
     margin-bottom: 10px;
     font-size: 16px;
 }
 
 .category,
-.price,
 .creator {
     margin-bottom: 10px;
     font-size: 16px;
     font-weight: bold;
+}
+
+.creatorimage {
+    display: flex;
+    align-items: center;
 }
 
 .imageLabel {
@@ -144,21 +157,185 @@
     height: 30px;
     border-radius: 50%;
     overflow: hidden;
+    background-color: #ccc;
+    margin-right: 10px;
+}
+
+.imageLabel img {
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+}
+
+.imageLabel .defaultAvatar {
+    position: absolute;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 10px; 
+    height: 10px;
+}
+
+
+/* reviews */
+.reviewContainer {
+    border-radius: 10px;
+    margin: 20px auto;
+}
+
+.userInsertReview {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    margin-left: 105px;
+    margin-right: 105px;
+}
+
+.titulo {
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo h2,
+.titulo h3 {
+    margin: 5px;
+}
+
+.reviewTituloRev {
+    display: flex;
+    align-items: center;
+    margin-left: 105px;
+    margin-right: 105px;
+    border-bottom: 1px solid #af2431;
+}
+
+.review {
+    display: flex;
+    margin-left: 105px;
+    margin-right: 105px;
+    margin-bottom: 10px;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #af2431;
+}
+
+.reviewClass {
+    display: flex;
+    align-items: center;
+}
+
+.reviewStars {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.reviewTexto {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 10px;
+}
+
+.reviewImagem {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 10px;
+    width: 20%;
+}
+
+.reviewList {
+    display: flex;
+    flex-direction: column;
+    align-items: space-between;
+    border-radius: 10px;
+}
+
+.imageLabelRev {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
     background-color: #d9d9d9;
-    margin-right: 20px;
+}
 
+.imageLabelRev img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 
-.imageLabel img {
-    max-width: 100%;
-    max-height: 100%;
+.defaultAvatarRev {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
 }
 
-.creator {
+.caixaTexto{
+    width: 100%;
+    font-size: 12px;
+    resize: none; 
+}
+
+.submitButton{
+    padding: 5px 15px;
+    width: 10%;
+}
+
+.comment{
+    margin: 0px;
+    font-size: 14px;
+}
+
+
+.buttonDelete {
+    cursor: pointer; 
+    margin: 10px 0px;
+}
+
+.buttonDelete :hover{
+    color: #af2431;
+}
+
+.Nome {
     display: flex;
     align-items: center;
+}
+
+.estrelasclass{
+    font-size: 16px;
+    margin:10px;
+}
+
+.estrelasclass2{
+    font-size: 14px;
+    margin:10px 0px;
+}
+
+/* Eventos associados ao local */
+.button-text {
+    font-size: 16px;
+    cursor: pointer;
+}
+  
+.button-text:hover {
+    color: #af2431;
+}
+  
+.eventAssoc{
+    margin-top: 20px;
+    margin-bottom: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
+    text-align: center;
 }

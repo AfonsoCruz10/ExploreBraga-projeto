@@ -55,10 +55,7 @@
 }
 
 
-.imagemAfonso,
-.imagemHenrique,
-.imagemPedro,
-.imagemRui {
+.imagemAfonso {
     align-self: center;
     width: 250px;
     height: 250px;
@@ -71,17 +68,6 @@
     background-image: url('afonsofoto.jpg');
 }
 
-.imagemHenrique {
-    background-image: url('henrique.jpeg');
-}
-
-.imagemPedro {
-    background-image: url('pedro.jpeg');
-}
-
-.imagemRui {
-    background-image: url('rui.jpeg');
-}
 
 .nome {
     padding-left: 10px;

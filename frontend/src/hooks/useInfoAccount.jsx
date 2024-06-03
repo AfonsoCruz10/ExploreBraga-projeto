@@ -10,6 +10,7 @@ export const useInfoAccount = () => {
     const { dispatch } = useAuthContext();
     const [errorNewEmail, setErrorNewEmail] = useState('');
     const [errorNewUsername, setErrorNewUsername] = useState('');
+    const [errorNewImage, setErrorNewImage] = useState('');
     const { enqueueSnackbar } = useSnackbar();
 
     const useraccountConnect = async () => {
@@ -37,7 +38,7 @@ export const useInfoAccount = () => {
         }
     };
 
-    const updateUserInfo = async (newUsername, newEmail, NewProfileImage) => {
+    const updateUserInfo = async (newUsername, newEmail) => {
         try {
             setIsLoading(true);
             // Obtenha o token JWT do localStorage
@@ -45,7 +46,7 @@ export const useInfoAccount = () => {
             const token = userLocalStorage.token;
             
             const response = await axios.put(`http://localhost:5555/users/updateAccount`, 
-                    { newUsername, newEmail, NewProfileImage},{
+                    { newUsername, newEmail },{
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -54,15 +55,17 @@ export const useInfoAccount = () => {
             if (response.status === 200) {
                 setErrorNewEmail(null);
                 setErrorNewUsername(null);
+
+                if(newEmail){
+                    // Armazene o novo token no armazenamento local
+                    const newToken = response.data.token;
+
+                    localStorage.setItem("user", JSON.stringify({ token: newToken }));
+
+                    // Atualize o contexto de autenticação com o novo token
+                    dispatch({ type: `LOGIN`, payload: newToken });
+                }
                 
-                // Armazene o novo token no armazenamento local
-                const newToken = response.data.token;
-
-                localStorage.setItem("user", JSON.stringify({ token: newToken }));
-
-                // Atualize o contexto de autenticação com o novo token
-                dispatch({ type: `LOGIN`, payload: newToken });
-
                 // Atualize o estado do usuário com os novos dados
                 setInfo(response.data.user);
                 enqueueSnackbar('Conta atualizada com sucesso!', { variant: 'success' });
@@ -73,10 +76,40 @@ export const useInfoAccount = () => {
             }else{
                 setErrorNewUsername(error.response.data.message);
             }
+            
         } finally {
             setIsLoading(false);
         }
     };
 
-    return { useraccountConnect, updateUserInfo, info, isLoading, error, errorNewEmail, errorNewUsername}
+    const updateUserInfoImagem = async ( NewProfileImage ) => {
+        try {
+            setIsLoading(true);
+            // Obtenha o token JWT do localStorage
+            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+            const token = userLocalStorage.token;
+            
+            const response = await axios.put(`http://localhost:5555/users/updateAccountImagem`, 
+                    { NewProfileImage },{
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            if (response.status === 200) {
+                setErrorNewImage(null)
+                // Atualize o estado do usuário com os novos dados
+                setInfo(response.data.user);
+                enqueueSnackbar('Conta atualizada com sucesso!', { variant: 'success' });
+            }
+        } catch (error) {
+            
+            setErrorNewImage(error.response.data.message);
+            
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return { useraccountConnect, updateUserInfo, updateUserInfoImagem, info, isLoading, error, errorNewEmail, errorNewUsername, errorNewImage }
 }

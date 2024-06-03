@@ -16,6 +16,11 @@
   width: 50%;
 }
 
+.select{
+  width: 99%;
+  height: 40px;
+}
+
 .button-text {
   font-size: 16px;
   cursor: pointer;

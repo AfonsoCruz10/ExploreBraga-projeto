@@ -3,7 +3,6 @@ import express from 'express';
 import { Users, Events, Locations } from "../mongo/esquemas.js";
 import { authPage } from "../middleware/middleware.js";
 import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
 
 dotenv.config();
 const router = express.Router();
@@ -20,7 +19,7 @@ router.get('/displayAllUsers' ,authPage , async (req, res) => {
         const userid = req.userid; 
 
         // Encontra todos os usuários, excluindo o usuário autenticado
-        const users = await Users.find({ _id: { $ne: userid } }, '-HashedPassword');
+        const users = await Users.find({ _id: { $ne: userid } }, '-HashedPassword').select(" username email birthDate ProfileImage");
 
         return res.status(200).json({ data: users });
     } catch (error) {
@@ -40,7 +39,7 @@ router.get('/events' ,authPage ,async (req, res) => {
         }
         const currentDate = new Date();
 
-        const events = await Events.find({ BegDate: { $gte: currentDate } }).sort({ BegDate: 1 });
+        const events = await Events.find({ EndDate: { $gte: currentDate } }).select(" Type Name BegDate EndDate Creator Status").sort({ BegDate: 1 });
 
         if (!events) {
             return res.status(404).json({ message: 'Events not found' });
@@ -61,13 +60,14 @@ router.get('/events' ,authPage ,async (req, res) => {
         return res.status(200).json({ data: finalEvents });
 
     } catch (error) {
+
         res.status(500).json({ message: 'Erro ao buscar eventos', error: error.message });
     }
 });
 
 
-// Rota para obter todos os eventos pendentes
-router.get('/events/pending',authPage ,async (req, res) => {
+// Rota para obter todos os eventos
+router.get('/locations' ,authPage ,async (req, res) => {
     try {
         if (!req.authenticated) {
             return res.status(401).json({ message: 'Unauthorized: authentication failed' });
@@ -76,42 +76,33 @@ router.get('/events/pending',authPage ,async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized: must be admin' });
         }
 
-        const pendingEvents = await Events.find({ Status: 'Pending' }).sort({ BegDate: 1 });
+        const locations = await Locations.find({ }).select(" Type Name Creator Status").sort({ BegDate: 1 });
 
-        if (!pendingEvents) {
-            return res.status(404).json({ message: 'Peding events not found' });
+        if (!locations) {
+            return res.status(404).json({ message: 'Events not found' });
         }
 
-        res.status(200).json({ data: pendingEvents });
+        const usernamePromises = locations.map(async (loc) => {
+            const user = await Users.findById(loc.Creator).select('username');
+            const showLocations ={
+               ...loc.toObject(),
+                username: user.username 
+            }
+
+            return showLocations;
+        });
+
+        const finalLocations = await Promise.all(usernamePromises);
+
+        return res.status(200).json({ data: finalLocations });
+
     } catch (error) {
-        res.status(500).json({ message: 'Erro ao buscar eventos pendentes', error: error.message });
-    }
-});
-
-// Rota para obter todos os eventos activos
-router.get('/events/active',authPage ,async (req, res) => {
-    try {
-        if (!req.authenticated) {
-            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
-        }
-        if (!req.admin) {
-            return res.status(401).json({ message: 'Unauthorized: must be admin' });
-        }
-
-        const ActiveEvents = await Events.find({ Status: 'Active' }).sort({ BegDate: 1 });
-
-        if (!ActiveEvents) {
-            return res.status(404).json({ message: 'Peding events not found' });
-        }
-
-        res.status(200).json({ data: ActiveEvents });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao buscar eventos pendentes', error: error.message });
+        res.status(500).json({ message: 'Erro ao buscar eventos', error: error.message });
     }
 });
 
 // Rota para realizar uma ação em um evento (aceitar ou cancelar)
-router.put('/events/:eventId/:action',authPage ,async (req, res) => {
+router.put('/eventAction/:eventId/:action',authPage ,async (req, res) => {
 
     const { eventId, action } = req.params;
 
@@ -128,7 +119,7 @@ router.put('/events/:eventId/:action',authPage ,async (req, res) => {
         }
 
         // Encontre o evento pelo ID fornecido
-        const event = await Events.findById(eventId);
+        const event = await Events.findById(eventId).select("Status");
 
         // Verifique se o evento existe
         if (!event) {
@@ -137,18 +128,135 @@ router.put('/events/:eventId/:action',authPage ,async (req, res) => {
 
         if(action === 'accept'){
             event.Status = 'Active'
-        }else if(action === 'cancel'){
-            event.Status = 'Canceled'
-        }else{
+        }else {
             event.Status = 'Pending'
         }
 
         // Salve as alterações no banco de dados
         await event.save();
 
-        res.status(200).json({ message: `Estado do evento mudado com sucesso` });
+        res.status(200).json();
     } catch (error) {
         res.status(500).json({ message: 'Erro ao realizar ação no evento', error: error.message });
+    }
+});
+
+// Rota para realizar uma ação em um evento (aceitar ou cancelar)
+router.put('/locationAction/:localId/:action',authPage ,async (req, res) => {
+
+    const { localId, action } = req.params;
+
+    try {
+        if (!req.authenticated) {
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+        if (!req.admin) {
+            return res.status(401).json({ message: 'Unauthorized: must be admin' });
+        }
+        // Verifique se a ação é válida (aceitar ou cancelar)
+        if (action !== 'accept' && action !== 'cancel' && action !== 'pending' ) {
+            return res.status(400).json({ message:'Ação inválida'});
+        }
+
+        // Encontre o evento pelo ID fornecido
+        const loc = await Locations.findById(localId).select("Status");
+
+        // Verifique se o evento existe
+        if (!loc) {
+            return res.status(400).json({ message:'Evento não encontrado'});
+        }
+
+        if(action === 'accept'){
+            loc.Status = 'Active'
+        } else{
+            loc.Status = 'Pending'
+        }
+
+        // Salve as alterações no banco de dados
+        await loc.save();
+
+        res.status(200).json();
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao realizar ação no evento', error: error.message });
+    }
+});
+
+router.delete("/eventDelet", authPage, async (req, res) => {
+    try {
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+        if (!req.admin) {
+            return res.status(401).json({ message: 'Unauthorized: must be admin' });
+        }
+
+        const eventId = req.body.eventId;
+        
+        // Encontre o evento pelo ID
+        const event = await Events.findById(eventId).select("Creator");
+
+        // Verifique se o evento existe
+        if (!event) {
+          return res.status(404).json({ message: 'Event not found' });
+        }
+  
+        await Users.findByIdAndUpdate(event.Creator, { $pull: { EventCreator: eventId } });
+        await Locations.updateOne(
+          { LocEvents: eventId },
+          { $pull: { LocEvents: eventId } }
+        );
+  
+        // Se o usuário for o criador do evento, exclua o evento
+        await Events.findByIdAndDelete(eventId);
+  
+        res.status(200).json();
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).json({ message: 'Internal server error! eventDelet' });
+    }
+});
+
+router.delete("/locationDelete", authPage, async (req, res) => {
+    try {
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+        return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+
+        if (!req.admin) {
+            return res.status(401).json({ message: 'Unauthorized: must be admin' });
+        }
+
+        const localId = req.body.localId;
+
+        // Encontre o usuário pelo ID
+        const loc = await Locations.findById(localId).select("Creator");
+        
+        if (!loc) {
+          return res.status(404).json({ message: 'Local not found' });
+        }
+        // Atualiza o usuário removendo o local da lista LocalCreator
+        await Users.findByIdAndUpdate(loc.Creator, { $pull: { LocalCreator: localId } });
+
+        // Para cada evento associado ao local, remova o local da lista LocAssoc
+        const events = await Events.find({ LocAssoc: localId });
+        for (const event of events) {
+            // Remova o local associado ao evento
+            event.LocAssoc = null;
+            await event.save();
+        }
+    
+        // Se o usuário for o criador do local, exclua o local
+        await Locations.findByIdAndDelete(localId);
+    
+        // Remova o local dos favoritos de todos os usuários
+        await Users.updateMany({ LocalFavorites: localId }, { $pull: { LocalFavorites: localId } });
+    
+        res.status(200).json();
+    } catch (error) {
+        console.error('Error deleting local:', error);
+        res.status(500).json({ message: 'Internal server error! locationDelete' });
     }
 });
 

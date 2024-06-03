@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from "../../components/Header/Header.jsx";
 import styles from "./CreatEvent.module.css";
 import { useCreatEvent } from "../../hooks/useCreatEvent.jsx";
@@ -7,7 +7,7 @@ import { faTimes,faPlus } from '@fortawesome/free-solid-svg-icons';
 import Footer from "../../components/Footer/Footer.jsx";
 
 function CreateEvent() {
-    const { createEvent, isLoading, error } = useCreatEvent();
+    const { createEvent, buscarLocais, locais, isLoading, error, errorLocais} = useCreatEvent();
     const [eventData, setEventData] = useState({
         eventType: '',
         eventName: '',
@@ -17,8 +17,20 @@ function CreateEvent() {
         eventAge: '',
         eventPrice: '',
         eventImage: [],
-        eventAddress: ''
+        eventAddress: '',
+        eventLocAssoc: null
     });
+
+    useEffect(() => {
+        const showLocais = async () => {
+            try {
+                await buscarLocais();
+            } catch (error) {
+                console.error('Error buscar locais', error);
+            }
+        };
+        showLocais();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -82,7 +94,8 @@ function CreateEvent() {
                 eventData.eventAge,
                 eventData.eventPrice,
                 eventData.eventImage,
-                eventData.eventAddress
+                eventData.eventAddress,
+                eventData.eventLocAssoc
             );
         } catch (error) {
             console.error('Error creating event:', error);
@@ -110,6 +123,20 @@ function CreateEvent() {
                                     <option value="Lazer">Lazer</option>
                                     <option value="Turismo">Turismo</option>
                                 </select>
+
+
+                                {errorLocais ?
+                                    <p className={styles.error}>{errorLocais}</p>
+                                    :
+                                    (locais.length > 0 &&
+                                    <select value={eventData.eventLocAssoc} onChange={handleInputChange} name="eventLocAssoc" className={styles.select + ' defaultselect'}>
+                                        <option value="">Associe este evento a um local</option>
+                                        {locais.map(location => (
+                                            <option key={location._id} value={location._id}>{location.Name}</option>
+                                        ))}
+                                    </select>
+                                )}
+
                                 <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} className={'defaultInput' }/>
                                 <p>Data/Hora:</p>
                                 <div className={styles.inputWrapper}>

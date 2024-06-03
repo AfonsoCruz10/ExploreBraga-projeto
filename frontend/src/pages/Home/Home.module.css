@@ -1,131 +1,277 @@
 /* section1 */
 .section1 {
-    filter: brightness(55%);
-    background-position: center;
-    animation: imageAnimation 40s infinite;
-    background-size: cover;
-    background-position: cover;
-    background-repeat: no-repeat;
-    position: relative;
-    border: none;
-    box-shadow: 1px 1px 50px #121212;
-    height: 100vh;
-    z-index: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  @keyframes imageAnimation {
-    0% {
-      background-image: url('../../assets/Centro0.JPG');
-      opacity: 1;
-    }
+  filter: brightness(55%);
+  background-position: center;
+  animation: imageAnimation 40s infinite ease-in-out;
+  background-size: cover;
+  background-position: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  border: none;
+  box-shadow: 1px 1px 50px #2f2f2f;
+  height: calc(100vh - 110px);
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-    16.6% {
-      background-image: url('../../assets/ParqueDaPonte.jpeg');
-      opacity: 1;
-    }
-  
-    33.2% {
-      background-image: url('../../assets/Topo0.JPG');
-      opacity: 1;
-    }
-  
-    50% {
-      background-image: url('../../assets/Topo1.JPG');
-      opacity: 1;
-    }
-  
-    66.6% {
-      background-image: url('../../assets/Festa0.JPG');
-      opacity: 1;
-    }
-  
-    83.2% {
-      background-image: url('../../assets/Jardim0.JPG');
-      opacity: 1;
-    }
-  
-    100% {
-      background-image: url('../../assets/Centro0.JPG');
-      opacity: 1;
-    }
+@keyframes imageAnimation {
+  0% {
+    background-image: url('../../assets/Centro0.JPG');
   }
-  
-  /* Menu Titulo */
-  
+
+  15% {
+    background-image: url('../../assets/sameirodia.jpg');
+  }
+
+  30% {
+    background-image: url('../../assets/Topo0.JPG');
+  }
+
+  45% {
+    background-image: url('../../assets/Topo1.JPG');
+  }
+
+  60% {
+    background-image: url('../../assets/sameiroNoite.jpg');
+  }
+
+  75% {
+    background-image: url('../../assets/Jardim0.JPG');
+  }
+
+  90% {
+    background-image: url('../../assets/vistanoite.jpg');
+  }
+
+  100% {
+    background-image: url('../../assets/Centro0.JPG');
+  }
+}
+
+/* Menu Titulo */
+.titulo {
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 90px;
+  letter-spacing: 20px;
+  text-shadow: 25px 25px 50px #121212;
+  color: #ffffff;
+  margin: 0;
+  z-index: 1;
+}
+
+.titulo2 {
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 70px;
+  letter-spacing: 20px;
+  color: #ffffff;
+  margin: 50px auto;
+  z-index: 1;
+}
+
+/* section2 */
+.section2 {
+  border: none;
+  position: relative;
+  height: calc(100vh - 110px);
+  background-color: #af2431;
+  border-top: 2px solid #af2431;
+}
+
+.menu-section2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 100%;
+  text-align: center;
+  z-index: 1;
+}
+
+/* section3 */
+.section3 {
+  position: relative;
+  height: calc(100vh - 110px);
+  background-color: #2f2f2f;
+  border-top: 2px solid #af2431;
+}
+
+/* Arrow */
+.ArrowBlack,
+.Arrowred {
+  position: absolute;
+  background-color: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  border: 0;
+  font-size: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 10%;
+  text-shadow: 25px 25px 50px #121212;
+}
+
+.Arrowred:hover {
+  color: #af2431;
+  transition: 0.5s;
+}
+
+.ArrowBlack:hover {
+  color: #2f2f2f;
+  transition: 0.5s;
+}
+
+/* Responsividade */
+@media only screen and (max-width: 700px) {
   .titulo {
-    text-align: center;
-    font-family: "Roboto", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    font-size: 90px;
-    letter-spacing: 20px;
-    text-shadow: 25px 25px 50px #121212;
-    color: #ffffff;
-    margin-top: -200px;
-    margin-bottom: 0;
-    margin-left: 70px;
-    z-index: 1;
+    width: auto;
+    font-size: 40px;
+    margin-left: 0;
+    letter-spacing: 10px;
   }
 
-  /* section2 */
-
-  .section2{  
-    border: none;
-    position: relative;
-    height: 100vh;
-    background-color: red;
+  .titulo2 {
+    font-size: 40px;
+    letter-spacing: 10px;
   }
-  .menu-section2{
-    position: absolute;
-    margin-top: 5%;
+
+  .section2,
+  .section3 {
     height: auto;
-    text-align: center;
-    z-index: 1;
+    padding: 10px 0;
   }
 
-  /* section3 */
-
-  .section3{
-    position: relative;
-    height: 100vh;
-    background-color: black;
+  .pessoas {
+    grid-template-rows: repeat(auto-fill, minmax(200px, 1fr));
   }
-  
-  /*Arrow*/
-  
+
+  .pess {
+    width: 100%;
+    height: auto;
+  }
+
   .Arrow {
-    position: absolute;
-    background-color: transparent;
-    color: #ffffff;
-    cursor: pointer;
-    border: 0;
-    font-size: 50px;
-    left: 50%;
-    top: 80%;
-    text-shadow: 25px 25px 50px #121212;
+    bottom: 20px;
+    /* Adjust the position of the arrow for mobile screens */
   }
-  
-  .Arrow:hover {
-    color: #af2431;
-    transition: 0.5s;
-  }
+}
 
-  @media only screen and (max-width: 700px) {
+/* Cartoes */
+/* Wrapper */
+.Wrapper {
+  padding: 10px;
+  height: auto;
+  color: black;
+  display: grid;
+  grid-template-rows: auto 70px;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
 
-    .menu-titulo {
-      margin-top: 20%;
-      width: auto;
-      height: auto;
-      letter-spacing: 10px;
-    }
-  
-    .titulo {
-      width: auto;
-      font-size: 40px;
-    }
-  
-    
-  }
+/* Pessoas Wrapper */
+.cartoesWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pessoas */
+.cartoes {
+  width: 100%;
+  display: grid;
+  grid-template-rows: repeat(auto-fill, 400px);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 1rem;
+  place-items: center;
+}
+
+.cartaoBlack,
+.cartaored {
+  background-color: #e6e6e6;
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 10px;
+  transition: background-color 1s, opacity 0.3s;
+  cursor: pointer;
+}
+
+.cartaoBlack:hover,
+.cartaored:hover {  
+  transform: scale(1.1);
+  transition: 0.7s;
+  opacity: 1;
+}
+
+.cartaored:hover {
+  box-shadow: 2px 2px 20px #af2431;
+}
+.cartaoBlack:hover{
+  box-shadow: 2px 2px 20px #2f2f2f;
+}
+
+/* Imagens */
+.c1evento,
+.c2evento,
+.c3evento,
+.c1local,
+.c2local,
+.c3local {
+  align-self: center;
+  width: 250px;
+  height: 250px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  border-radius: 10px;
+  background-color: navy;
+  border: 1px solid #af2431;
+}
+
+.c1evento {
+  background-image: url('../../assets/ImagensCartoes/Calendario.png');
+}
+
+.c2evento {
+  background-image: url('../../assets/ImagensCartoes/CriarEvento.png');
+}
+
+.c3evento {
+  background-image: url('../../assets/ImagensCartoes/Partilha.png');
+}
+
+.c1local {
+  background-image: url('../../assets/ImagensCartoes/LugaresNovos2.png');
+}
+
+.c2local {
+  background-image: url('../../assets/ImagensCartoes/CriaLugar.png');
+}
+
+.c3local {
+  background-image: url('../../assets/ImagensCartoes/LugaresFavoritos.png');
+}
+
+
+.nome {
+  padding-left: 10px;
+}
+
+.git {
+  padding-left: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

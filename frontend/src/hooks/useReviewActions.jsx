@@ -1,131 +1,107 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from './useAuthContext';
 
-export const useReviewActions = () => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-    const seeReview = async (locationId, reviewId) => {
+export const useReviewActions = (localId) => {
+    const [localReview, setLocalReview] = useState([]);
+    const [info, setInfo] = useState(null);
+    const [isLoadingReview, setIsLoadingReview] = useState(false);
+    const [isLoadingAddReview, setIsLoadingAddReview] = useState(false);
+    const [errorReview, setErrorReview] = useState(null);
+    const [errorAddReview, setErrorAddReview] = useState(null);
+    const { user } = useAuthContext();
+    const navigate = useNavigate();
+    const { enqueueSnackbar } = useSnackbar();
+    
+    const verReviews = async () => {
         try {
-            setLoading(true);
-            setError(null); // Reset error state before making request
+            setIsLoadingReview(true);
+            let response;
 
-            const res = await axios.get(`http://localhost:5555/locations/${locationId}/seeReview/${reviewId}`);
+            if (user) {
+                // Obtenha o token JWT do localStorage
+                const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+                const token = userLocalStorage.token;
 
-            if (res.status === 200) {
-                return res.data.review;
+                response = await axios.get(`http://localhost:5555/locations/reviews/${localId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
             } else {
-                setError(`Error: ${res.status}`);
+                response = await axios.get(`http://localhost:5555/locations/reviews/${localId}`);
             }
-        } catch (err) {
-            console.error("Erro ao ver revisão:", err);
-            setError(err.response?.data?.message || "Erro desconhecido");
+
+            if (response.status === 200) {
+                setErrorReview(null);
+                setLocalReview(response.data.reviews.Reviews);
+                setInfo(response.data.userId);
+            }
+        } catch (error) {
+            setErrorReview(error.respons.data.message);
         } finally {
-            setLoading(false);
+            setIsLoadingReview(false);
+        }
+    };
+
+    const addReview = async (classification, comment) => {
+        try {
+            setIsLoadingAddReview(true);
+            if(user){
+                const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+                const token = userLocalStorage?.token;
+
+                const res = await axios.post(`http://localhost:5555/locations/reviews/addReview/${localId}`, {
+                    classification,
+                    comment
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (res.status === 201) {
+                    setErrorAddReview(null);
+                    enqueueSnackbar("Obrigado pelo sua avaliação!", { variant: "success" });
+                    await verReviews();
+                } 
+            } else {
+                navigate("/login");
+            }
+        } catch (error) {
+            setErrorAddReview(error.response.data.message);
+        } finally {
+            setIsLoadingAddReview(false);
         }
     }
 
-    const addReview = async (locationId, userId, classification, comment) => {
+    const deleteReview = async (reviewId) => {
         try {
-            setLoading(true);
-            setError(null); // Reset error state before making request
+            if(user){
+                const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+                const token = userLocalStorage?.token;
 
-            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-            const token = userLocalStorage?.token;
+                const res = await axios.delete(`http://localhost:5555/locations/reviews/deleteReview`, {
+                    data: { localId , reviewId},
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            if (!token) {
-                throw new Error("Token not found");
-            }
-
-            const res = await axios.post(`http://localhost:5555/locations/${locationId}/addReview`, {
-                userId,
-                classification,
-                comment
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (res.status === 201) {
-                return res.data.review;
+                if (res.status === 200) {
+                    setLocalReview((prevReviews) => prevReviews.filter(review => review._id !== reviewId));
+                    enqueueSnackbar("Avaliação eliminada com sucesso!", { variant: "success" });
+                } 
             } else {
-                setError(`Error: ${res.status}`);
+                navigate("/login");
             }
-        } catch (err) {
-            console.error("Erro ao adicionar revisão:", err);
-            setError(err.response?.data?.message || "Erro desconhecido");
-        } finally {
-            setLoading(false);
-        }
+        } catch (error) {
+            enqueueSnackbar("Erro ao eliminar avalição!", { variant: "error" });
+            console.error("Erro ao deletar revisão:", error);
+        } 
     }
 
-    const updateReview = async (userId, locationId, reviewId, classification, comment) => {
-        try {
-            setLoading(true);
-            setError(null); // Reset error state before making request
-
-            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-            const token = userLocalStorage?.token;
-
-            if (!token) {
-                throw new Error("Token not found");
-            }
-
-            const res = await axios.put(`http://localhost:5555/locations/${locationId}/editReview/${reviewId}`, {
-                userId,
-                classification,
-                comment
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (res.status === 200) {
-                return res.data.review;
-            } else {
-                setError(`Error: ${res.status}`);
-            }
-        } catch (err) {
-            console.error("Erro ao atualizar revisão:", err);
-            setError(err.response?.data?.message || "Erro desconhecido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const deleteReview = async (userId, locationId, reviewId) => {
-        try {
-            setLoading(true);
-            setError(null); // Reset error state before making request
-
-            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-            const token = userLocalStorage?.token;
-
-            if (!token) {
-                throw new Error("Token not found");
-            }
-
-            const res = await axios.delete(`http://localhost:5555/locations/${locationId}/deleteReview/${reviewId}`, {
-                data: { userId },
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (res.status === 200) {
-                return res.data.message;
-            } else {
-                setError(`Error: ${res.status}`);
-            }
-        } catch (err) {
-            console.error("Erro ao deletar revisão:", err);
-            setError(err.response?.data?.message || "Erro desconhecido");
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    return { loading, error, addReview, updateReview, deleteReview, seeReview };
+    return { verReviews, addReview, deleteReview, localReview, info, isLoadingAddReview, isLoadingReview, errorAddReview, errorReview };
 }

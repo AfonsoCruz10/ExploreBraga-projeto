@@ -23,37 +23,37 @@ const validatePassword = (password) => {
 //Rota para criar uma nova conta
 router.post('/createNewUser', async (req, res) => {
     try {
-        const { username, email, password ,birthDate} = req.body;
+        const { username, email, password, birthDate } = req.body;
 
         if (username === "") {
-            return res.status(400).json({ message: "Username needed!" });
+            return res.status(400).json({ message: "Username necessário!" });
         }
 
         if (email === "") {
-            return res.status(400).json({ message: "Email needed!" });
+            return res.status(400).json({ message: "Email necessária!" });
         } else if (!validateEmail(email)) {
-            return res.status(400).json({ message: "Invalid email format!" });
+            return res.status(400).json({ message: "Formato de email inválido!" });
         }
 
         if (password === "") {
-            return res.status(400).json({ message: "Password needed!" });
+            return res.status(400).json({ message: "Password necessária!" });
         } else if (!validatePassword(password)) {
-            return res.status(400).json({ message: "Password must be at least 8 characters long and contain at least one uppercase letter!" });
+            return res.status(400).json({ message: "A senha deve ter pelo menos 8 caracteres e conter pelo menos uma letra maiúscula!" });
         }
 
         if (!birthDate) {
-            return res.status(400).json({ message: "BirthDate needed!" });
+            return res.status(400).json({ message: "Data de nascimento necessária!" });
         }
 
         //verificar se o username ou email ja existem
-        const existingUser = await Users.findOne({ $or: [{ username }, { email }] });
+        const existingUser = await Users.findOne({ $or: [{ username }, { email }] }).select(" username email ");
 
         if (existingUser) {
             if (existingUser.username === username) {
-                return res.status(400).json({ message: 'The username was already used! Please choose another one!' });
+                return res.status(400).json({ message: 'O nome de usuário já foi usado! Por favor escolha outro!' });
             }
             if (existingUser.email === email) {
-                return res.status(400).json({ message: 'The email was already used! Please choose another one!' });
+                return res.status(400).json({ message: 'O e-mail já foi usado! Por favor escolha outro!' });
             }
         }
 
@@ -71,16 +71,15 @@ router.post('/createNewUser', async (req, res) => {
             EventCreator: [],
             EventHasInterest: [],
             LocalCreator: [],
-            LocalReviews: [],
             LocalFavorites: [],
-            ProfileImage:""
+            ProfileImage: ""
         });
 
         //Salvar o utilizador na base de dados
         await newUser.save();
 
         //Enviar mensagem de sucesso
-        res.status(201).json({ message: 'User created successfully' });
+        res.status(201).json();
 
     } catch (error) {
         console.error('Error creating user: ', error);
@@ -97,7 +96,7 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: "You need to fill the credential info!" });
         }
         // Verifica se o usuário existe com o e-mail fornecido
-        const user = await Users.findOne({ email });
+        const user = await Users.findOne({ email }).select("HashedPassword email");
 
         if (!user) {
             return res.status(404).json({ message: "This email is not registered yet!" });
@@ -109,7 +108,6 @@ router.post('/login', async (req, res) => {
 
         const tokenPayload = {
             _id: user._id,
-            username: user.username,
             email: user.email
         };
 
@@ -143,12 +141,103 @@ router.get('/myaccount', authPage, async (req, res) => {
         // Obter as informações do usuário autenticado
         const userid = req.userid;
         // Aqui você pode buscar mais informações do usuário no banco de dados usando o _id
-        const user = await Users.findById(userid, '-HashedPassword');
+        const user = await Users.findById(userid, '-HashedPassword').select("username email birthDate ProfileImage AdminPermission");
 
         return res.status(200).json({ data: user });
     } catch (error) {
         console.log("Error fetching events:", error.message);
         response.status(500).json({ message: 'Internal server error! SelectEvents' });
+    }
+});
+
+
+router.put("/updateAccount", authPage, async (req, res) => {
+    try {
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            // Trate o caso em que a autenticação falhou
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+
+        // Obter as informações do usuário autenticado
+        const userid = req.userid;
+        let token
+
+        // Busque os IDs de eventos associados ao usuário
+        const user = await Users.findById(userid, '-HashedPassword').select("username email birthDate ProfileImage AdminPermission");
+
+        // Atualize as informações do usuário com os novos dados recebidos
+        if (req.body.newUsername) {
+            // Verifique se já existe algum usuário com o novo nome de usuário
+            const existingUsernameUser = await Users.findOne({ username: req.body.newUsername }).select("username");
+
+            // Se encontrou um usuário com o mesmo nome de usuário, retorne um erro
+            if (existingUsernameUser && existingUsernameUser._id.toString() !== userid) {
+                return res.status(400).json({ message: 'O nome de usuário já foi usado! Por favor escolha outro!' });
+            }
+
+            // Se não encontrou nenhum usuário com o mesmo nome de usuário, atualize o nome de usuário
+            user.username = req.body.newUsername;
+        }
+
+        if (req.body.newEmail) {
+            // Verifique se já existe algum usuário com o novo email
+            const existingEmailUser = await Users.findOne({ email: req.body.newEmail }).select("email");
+
+            // Se encontrou um usuário com o mesmo email, retorne um erro
+            if (existingEmailUser && existingEmailUser._id.toString() !== userid) {
+                return res.status(400).json({ message: 'O e-mail já foi usado! Por favor escolha outro!' });
+            }
+
+            // Se não encontrou nenhum usuário com o mesmo email, atualize o email
+            user.email = req.body.newEmail;
+
+            // Gere um novo token com base nas informações atualizadas do usuário
+            const tokenPayload = {
+                _id: user._id,
+                email: user.email
+            };
+
+            token = jwt.sign(tokenPayload, process.env.MySecret);
+        }
+
+        // Salve as alterações no banco de dados
+        await user.save();
+
+        // Envie uma resposta de sucesso
+        res.status(200).json({ user, token });
+
+    } catch (error) {
+        console.error('Error updating user information:', error);
+        res.status(500).json({ message: 'Internal server error! updateAccount' });
+    }
+});
+
+router.put("/updateAccountImagem", authPage, async (req, res) => {
+    try {
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            // Trate o caso em que a autenticação falhou
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+
+        // Obter as informações do usuário autenticado
+        const userid = req.userid;
+
+        // Busque os IDs de eventos associados ao usuário
+        const user = await Users.findById(userid, '-HashedPassword').select("username email birthDate ProfileImage AdminPermission");
+        
+        // Atualize o campo ProfileImage com a nova imagem de perfil
+        user.ProfileImage = req.body.NewProfileImage;
+        
+        // Salve as alterações no banco de dados
+        await user.save();
+        // Envie uma resposta de sucesso
+        res.status(200).json({ user });
+
+    } catch (error) {
+        console.error('Error updating user information:', error);
+        res.status(500).json({ message: 'Internal server error! updateAccountImage' });
     }
 });
 
@@ -170,8 +259,7 @@ router.get('/showEventsUser', authPage, async (req, res) => {
         // Verifique se o usuário não possui eventos associados
         if (userIDEvent.EventCreator.length === 0) {
             return res.status(200).json({
-                count: 0,
-                data: [],
+                data: []
             });
         }
 
@@ -187,17 +275,16 @@ router.get('/showEventsUser', authPage, async (req, res) => {
         }
 
         return res.status(200).json({
-            count: eventsDetails.length,
-            data: eventsDetails,
+            data: eventsDetails
         });
-        
+
     } catch (error) {
         console.log("Error fetching events:", error.message);
         return res.status(500).json({ message: 'Internal server error! SelectEvents' });
     }
 });
 
-router.put("/updateAccount", authPage, async (req, res) => {
+router.get('/showLocationsUser', authPage, async (req, res) => {
     try {
         // Verifique se a autenticação foi bem-sucedida
         if (!req.authenticated) {
@@ -208,79 +295,92 @@ router.put("/updateAccount", authPage, async (req, res) => {
         // Obter as informações do usuário autenticado
         const userid = req.userid;
 
-        // Busque os IDs de eventos associados ao usuário
-        const user = await Users.findById(userid, '-HashedPassword');
+        // Busque os IDs de locais associados ao usuário
+        const userIDLocation = await Users.findById(userid).select("username LocalCreator");
 
-        // Atualize as informações do usuário com os novos dados recebidos
-        if (req.body.newUsername) {
-            // Verifique se já existe algum usuário com o novo nome de usuário
-            const existingUsernameUser = await Users.findOne({ username: req.body.newUsername });
-            
-            // Se encontrou um usuário com o mesmo nome de usuário, retorne um erro
-            if (existingUsernameUser && existingUsernameUser._id.toString() !== userid) {
-                return res.status(400).json({ message: 'The username was already used! Please choose another one!' });
-            }
-        
-            // Se não encontrou nenhum usuário com o mesmo nome de usuário, atualize o nome de usuário
-            user.username = req.body.newUsername;
+        // Verifique se o usuário não possui locais associados
+        if (userIDLocation.LocalCreator.length === 0) {
+            return res.status(200).json({
+                count: 0,
+                data: [],
+            });
         }
 
-        if (req.body.newEmail) {
-            // Verifique se já existe algum usuário com o novo email
-            const existingEmailUser = await Users.findOne({ email: req.body.newEmail });
-        
-            // Se encontrou um usuário com o mesmo email, retorne um erro
-            if (existingEmailUser && existingEmailUser._id.toString() !== userid) {
-                return res.status(400).json({ message: 'The email was already used! Please choose another one!' });
-            }
-        
-            // Se não encontrou nenhum usuário com o mesmo email, atualize o email
-            user.email = req.body.newEmail;
-        } 
+        // Crie uma matriz para armazenar os detalhes de todos os locais
+        const locationsDetails = [];
 
-        // Verifique se uma nova imagem de perfil foi enviada
-        if (req.body.NewProfileImage) {
-            // Atualize o campo ProfileImage com a nova imagem de perfil
-            user.ProfileImage = req.body.NewProfileImage;
+        // Iterar sobre cada ID de local e buscar os detalhes do local no banco de dados
+        for (const localID of userIDLocation.LocalCreator) {
+            const local = await Locations.findById(localID);
+            if (local) {
+                locationsDetails.push(local);
+            }
         }
 
-        // Salve as alterações no banco de dados
-        await user.save();
-
-        // Gere um novo token com base nas informações atualizadas do usuário
-        const tokenPayload = {
-            _id: user._id,
-            username: user.username,
-            email: user.email
-        };
-
-        const token = jwt.sign(tokenPayload, process.env.MySecret);
-
-        // Envie uma resposta de sucesso
-        res.status(200).json({ message: 'User information updated successfully', user , token });
+        return res.status(200).json({
+            count: locationsDetails.length,
+            data: locationsDetails,
+        });
 
     } catch (error) {
-        console.error('Error updating user information:', error);
-        res.status(500).json({ message: 'Internal server error! updateAccount' });
+        console.log("Error fetching events:", error.message);
+        return res.status(500).json({ message: 'Internal server error! SelectLocations' });
     }
 });
 
-
-router.post('/enviaremail', authPage, async (req, res) => {
-    const { feedback } = req.body;
-
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: 'afonsocru1001@gmail.com',
-        subject: 'Feedback do Usuário',
-        text: `Feedback do usuário: ${feedback}`
-    };
-
+router.get('/userInterestedEvents', authPage, async (req, res) => {
     try {
-        res.status(200).send('E-mail enviado com sucesso!');
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }   
+        const currentDate = new Date();
+        const userid = req.userid;
+        const events = await Events.find({ InterestedUsers: userid, Status: 'Active', EndDate: { $gte: currentDate } }).select('_id').sort({ BegDate: 1 });
+  
+        return res.status(200).json({ data: events });
     } catch (error) {
-        console.error('Erro ao enviar e-mail:', error);
-        res.status(500).send('Erro ao enviar e-mail.');
+        console.log("Error fetching interested events:", error.message);
+        return res.status(500).json({ message: 'Internal server error! userInterestedEvents' });
+    }
+});
+
+router.get('/userFavoritePlaces', authPage, async (req, res) => {
+    try {
+
+        // Verifique se a autenticação foi bem-sucedida
+        if (!req.authenticated) {
+            // Trate o caso em que a autenticação falhou
+            return res.status(401).json({ message: 'Unauthorized: authentication failed' });
+        }
+
+        // Obter as informações do utilizador autenticado
+        const userid = req.userid;
+
+        // Busque os IDs de locais da lista de favoritos do utilizador
+        const user = await Users.findById(userid).select("LocalFavorites");
+
+        // Verifique se o usuário não possui locais favoritos
+        if (user.LocalFavorites.length === 0) {
+            return res.status(200).json({
+                data: []
+            });
+        }
+        // Crie uma matriz para armazenar os detalhes de todos os locais favoritos
+        const favoriteLocations = [];
+
+        // Iterar sobre cada ID de local favorito e buscar os detalhes do local na base de dados
+        for (const localID of user.LocalFavorites) {
+            const local = await Locations.findById(localID).select('_id Status');
+            if (local && local.Status=== "Active") {
+                favoriteLocations.push(local);
+            }
+        }
+
+        return res.status(200).json({ data: favoriteLocations });
+    } catch (error) {
+        console.log("Error fetching favorite locations:", error.message);
+        return res.status(500).json({ message: 'Internal server error! SelectFavoriteLocations' });
     }
 });
 

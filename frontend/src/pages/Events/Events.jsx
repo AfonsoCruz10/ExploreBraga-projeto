@@ -9,27 +9,42 @@ import styles from "./Events.module.css";
 import { SlArrowDown } from 'react-icons/sl';
 import { useSelectEvents } from '../../hooks/useSelectEvents.jsx';
 import Footer from "../../components/Footer/Footer.jsx";
+import { useAuthContext } from "../../hooks/useAuthContext.jsx";
 
 Modal.setAppElement("#root");
 
 function Events() {
-  const [searchCat, setSearchCat] = useState('');
   const [searchEventName, setSearchEventName] = useState('');
+  const [searchCat, setSearchCat] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [eventsToShow, setEventsToShow] = useState(5);
-  const { selectEventsonnect, events, isLoading, error } = useSelectEvents();
+  const { selectEventsConnect, getInterestedEvents, interestedEvents, errorInt, events, isLoading, error } = useSelectEvents();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const showEvents = async () => {
       try {
-        await selectEventsonnect();
+        await selectEventsConnect();
       } catch (error) {
         console.error('Error show events', error);
       }
     };
     showEvents();
   }, []);
+
+  useEffect(() => {
+    const showInterestedEvents = async () => {
+        try {
+            await getInterestedEvents();
+        } catch (error) {
+            console.error('Error show interested events', error);
+        }
+    };
+    if (user) {
+        showInterestedEvents();
+    }
+  }, [user]);
 
   const handleChangeCat = (event) => {
     setSearchCat(event.target.value);
@@ -66,7 +81,7 @@ function Events() {
   };
 
   const filteredEvents = events.filter((evento) => {
-    const categoriaMatch = searchCat === "" || evento.Type === searchCat;
+    const categoriaMatch = searchCat === "" || (searchCat === "Favoritos" ? interestedEvents.some(fav => fav._id === evento._id) : evento.Type === searchCat);
     const dataMatch = !selectedDate || new Date(evento.BegDate) >= selectedDate;
     const eventNameMatch = evento.Name.toLowerCase().includes(searchEventName.toLowerCase());
     return categoriaMatch && dataMatch && eventNameMatch;
@@ -96,16 +111,30 @@ function Events() {
             <span className={styles["close-button"]} onClick={closeModal}>&times;</span>
 
             <div className={styles["search-container"]}>
-              <select value={searchCat} onChange={handleChangeCat} className='defaultselect'>
-                <option value="">Escolha uma categoria</option>
-                <option value="Cultura">Cultura</option>
-                <option value="Desporto">Desporto</option>
-                <option value="Educacao">Educação</option>
-                <option value="Fotografia">Fotografia</option>
-                <option value="Lazer">Lazer</option>
-                <option value="Turismo">Turismo</option>
-              </select>
-              
+              {!user ? 
+                <select value={searchCat} onChange={handleChangeCat} className={styles.select + ' defaultselect'}>
+                  <option value="">Escolha uma categoria</option>
+                  <option value="Cultura">Cultura</option>
+                  <option value="Desporto">Desporto</option>
+                  <option value="Educacao">Educação</option>
+                  <option value="Fotografia">Fotografia</option>
+                  <option value="Lazer">Lazer</option>
+                  <option value="Turismo">Turismo</option>
+                </select>
+                : errorInt ? (
+                    <p className="error">{errorInt}</p>
+                ) :
+                  <select value={searchCat} onChange={handleChangeCat} className={styles.select + ' defaultselect'}>
+                      <option value="">Escolha uma categoria</option>
+                      <option value="Cultura">Cultura</option>
+                      <option value="Desporto">Desporto</option>
+                      <option value="Educacao">Educação</option>
+                      <option value="Fotografia">Fotografia</option>
+                      <option value="Lazer">Lazer</option>
+                      <option value="Turismo">Turismo</option>
+                      <option value="Favoritos">Eventos Favoritos</option>
+                  </select>
+              }
               <Calendar
                 onChange={handleDateChange}
                 value={selectedDate}
@@ -141,7 +170,7 @@ function Events() {
                     />
                   ))}
 
-                  {eventsToShow < filteredEvents.length && (
+                  {filteredEvents.length >= eventsToShow && events.length > eventsToShow  && (
                     <div className={styles.Arrow} onClick={handleLoadMore}>
                       <SlArrowDown /> 
                     </div>

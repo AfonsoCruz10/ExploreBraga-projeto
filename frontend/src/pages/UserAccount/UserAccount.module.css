@@ -93,8 +93,9 @@
   right: 0; 
   color: black;
   border: none;
+  font-size: 22px;
   border-radius: 50%;
-  padding: 5px;
+  padding: 3px;
   cursor: pointer;
 }
 
@@ -135,7 +136,8 @@
   margin-left: 10px;
   cursor: pointer;
 }
-
+.avatarWrapper .removeIcon:hover,
+.avatarWrapper .backIcon:hover,
 .editIcon:hover {
   color: #af2431;
 }

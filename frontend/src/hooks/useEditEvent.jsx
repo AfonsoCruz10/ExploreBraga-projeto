@@ -6,6 +6,8 @@ export const useEditEvent = (eventId) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [eventDetails, setEventDetails] = useState(null);
+    const [locais, setLocais] = useState(null);
+    const [errorLocais, setErrorLocais] = useState(null);
     const { enqueueSnackbar } = useSnackbar();
 
     // Função para obter os detalhes do evento com base no ID do evento
@@ -25,7 +27,7 @@ export const useEditEvent = (eventId) => {
     };
 
     // Função para editar o evento
-    const editEvent = async (eventType, eventName, eventBegDate, eventEndDate, eventDescription, eventAge, eventPrice, eventImage, eventAddress) => {
+    const editEvent = async (eventType, eventName, eventBegDate, eventEndDate, eventDescription, eventAge, eventPrice, eventImage, eventAddress, eventLocAssoc) => {
         try {
             setIsLoading(true);
             
@@ -42,7 +44,9 @@ export const useEditEvent = (eventId) => {
                 eventAge,
                 eventPrice,
                 eventImage,
-                eventAddress
+                eventAddress,
+                eventLocAssoc
+
             },{
                 headers: {
                     'Authorization': `Bearer ${token}` 
@@ -59,5 +63,27 @@ export const useEditEvent = (eventId) => {
         }
     };
 
-    return { getEventDetails, editEvent, isLoading, error, eventDetails };
+    const buscarLocais = async () => {
+        try {
+            
+            // Obtenha o token JWT do localStorage
+            const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+            const token = userLocalStorage.token;
+
+            const res = await axios.get(`http://localhost:5555/events/buscarLocaisEvents`,{
+                headers: {
+                    'Authorization': `Bearer ${token}` 
+                }
+            });
+
+            if (res.status === 200) {
+                setErrorLocais(null);
+                setLocais(res.data.locations);
+            }
+        } catch (error) {
+            setErrorLocais(error.response.data.message);
+        }
+    };
+
+    return { getEventDetails, editEvent, buscarLocais, locais, isLoading, error, errorLocais, eventDetails };
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useAuthContext } from './useAuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
 
 export const useEventDetails = () => {
     const [event, setEvent] = useState(null);
@@ -12,6 +13,7 @@ export const useEventDetails = () => {
     const [errorInterested, setErrorInterested] = useState(null);
     const navigate = useNavigate();
     const { user } = useAuthContext();
+    const { enqueueSnackbar } = useSnackbar();
 
     const buscarEventDetails = async (eventId) => {
         try {
@@ -55,7 +57,7 @@ export const useEventDetails = () => {
                 const token = userLocalStorage.token; 
 
                 // Se já deu like, remove o ID do usuário da lista
-                const resp = await axios.put(`http://localhost:5555/events/${eventId}/interested`, 
+                const resp = await axios.put(`http://localhost:5555/events/interested/${eventId}`, 
                     null,
                     {
                         headers: {
@@ -67,11 +69,18 @@ export const useEventDetails = () => {
                     setErrorInterested(null);
                     setcounter(resp.data.count);
                     setCheck(resp.data.check)
+                    
+                    if (!check){
+                        enqueueSnackbar("Evento adicionado da sua lista de interessados", { variant: "success" });
+                    } else{
+                        enqueueSnackbar("Evento removido da sua lista de interessados", { variant: "success" });
+                    }
                 }
             } else{
                 navigate("/login");
             }
         } catch (error) {
+            enqueueSnackbar("Erro ao adiconar/remover o evento à sua lista de interessados", { variant: "error" });
             setErrorInterested(error.response.data.message);
         } 
     };

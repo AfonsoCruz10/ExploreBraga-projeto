@@ -4,19 +4,27 @@ import { useSnackbar } from 'notistack';
 
 export const useAdmin = () => {
   const [adminEvents, setAdminEvents] = useState([]);
+  const [adminLocations, setAdminLocations] = useState([]);
   const [adminUsers, setAdminUsers] = useState([]);
   const [isLoadingEvents, setIsLoadingEvents] = useState(false);
+  const [isLoadingLocations, setIsLoadingLocations] = useState(false);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-  const [error, setError] = useState(null);
+  const [errorEvents, setErrorEvents] = useState(null);
+  const [errorLocations, setErrorLocations] = useState(null);
+  const [errorUsers, setErrorUsers] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+
+  const getAuthToken = () => {
+    const userLocalStorage = JSON.parse(localStorage.getItem('user'));
+    return userLocalStorage?.token;
+  };
 
   const adminUsersConnect = async () => {
     try {
       setIsLoadingUsers(true);
       
       // Obtenha o token JWT do localStorage
-      const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-      const token = userLocalStorage.token;
+      const token = getAuthToken();
 
       const response = await axios.get('http://localhost:5555/admin/displayAllUsers', {
         headers: {
@@ -24,11 +32,11 @@ export const useAdmin = () => {
         }
       });
       if(response.status === 200){
-        setError(null);
+        setErrorUsers(null);
         setAdminUsers(response.data.data);
       }
     } catch (error) {
-      setError(error.response.data.message);
+      setErrorUsers(error.response.data.message);
     } finally {
       setIsLoadingUsers(false);
     }
@@ -37,24 +45,43 @@ export const useAdmin = () => {
   const adminEventsConnect = async () => {
     try {
       setIsLoadingEvents(true);
+      const token = getAuthToken();
+      const response = await axios.get('http://localhost:5555/admin/events', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.status === 200) {
+        setErrorEvents(null);
+        setAdminEvents(response.data.data);
+      } 
+    } catch (error) {
+      setErrorEvents(errorMessage);
+    } finally {
+      setIsLoadingEvents(false);
+    }
+  };
+
+  const adminLocationsConnect = async () => {
+    try {
+      setIsLoadingLocations(true);
       
       // Obtenha o token JWT do localStorage
-      const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-      const token = userLocalStorage.token;
+      const token = getAuthToken();
 
-      const response = await axios.get('http://localhost:5555/admin/events', {
+      const response = await axios.get('http://localhost:5555/admin/locations', {
         headers: {
           'Authorization': `Bearer ${token}` 
         }
       });
       if(response.status === 200){
-        setError(null);
-        setAdminEvents(response.data.data);
+        setErrorLocations(null);
+        setAdminLocations(response.data.data);
       }
     } catch (error) {
-      setError(error.response.data.message);
+      setErrorLocations(error.response.data.message);
     } finally {
-      setIsLoadingEvents(false);
+      setIsLoadingLocations(false);
     }
   };
 
@@ -63,11 +90,10 @@ export const useAdmin = () => {
       setIsLoadingEvents(true);
 
       // Obtenha o token JWT do localStorage
-      const userLocalStorage = JSON.parse(localStorage.getItem('user'));
-      const token = userLocalStorage.token;
-
+      const token = getAuthToken();
+      
       // Faça a solicitação POST para realizar a ação no evento com o ID fornecido
-      const response = await axios.put(`http://localhost:5555/admin/events/${eventId}/${action}`, null, {
+      const response = await axios.put(`http://localhost:5555/admin/eventAction/${eventId}/${action}`, null, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -78,13 +104,11 @@ export const useAdmin = () => {
 
         if(action === 'accept'){
           statusEvent = 'Active'
-        }else if(action === 'cancel'){
-          statusEvent = 'Canceled'
-        }else{
+        } else{
           statusEvent = 'Pending'
         }
-        enqueueSnackbar(`Estado do evento atualizado para ${statusEvent}`, { variant:'success' });
         await adminEventsConnect();
+        enqueueSnackbar(`Estado do evento atualizado para ${statusEvent}`, { variant:'success' });
       }
     } catch (error) {
       enqueueSnackbar('Erro ao atualizar os estado do evento', { variant: 'error' });
@@ -93,5 +117,97 @@ export const useAdmin = () => {
     }
   };
 
-  return { adminUsersConnect, adminEventsConnect, eventAction, adminEvents, adminUsers, isLoadingEvents, isLoadingUsers, error };
+  const locAction = async (localId, action) => {
+    try {
+      setIsLoadingLocations(true);
+
+      // Obtenha o token JWT do localStorage
+      const token = getAuthToken();
+
+      // Faça a solicitação POST para realizar a ação no evento com o ID fornecido
+      const response = await axios.put(`http://localhost:5555/admin/locationAction/${localId}/${action}`, null, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if(response.status === 200){
+        let statusLoc = ""; 
+
+        if(action === 'accept'){
+          statusLoc = 'Active'
+        } else{
+          statusLoc = 'Pending'
+        }
+        await adminLocationsConnect();
+        enqueueSnackbar(`Estado do local atualizado para ${statusLoc}`, { variant:'success' });
+      }
+    } catch (error) {
+      enqueueSnackbar('Erro ao atualizar os estado do local', { variant: 'error' });
+    } finally {
+      setIsLoadingLocations(false);
+    }
+  };
+
+  const eventDelete = async (eventId) => {
+    try {
+        setIsLoadingEvents(true);
+
+        // Obtenha o token JWT do localStorage
+
+        const token = getAuthToken(); 
+
+        // Faça a solicitação DELETE para excluir o evento com o ID fornecido
+        const response = await axios.delete(`http://localhost:5555/admin/eventDelet`, {
+            data: { eventId },
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if(response.status === 200){
+             // Atualiza a lista de eventos do usuário após a exclusão bem-sucedida
+             setAdminEvents((prevEvents) => prevEvents.filter(event => event._id !== eventId));
+             enqueueSnackbar('Evento excluído com sucesso!', { variant: 'success' });
+        }
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        enqueueSnackbar('Erro ao excluir evento.', { variant: 'error' });
+    } finally{
+        setIsLoadingEvents(false);
+    }
+  };
+
+  const localDelete = async (localId) => {
+    try {
+        setIsLoadingLocations(true);
+
+        // Obtenha o token JWT do localStorage
+        const token = getAuthToken(); 
+
+        // Faça a solicitação DELETE para excluir o evento com o ID fornecido
+        const response = await axios.delete(`http://localhost:5555/admin/locationDelete`, {
+            data: { localId },
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.status === 200) {
+            // Atualiza a lista de eventos do usuário após a exclusão bem-sucedida
+            setAdminLocations((prevLocals) => prevLocals.filter(local => local._id !== localId));
+            enqueueSnackbar('Local excluído com sucesso!', { variant: 'success' });
+        }
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        if (error.response && error.response.data) {
+            enqueueSnackbar(error.response.data.message, { variant: 'error' });
+        } else {
+            enqueueSnackbar('Erro ao excluir evento.', { variant: 'error' });
+        }
+    } finally {
+        setIsLoadingLocations(false);
+    }
+  };
+
+  return { adminUsersConnect, adminEventsConnect, adminLocationsConnect, eventAction, locAction, eventDelete, localDelete, adminEvents, adminUsers, adminLocations, isLoadingEvents, isLoadingUsers,isLoadingLocations,  errorEvents, errorLocations, errorUsers};
 };

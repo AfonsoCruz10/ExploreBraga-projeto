@@ -23,7 +23,7 @@ function convertToBase64(file) {
 
 function EditEvent() {
     const { eventId } = useParams();
-    const { editEvent, isLoading, error, eventDetails, getEventDetails } = useEditEvent(eventId);
+    const { getEventDetails, editEvent, buscarLocais, locais, isLoading, error, errorLocais, eventDetails } = useEditEvent(eventId);
     const [eventData, setEventData] = useState({
         eventType: '',
         eventName: '',
@@ -33,7 +33,8 @@ function EditEvent() {
         eventAge: '',
         eventPrice: '',
         eventAddress: '',
-        eventImage: []
+        eventImage: [],
+        eventLocAssoc: null
     });
     const [imageIndex, setImageIndex] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
@@ -43,6 +44,7 @@ function EditEvent() {
         const showEvents = async () => {
             try {
                 await getEventDetails();
+                await buscarLocais();
             } catch (error) {
                 console.error('Error show events', error);
             }
@@ -69,9 +71,11 @@ function EditEvent() {
                 eventAge: eventDetails.AgeRecomendation,
                 eventPrice: eventDetails.Price,
                 eventAddress: eventDetails.Address,
-                eventImage: eventDetails.Image
+                eventImage: eventDetails.Image,
+                eventLocAssoc: eventDetails.LocAssoc
             });
         }
+        console.log(eventData)
     }, [eventDetails]);
 
     const handleInputChange = (e) => {
@@ -157,7 +161,7 @@ function EditEvent() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await editEvent(eventData.eventType, eventData.eventName, eventData.eventBegDate, eventData.eventEndDate, eventData.eventDescription, eventData.eventAge, eventData.eventPrice, eventData.eventImage, eventData.eventAddress);
+            await editEvent(eventData.eventType, eventData.eventName, eventData.eventBegDate, eventData.eventEndDate, eventData.eventDescription, eventData.eventAge, eventData.eventPrice, eventData.eventImage, eventData.eventAddress, eventData.eventLocAssoc);
             setIsSbumited(!isSbumited);
         } catch (error) {
             console.error('Error editing event:', error);
@@ -221,6 +225,19 @@ function EditEvent() {
                                         <option value="Lazer">Lazer</option>
                                         <option value="Turismo">Turismo</option>
                                     </select>
+
+                                    {errorLocais ?
+                                        <p className={styles.error}>{errorLocais}</p>
+                                        :
+                                        (locais.length > 0 &&
+                                        <select value={eventData.eventLocAssoc} onChange={handleInputChange} name="eventLocAssoc" className={styles.select + ' defaultselect'}>
+                                            <option value="">Associe este evento a um local</option>
+                                            {locais.map(location => (
+                                                <option key={location._id} value={location._id}>{location.Name}</option>
+                                            ))}
+                                        </select>
+                                    )}
+
 
                                     <input type="text" placeholder="Nome" name="eventName" value={eventData.eventName} onChange={handleInputChange} className={'defaultInput ' + styles.inputfield}/>
                                     <p>Data/Hora: </p>

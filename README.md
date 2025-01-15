@@ -2,10 +2,6 @@
 
 Projeto final da minha licenciatura, que consiste em uma página web de divulgação de eventos/locais de uma cidade (neste caso, de Braga). Foi desenvolvido utilizando a pilha MERN (MongoDB, Express.js, React.js, Node.js). Para mais detalhes, consulte o relatório do projeto "UC_PROJETO.pdf".
 
-## Sobre o Projeto
-
-Eu tenho muito orgulho em apresentar este projeto, pois, devido à falta de tempo dos meus colegas de grupo, acabei por desenvolvê-lo quase todo sozinho. Foi um grande desafio, principalmente porque nunca havia trabalhado com desenvolvimento web antes. No entanto, consegui aprender de forma autodidata diversas habilidades essenciais, o que foi extremamente gratificante e enriquecedor para a minha formação.
-
 ## Instruções para Executar o Projeto
 
 ### Pré-requisitos
